@@ -23,7 +23,7 @@ Future<String> generate(String projectPath, List<Generator> generators,
     {List<String> changeFilePaths, List<String> librarySearchPaths}) async {
   if (changeFilePaths == null || changeFilePaths.isEmpty) {
     if (librarySearchPaths != null && librarySearchPaths.isEmpty) {
-      return "Can't hang, yo. You give me nothing!";
+      return new Future.value("Can't hang, yo. You give me nothing!");
     }
   }
 
@@ -50,9 +50,9 @@ Future<String> generate(String projectPath, List<Generator> generators,
   var libs = getLibraries(context, fullPaths);
 
   if (libs.isEmpty) {
-    return "No libraries found for provided paths:\n"
+    return new Future.value("No libraries found for provided paths:\n"
         "${changeFilePaths.map((p) => "  $p").join(', ')}\n"
-        "They may not be in the search path.";
+        "They may not be in the search path.");
   }
 
   var messages = <String>[];
@@ -91,45 +91,49 @@ Future<String> _generateForLibrary(LibraryElement library, String projectPath,
   contentBuffer.writeln('part of ${library.name};');
   contentBuffer.writeln();
 
-  for (GeneratedOutput output in generatedOutputs) {
-    contentBuffer.writeln('');
-    contentBuffer.writeln(_headerLine);
-    contentBuffer.writeln('// Generator: ${output.generator}');
-    contentBuffer
-        .writeln('// Target: ${frieldlyNameForElement(output.sourceMember)}');
-    contentBuffer.writeln(_headerLine);
-    contentBuffer.writeln('');
+  return Future.wait(generatedOutputs.map((o) => o.output)).then(
+      (List<String> outputs) async {
+        int outputCount = generatedOutputs.length;
+        for (int index = 0; index < outputCount; index++) {
+          GeneratedOutput output = generatedOutputs[index];
+          contentBuffer.writeln('');
+          contentBuffer.writeln(_headerLine);
+          contentBuffer.writeln('// Generator: ${output.generator}');
+          contentBuffer
+              .writeln('// Target: ${frieldlyNameForElement(output.sourceMember)}');
+          contentBuffer.writeln(_headerLine);
+          contentBuffer.writeln('');
 
-    contentBuffer.writeln(output.output);
-  }
+          contentBuffer.writeln(outputs[index]);
+        }
+        var genPartContent = contentBuffer.toString();
 
-  var genPartContent = contentBuffer.toString();
+        var existingContent = '';
 
-  var existingContent = '';
+        if (exists) {
+          existingContent = findPartOf(await file.readAsString());
+        }
 
-  if (exists) {
-    existingContent = findPartOf(await file.readAsString());
-  }
+        var formatter = new DartFormatter();
+        genPartContent = formatter.format(genPartContent);
 
-  var formatter = new DartFormatter();
-  genPartContent = formatter.format(genPartContent);
+        if (existingContent == genPartContent) {
+          return "No change: '$relativeName'";
+        }
 
-  if (existingContent == genPartContent) {
-    return "No change: '$relativeName'";
-  }
+        var sink = file.openWrite(mode: FileMode.WRITE)
+          ..write(_getHeader())
+          ..write(genPartContent);
 
-  var sink = file.openWrite(mode: FileMode.WRITE)
-    ..write(_getHeader())
-    ..write(genPartContent);
+        await sink.flush();
+        sink.close();
 
-  await sink.flush();
-  sink.close();
-
-  if (exists) {
-    return "Updated: '$relativeName'";
-  } else {
-    return "Created: '$relativeName'";
-  }
+        if (exists) {
+          return "Updated: '$relativeName'";
+        } else {
+          return "Created: '$relativeName'";
+        }
+      });
 }
 
 String _getGeterateFilePath(LibraryElement lib, String projectPath) {
@@ -172,15 +176,15 @@ List<GeneratedOutput> _processUnitMember(
   var outputs = <GeneratedOutput>[];
 
   for (var gen in generators) {
-    String createdUnit;
+    Future<String> createdUnit;
 
     try {
       createdUnit = gen.generate(element);
     } on InvalidGenerationSourceError catch (e) {
-      createdUnit = '// ERROR: ${e.message}';
+      createdUnit = new Future<String>.value('// ERROR: ${e.message}');
       if (e.todo != null) {
-        createdUnit = '''$createdUnit
-// TODO: ${e.todo}''';
+        createdUnit = new Future<String>.value('''$createdUnit
+// TODO: ${e.todo}''');
       }
     }
     if (createdUnit != null) {

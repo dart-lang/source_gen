@@ -1,5 +1,6 @@
 library source_gen.json_serial.generator;
 
+import 'dart:async';
 import 'package:analyzer/src/generated/element.dart';
 
 import 'package:source_gen/src/generator.dart';
@@ -13,7 +14,7 @@ class JsonGenerator extends GeneratorForAnnotation<JsonSerializable> {
   const JsonGenerator();
 
   @override
-  String generateForAnnotatedElement(
+  Future<String> generateForAnnotatedElement(
       Element element, JsonSerializable annotation) {
     if (element is! ClassElement) {
       var friendlyName = frieldlyNameForElement(element);
@@ -41,7 +42,8 @@ class JsonGenerator extends GeneratorForAnnotation<JsonSerializable> {
           todo: 'Make the following fields writable: ${finalFields.join(', ')}.');
     }
 
-    return _populateTemplate(classElement.displayName, fieldMap);
+    return new Future.value(
+        _populateTemplate(classElement.displayName, fieldMap));
   }
 
   @override
