@@ -52,7 +52,7 @@ void main() {
   group('valid inputs', () {
     test('class with no fields', () async {
       var element = await _getClassForCodeString('Person');
-      var output = _generator.generate(element);
+      var output = await _generator.generate(element);
 
       expect(output, isNotNull);
 
