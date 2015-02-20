@@ -126,10 +126,10 @@ bool matchAnnotation(Type annotationType, ElementAnnotationImpl annotation) {
 
   switch (libOwner.uri.scheme) {
     case 'file':
-      libraryUri = libOwner.uri;
+      libraryUri = _fileUriFromPackageUri(libOwner.uri);
       break;
     case 'package':
-      libraryUri = _fileUriFromPackageUri(libOwner.uri);
+      libraryUri = libOwner.uri;
       break;
     default:
       throw new UnimplementedError(
