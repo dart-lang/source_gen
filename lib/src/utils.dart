@@ -61,6 +61,9 @@ String frieldlyNameForElement(Element element) {
       names.insert(0, 'final');
     }
   }
+  if (element is LibraryElement) {
+    names.insert(0, 'library');
+  }
 
   return names.join(' ');
 }

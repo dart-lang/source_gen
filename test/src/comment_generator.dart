@@ -1,4 +1,4 @@
-library source_gen.test.class_comment_generator;
+library source_gen.test.comment_generator;
 
 import 'dart:async';
 
@@ -6,11 +6,15 @@ import 'package:analyzer/src/generated/element.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Generates a single-line comment for each class
-class ClassCommentGenerator extends Generator {
-  const ClassCommentGenerator();
+class CommentGenerator extends Generator {
+  final bool forClasses, forLibrary;
+
+  const CommentGenerator({this.forClasses: true, this.forLibrary: false});
 
   @override
   Future<String> generate(Element element) async {
+    if (forClasses == false) return null;
+
     if (element is ClassElement) {
       if (element.displayName.contains('GoodError')) {
         throw new InvalidGenerationSourceError(
@@ -28,5 +32,12 @@ class ClassCommentGenerator extends Generator {
     return null;
   }
 
-  String toString() => 'ClassCommentGenerator';
+  @override
+  Future<String> generateForLibrary(LibraryElement element) async {
+    if (forLibrary == false) return null;
+
+    return '// Code for $element';
+  }
+
+  String toString() => 'CommentGenerator';
 }
