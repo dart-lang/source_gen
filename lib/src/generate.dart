@@ -160,21 +160,25 @@ Stream<GeneratedOutput> _generate(
     LibraryElement unit, List<Generator> generators) {
   var controller = new StreamController<GeneratedOutput>();
 
-  Future.forEach(getElementsFromLibraryElement(unit), (element) async {
-    return controller.addStream(_processUnitMember(element, generators));
+  Future.forEach(getElementsFromLibraryElement(unit), (element) {
+    return controller.addStream(
+        _process(element, generators, (gen, element) => gen.generate(element)));
+  }).then((_) {
+    return controller.addStream(_process(
+        unit, generators, (gen, element) => gen.generateForLibrary(element)));
   }).whenComplete(() => controller.close());
 
   return controller.stream;
 }
 
 // TODO(kevmoo) use async* when we can
-Stream<GeneratedOutput> _processUnitMember(
-    Element element, List<Generator> generators) {
+Stream<GeneratedOutput> _process(Element element, List<Generator> generators,
+    Future<String> create(Generator gen, Element element)) {
   var controller = new StreamController<GeneratedOutput>();
 
-  Future.forEach(generators, (gen) async {
+  Future.forEach(generators, (Generator gen) async {
     try {
-      var createdUnit = await gen.generate(element);
+      var createdUnit = await create(gen, element);
 
       if (createdUnit != null) {
         controller.add(new GeneratedOutput(element, gen, createdUnit));
