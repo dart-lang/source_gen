@@ -88,6 +88,7 @@ Future<AnalysisContext> getAnalysisContextForProjectPath(
   ];
 
   var context = AnalysisEngine.instance.createAnalysisContext()
+    ..analysisOptions = (new AnalysisOptionsImpl()..cacheSize = 256)
     ..sourceFactory = new SourceFactory(resolvers);
 
   // ensures all libraries defined by the set of files are resolved
