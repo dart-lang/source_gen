@@ -1,5 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// 2015-08-07T18:22:04.454Z
+// 2015-08-17T20:54:36.430Z
 
 part of source_gen.example.example;
 
@@ -55,6 +55,38 @@ abstract class _$OrderSerializerMixin {
 
 // **************************************************************************
 // Generator: JsonSerializableGenerator
+// Target: class BigOrder
+// **************************************************************************
+
+BigOrder _$BigOrderFromJson(Map json) => new BigOrder()
+  ..count = json['count']
+  ..itemNumber = json['itemNumber']
+  ..isRushed = json['isRushed']
+  ..items = json['items'] == null
+      ? null
+      : new List.from(json['items'].map((item) {
+          return item == null ? null : new Item.fromJson(item);
+        }));
+
+abstract class _$BigOrderSerializerMixin {
+  int get count;
+  int get itemNumber;
+  bool get isRushed;
+  List get items;
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'count': count,
+        'itemNumber': itemNumber,
+        'isRushed': isRushed,
+        'items': items == null
+            ? null
+            : new List.from(items.map((item) {
+                return item == null ? null : item.toJson();
+              }))
+      };
+}
+
+// **************************************************************************
+// Generator: JsonSerializableGenerator
 // Target: class Item
 // **************************************************************************
 
@@ -62,6 +94,17 @@ Item _$ItemFromJson(Map json) => new Item()
   ..count = json['count']
   ..itemNumber = json['itemNumber']
   ..isRushed = json['isRushed'];
+
+abstract class _$ItemSerializerMixin {
+  int get count;
+  int get itemNumber;
+  bool get isRushed;
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'count': count,
+        'itemNumber': itemNumber,
+        'isRushed': isRushed
+      };
+}
 
 // **************************************************************************
 // Generator: JsonLiteralGenerator

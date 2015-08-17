@@ -157,6 +157,17 @@ String _fieldToJsonMapValue(String name, FieldElement field) {
     return "$name == null ? null : ${name}.toIso8601String()";
   }
 
+  var listType = _listTypeWithFromJsonCtor(field.type);
+  if (listType != null) {
+    if (name == null) {
+      return "null";
+    } else {
+      return "$name == null ? null : new List.from($name.map((item) {"
+          "return item == null ? null : item.toJson();"
+          "}))";
+    }
+  }
+
   return name;
 }
 
@@ -172,6 +183,19 @@ String _jsonMapAccessToField(String name, FieldElement field) {
   if (_hasFromJsonCtor(field.type)) {
     // TODO: the type could be imported from a library with a prefix!
     return "$result == null ? null : new ${field.type.name}.fromJson($result)";
+  }
+
+  var listType = _listTypeWithFromJsonCtor(field.type);
+  if (listType != null) {
+    if (result == null) {
+      return "null";
+    } else {
+      // TODO: this does not take into account that dart:core could be
+      // imported with another name
+      return "$result == null ? null : new List.from($result.map((item) {"
+          "return item == null ? null : new ${listType.name}.fromJson(item);"
+          "}))";
+    }
   }
 
   return result;
@@ -190,6 +214,24 @@ bool _hasFromJsonCtor(DartType type) {
   }
 
   return false;
+}
+
+DartType _listTypeWithFromJsonCtor(DartType type) {
+  if (type is! InterfaceType) return null;
+  if (!_isDartList(type)) return null;
+
+  var listType = (type as InterfaceType).typeArguments.first;
+  if (_hasFromJsonCtor(listType)) {
+    return listType;
+  } else {
+    return null;
+  }
+}
+
+bool _isDartList(DartType type) {
+  return type.element.library != null &&
+      type.element.library.isDartCore &&
+      type.name == 'List';
 }
 
 bool _isDartDateTime(DartType type) {
