@@ -1,3 +1,7 @@
+## 0.4.7
+
+* Add `JsonKey` annotation
+
 ## 0.4.6-dev
 
 * Improved output of generation errors and stack traces.
