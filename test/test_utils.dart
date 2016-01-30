@@ -6,7 +6,7 @@ library source_gen.test.utils;
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:mirrors';
+import 'dart:isolate';
 
 import 'package:path/path.dart' as p;
 import 'package:scheduled_test/scheduled_test.dart';
@@ -14,14 +14,25 @@ import 'package:source_gen/source_gen.dart';
 
 String _packagePathCache;
 
-String getPackagePath() {
-  // TODO(kevmoo) - ideally we'd have a more clean way to do this
-  // See https://github.com/dart-lang/sdk/issues/23990
+Future populatePackagePath() async {
   if (_packagePathCache == null) {
-    var currentFilePath =
-        currentMirrorSystem().findLibrary(#source_gen.test.utils).uri.path;
+    var pkgUri = Uri.parse('package:source_gen/source_gen.dart');
+    var resolvedUri = await Isolate.resolvePackageUri(pkgUri);
 
-    _packagePathCache = p.normalize(p.join(p.dirname(currentFilePath), '..'));
+    var filePath = new File.fromUri(resolvedUri).resolveSymbolicLinksSync();
+
+    assert(p.basename(filePath) == 'source_gen.dart');
+    filePath = p.dirname(filePath);
+    assert(p.basename(filePath) == 'lib');
+    filePath = p.dirname(filePath);
+
+    _packagePathCache = filePath;
+  }
+}
+
+String getPackagePath() {
+  if (_packagePathCache == null) {
+    throw new StateError('You must call populatePackagePath() first.');
   }
   return _packagePathCache;
 }

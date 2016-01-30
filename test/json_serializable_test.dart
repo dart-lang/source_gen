@@ -22,6 +22,10 @@ import 'package:source_gen/generators/json_serializable_generator.dart';
 import 'test_utils.dart';
 
 void main() {
+  setUpAll(() async {
+    await populatePackagePath();
+  });
+
   group('non-classes', () {
     test('const field', () async {
       var element = await _getClassForCodeString('theAnswer');
