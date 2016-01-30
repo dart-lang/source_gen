@@ -24,6 +24,10 @@ import 'test_files/annotations.dart' as defs;
 import 'test_utils.dart';
 
 void main() {
+  setUpAll(() async {
+    await populatePackagePath();
+  });
+
   LibraryElement libElement;
 
   setUp(() async {

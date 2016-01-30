@@ -15,6 +15,10 @@ import 'package:test/test.dart';
 import 'test_utils.dart';
 
 void main() {
+  setUpAll(() async {
+    await populatePackagePath();
+  });
+
   group('check source files against expected libraries', () {
     AnalysisContext context;
 

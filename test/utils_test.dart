@@ -15,6 +15,10 @@ import 'package:source_gen/src/utils.dart';
 import 'test_utils.dart';
 
 void main() {
+  setUpAll(() async {
+    await populatePackagePath();
+  });
+
   group('libraries for files', () {
     AnalysisContext ctx;
 

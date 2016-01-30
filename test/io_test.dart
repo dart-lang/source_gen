@@ -16,6 +16,10 @@ import 'package:source_gen/src/io.dart';
 import 'test_utils.dart';
 
 void main() {
+  setUpAll(() async {
+    await populatePackagePath();
+  });
+
   test('expandFileListToIncludePeers', () {
     var examplePath = p.join(getPackagePath(), 'example');
     var jsonPath = p.join(examplePath, 'data.json');
