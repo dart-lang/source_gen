@@ -46,6 +46,15 @@ void main() {
         {'$pkgName|lib/test_lib.g.dart': _testGenPartContent,});
   });
 
+  test('Expect error when multiple generators used on a standalone builder',
+      () async {
+    expect(
+        () => new GeneratorBuilder(
+            [const CommentGenerator(), const _NoOpGenerator()],
+            isStandalone: true),
+        throwsA(new isInstanceOf<ArgumentError>()));
+  });
+
   test(
       'Simple Generator test for library',
       () => _generateTest(

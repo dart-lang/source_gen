@@ -20,6 +20,10 @@ class GeneratorBuilder extends Builder {
       {this.generatedExtension: '.g.dart', this.isStandalone: false}) {
     // TODO: validate that generatedExtension starts with a `.'
     //       not null, empty, etc
+    if (this.generators.length > 1) {
+      throw new ArgumentError(
+          'Only one generator can be used to generate a standalone file.');
+    }
   }
 
   @override
