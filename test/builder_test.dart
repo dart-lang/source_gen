@@ -27,8 +27,7 @@ void main() {
   });
 
   test('Generate standalone output file', () async {
-    var srcs =
-    _createPackageStub(pkgName);
+    var srcs = _createPackageStub(pkgName);
     var phaseGroup = new PhaseGroup.singleAction(
         new GeneratorBuilder([const CommentGenerator()], isStandalone: true),
         new InputSet(pkgName, ['lib/test_lib.dart']));
@@ -37,8 +36,7 @@ void main() {
   });
 
   test('Generate explicitly non-standalone output file', () async {
-    var srcs =
-    _createPackageStub(pkgName);
+    var srcs = _createPackageStub(pkgName);
     var phaseGroup = new PhaseGroup.singleAction(
         new GeneratorBuilder([const CommentGenerator()], isStandalone: false),
         new InputSet(pkgName, ['lib/test_lib.dart']));
@@ -55,12 +53,11 @@ void main() {
         throwsA(new isInstanceOf<ArgumentError>()));
   });
 
-  test(
-      'Expect no error when multiple generators used on nonstandalone builder',
+  test('Expect no error when multiple generators used on nonstandalone builder',
       () async {
     expect(
         () => new GeneratorBuilder(
-        [const CommentGenerator(), const _NoOpGenerator()]),
+            [const CommentGenerator(), const _NoOpGenerator()]),
         returnsNormally);
   });
 
