@@ -56,6 +56,15 @@ void main() {
   });
 
   test(
+      'Expect no error when multiple generators used on nonstandalone builder',
+      () async {
+    expect(
+        () => new GeneratorBuilder(
+        [const CommentGenerator(), const _NoOpGenerator()]),
+        returnsNormally);
+  });
+
+  test(
       'Simple Generator test for library',
       () => _generateTest(
           const CommentGenerator(forClasses: false, forLibrary: true),
