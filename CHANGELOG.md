@@ -1,4 +1,4 @@
-## 0.5.2
+## 0.5.1
 
 * Added GeneratorBuilder option isStandalone to generate files that aren't 
   part of source file.
