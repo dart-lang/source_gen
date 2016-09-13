@@ -177,7 +177,7 @@ dynamic _createFromConstructor(
     }
   }
 
-  Symbol ctorName = new Symbol(ctor.name ?? '');
+  var ctorName = new Symbol(ctor.name ?? '');
 
   var declarationMirror =
       _getDeclarationMirrorFromType(ctor.enclosingElement.type) as ClassMirror;
