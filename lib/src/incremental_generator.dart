@@ -25,9 +25,11 @@ abstract class IncrementalGenerator extends Generator {
   Future<String> generate(Element element, BuildStep buildStep) async {
     if (element is! LibraryElement) return null;
     final lib = element as LibraryElement;
+    final generatedPart = getGeneratedPart(lib);
+
+    if (generatedPart == null) return null;
 
     // back up the initial content of the part to restore at the end
-    final generatedPart = getGeneratedPart(lib);
     String genContent, initialContent;
     try {
       initialContent = lib.context.getContents(generatedPart.source).data;
@@ -68,7 +70,8 @@ abstract class IncrementalGenerator extends Generator {
     final genPartName = _getGeneratedPartName(lib);
     final genPartPath = path
         .normalize(path.join(path.dirname(lib.source.uri.path), genPartName));
-    return lib.units.firstWhere((u) => u.source.uri.path == genPartPath);
+    return lib.units.firstWhere((u) => u.source.uri.path == genPartPath,
+        orElse: () => null);
   }
 
   /// Returns the file name of the generated part
