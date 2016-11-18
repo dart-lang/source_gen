@@ -11,10 +11,13 @@ import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
 import 'src/comment_generator.dart';
+import 'src/my_incremental_generator.dart';
 import 'src/test_phases.dart';
 
 void main() {
   test('Simple Generator test', _simpleTest);
+
+  test('Incremental Generator test', _incrementalTest);
 
   test('Bad generated source', () async {
     var srcs = _createPackageStub(pkgName);
@@ -101,7 +104,10 @@ Future _simpleTest() => _generateTest(
     const CommentGenerator(forClasses: true, forLibrary: false),
     _testGenPartContent);
 
-Future _generateTest(CommentGenerator gen, String expectedContent) async {
+Future _incrementalTest() =>
+    _generateTest(const MyIncrementalGenerator(5), _testIncremGenPartContent);
+
+Future _generateTest(Generator gen, String expectedContent) async {
   var srcs = await _createPackageStub(pkgName);
   var phaseGroup = new PhaseGroup.singleAction(new GeneratorBuilder([gen]),
       new InputSet(pkgName, ['lib/test_lib.dart']));
@@ -142,6 +148,7 @@ const pkgName = 'pkg';
 const _testLibContent = r'''
 library test_lib;
 part 'test_lib_part.dart';
+part 'test_lib.g.dart';
 final int foo = 42;
 class Person { }
 ''';
@@ -176,6 +183,18 @@ part of test_lib;
 // **************************************************************************
 
 // Code for "class Customer"
+''';
+
+const _testIncremGenPartContent = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of test_lib;
+
+// **************************************************************************
+// Generator: MyIncrementalGenerator
+// Target: library test_lib
+// **************************************************************************
+
+// count 5
 ''';
 
 const _testGenPartContentForLibrary =
