@@ -279,9 +279,9 @@ ParameterizedType _typeTest(
 
   if (type is InterfaceType) {
     var tests = type.interfaces.map((type) => _typeTest(type, tester));
-    var interface = _firstNonNull(tests);
+    var match = _firstNonNull(tests);
 
-    if (interface != null) return interface;
+    if (match != null) return match;
 
     if (type.superclass != null) {
       return _typeTest(type.superclass, tester);
