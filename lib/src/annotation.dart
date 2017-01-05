@@ -215,14 +215,18 @@ DeclarationMirror _getDeclarationMirrorFromType(InterfaceType type) {
 }
 
 bool matchAnnotation(Type annotationType, ElementAnnotation annotation) {
-  var classMirror = reflectClass(annotationType);
-  var classMirrorSymbol = classMirror.simpleName;
-
   var annotationValueType = annotation.constantValue?.type;
   if (annotationValueType == null) {
     throw new ArgumentError.value(annotation, 'annotation',
         'Could not determine type of annotation. Are you missing a dependency?');
   }
+  
+  return matchTypes(annotationType, annotationValueType);
+}
+
+bool matchTypes(Type annotationType, ParameterizedType annotationValueType) {
+  var classMirror = reflectClass(annotationType);
+  var classMirrorSymbol = classMirror.simpleName;
 
   var annTypeName = annotationValueType.name;
   var annotationTypeSymbol = new Symbol(annTypeName);
