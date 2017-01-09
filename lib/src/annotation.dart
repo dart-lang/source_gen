@@ -214,6 +214,8 @@ DeclarationMirror _getDeclarationMirrorFromType(InterfaceType type) {
   return libMirror.declarations[typeNameSymbol];
 }
 
+/// Checks whether the constant type of [annotation] is equivalent to
+/// [annotationType].
 bool matchAnnotation(Type annotationType, ElementAnnotation annotation) {
   var annotationValueType = annotation.constantValue?.type;
   if (annotationValueType == null) {
@@ -224,6 +226,10 @@ bool matchAnnotation(Type annotationType, ElementAnnotation annotation) {
   return matchTypes(annotationType, annotationValueType);
 }
 
+/// Checks whether [annotationValueType] is equivalent to [annotationType].
+///
+/// Currently, this uses mirrors to compare the name and library uri of the two
+/// types.
 bool matchTypes(Type annotationType, ParameterizedType annotationValueType) {
   var classMirror = reflectClass(annotationType);
   var classMirrorSymbol = classMirror.simpleName;
