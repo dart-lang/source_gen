@@ -160,7 +160,8 @@ class Customer { }
 
 const _testGenPartContent = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of test_lib;
+part of 'test_lib.dart';
+
 
 // **************************************************************************
 // Generator: CommentGenerator
@@ -180,7 +181,8 @@ part of test_lib;
 const _testGenPartContentForLibrary =
     r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of test_lib;
+part of 'test_lib.dart';
+
 
 // **************************************************************************
 // Generator: CommentGenerator
@@ -210,7 +212,8 @@ const _testGenStandaloneContent = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 const _testGenPartContentForClassesAndLibrary =
     r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of test_lib;
+part of 'test_lib.dart';
+
 
 // **************************************************************************
 // Generator: CommentGenerator
@@ -236,7 +239,8 @@ part of test_lib;
 
 const _testGenPartContentError = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of test_lib;
+part of 'test_lib.dart';
+
 
 // **************************************************************************
 // Generator: CommentGenerator
@@ -246,6 +250,7 @@ part of test_lib;
 // Error: Invalid argument (element): We don't support class names with the word 'Error'.
 //        Try renaming the class.: Instance of 'ClassElementImpl'
 
+
 // **************************************************************************
 // Generator: CommentGenerator
 // Target: class MyGoodError
@@ -253,6 +258,7 @@ part of test_lib;
 
 // Error: Don't use classes with the word 'Error' in the name
 // TODO: Rename MyGoodError to something else.
+
 
 // **************************************************************************
 // Generator: CommentGenerator
