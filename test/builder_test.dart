@@ -153,13 +153,15 @@ class MyGoodError { }
 ''';
 
 const _testLibPartContent = r'''
-part of test_lib;
+// ignore: non_identifier_library_name
+part of 'test_lib.dart';
 final int bar = 42;
 class Customer { }
 ''';
 
 const _testGenPartContent = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
+// ignore: non_identifier_library_name
 part of 'test_lib.dart';
 
 
@@ -181,6 +183,7 @@ part of 'test_lib.dart';
 const _testGenPartContentForLibrary =
     r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
+// ignore: non_identifier_library_name
 part of 'test_lib.dart';
 
 
@@ -212,6 +215,7 @@ const _testGenStandaloneContent = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 const _testGenPartContentForClassesAndLibrary =
     r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
+// ignore: non_identifier_library_name
 part of 'test_lib.dart';
 
 
@@ -239,6 +243,7 @@ part of 'test_lib.dart';
 
 const _testGenPartContentError = r'''// GENERATED CODE - DO NOT MODIFY BY HAND
 
+// ignore: non_identifier_library_name
 part of 'test_lib.dart';
 
 

@@ -55,6 +55,7 @@ class GeneratorBuilder extends Builder {
     var contentBuffer = new StringBuffer();
 
     if (!isStandalone) {
+      contentBuffer.writeln('// ignore: non_identifier_library_name');
       contentBuffer.writeln("part of '${library.definingCompilationUnit.displayName}';");
       contentBuffer.writeln();
     }
