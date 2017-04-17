@@ -1,3 +1,7 @@
+## 0.5.5
+
+* Less verbose errors when analyzer fails to resolve the input.
+
 ## 0.5.4+3
 
 * Support the latest release of `pkg/dart_style`.
