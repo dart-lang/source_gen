@@ -35,7 +35,7 @@ class GeneratorBuilder extends Builder {
   }
 
   @override
- Map<String, List<String>> get buildExtensions => {
+  Map<String, List<String>> get buildExtensions => {
         '.dart': [generatedExtension]
       };
 
