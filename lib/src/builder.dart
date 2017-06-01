@@ -78,20 +78,18 @@ class GeneratorBuilder extends Builder {
 
     var genPartContent = contentBuffer.toString();
 
-    if (formatOutput != null) {
-      try {
-        genPartContent = formatOutput(genPartContent);
-      } catch (e, stack) {
-        log.severe(
-            'Error formatting generated source code for ${library.identifier}'
-            'which was output to ${_generatedFile(buildStep.inputId).path}.\n'
-            'This may indicate an issue in the generated code or in the '
-            'formatter.\n'
-            'Please check the generated code and file an issue on source_gen if '
-            'appropriate.',
-            e,
-            stack);
-      }
+    try {
+      genPartContent = formatOutput(genPartContent);
+    } catch (e, stack) {
+      log.severe(
+          'Error formatting generated source code for ${library.identifier}'
+          'which was output to ${_generatedFile(buildStep.inputId).path}.\n'
+          'This may indicate an issue in the generated code or in the '
+          'formatter.\n'
+          'Please check the generated code and file an issue on source_gen if '
+          'appropriate.',
+          e,
+          stack);
     }
 
     buildStep.writeAsString(
