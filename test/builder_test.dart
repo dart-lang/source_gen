@@ -106,10 +106,10 @@ void main() {
         });
   });
 
-  test('can pass a null formatter to skip formatting', () async {
+  test('can skip formatting with a trivial lambda', () async {
     await testBuilder(
         new GeneratorBuilder([new UnformattedCodeGenerator()],
-            formatOutput: null),
+            formatOutput: (s) => s),
         {'$pkgName|lib/a.dart': 'library a; part "a.part.dart";'},
         generateFor: new Set.from(['$pkgName|lib/a.dart']),
         outputs: {

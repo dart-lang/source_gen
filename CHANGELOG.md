@@ -2,8 +2,7 @@
 
 * Add `formatOutput` optional parameter to the `GeneratorBuilder` constructor.
   This is a lamda of the form `String formatOutput(String originalCode)` which
-  allows you do do custom formatting. If a `null` value is passed then no
-  formatting will be done.
+  allows you do do custom formatting.
 
 ## 0.5.7
 

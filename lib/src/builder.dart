@@ -20,9 +20,10 @@ class GeneratorBuilder extends Builder {
   final bool isStandalone;
 
   GeneratorBuilder(this.generators,
-      {this.formatOutput: _dartFormat,
+      {OutputFormatter formatOutput,
       this.generatedExtension: '.g.dart',
-      this.isStandalone: false}) {
+      this.isStandalone: false})
+      : formatOutput = formatOutput ?? _formatter.format {
     // TODO: validate that generatedExtension starts with a `.'
     //       not null, empty, etc
     if (this.isStandalone && this.generators.length > 1) {
@@ -131,7 +132,6 @@ Stream<GeneratedOutput> _processUnitMember(
 }
 
 final _formatter = new DartFormatter();
-String _dartFormat(String input) => _formatter.format(input);
 
 const _topHeader = '''// GENERATED CODE - DO NOT MODIFY BY HAND
 
