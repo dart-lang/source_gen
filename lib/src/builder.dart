@@ -131,7 +131,7 @@ Stream<GeneratedOutput> _processUnitMember(
 }
 
 final _formatter = new DartFormatter();
-String _dartFormat(String input) =>_formatter.format(input);
+String _dartFormat(String input) => _formatter.format(input);
 
 const _topHeader = '''// GENERATED CODE - DO NOT MODIFY BY HAND
 
