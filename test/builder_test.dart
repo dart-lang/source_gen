@@ -95,7 +95,8 @@ void main() {
         });
   });
 
-  test('defaults to formatting generated code', () async {
+  test('defaults to formatting generated code with the DartFormatter',
+      () async {
     await testBuilder(new GeneratorBuilder([new UnformattedCodeGenerator()]),
         {'$pkgName|lib/a.dart': 'library a; part "a.part.dart";'},
         generateFor: new Set.from(['$pkgName|lib/a.dart']),
@@ -105,15 +106,27 @@ void main() {
         });
   });
 
-  test('can override to not format generated code', () async {
+  test('can pass a null formatter to skip formatting', () async {
     await testBuilder(
         new GeneratorBuilder([new UnformattedCodeGenerator()],
-            formatOutput: false),
+            formatOutput: null),
         {'$pkgName|lib/a.dart': 'library a; part "a.part.dart";'},
         generateFor: new Set.from(['$pkgName|lib/a.dart']),
         outputs: {
           '$pkgName|lib/a.g.dart':
               contains(UnformattedCodeGenerator.unformattedCode),
+        });
+  });
+
+  test('can pass a custom formatter with formatOutput', () async {
+    var customOutput = 'final String hello = "hello";';
+    await testBuilder(
+        new GeneratorBuilder([new UnformattedCodeGenerator()],
+            formatOutput: (_) => customOutput),
+        {'$pkgName|lib/a.dart': 'library a; part "a.part.dart";'},
+        generateFor: new Set.from(['$pkgName|lib/a.dart']),
+        outputs: {
+          '$pkgName|lib/a.g.dart': contains(customOutput),
         });
   });
 }

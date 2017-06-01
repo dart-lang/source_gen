@@ -11,14 +11,16 @@ import 'generated_output.dart';
 import 'generator.dart';
 import 'utils.dart';
 
+typedef String OutputFormatter(String generatedCode);
+
 class GeneratorBuilder extends Builder {
-  final bool formatOutput;
+  final OutputFormatter formatOutput;
   final List<Generator> generators;
   final String generatedExtension;
   final bool isStandalone;
 
   GeneratorBuilder(this.generators,
-      {this.formatOutput: true,
+      {this.formatOutput: _dartFormat,
       this.generatedExtension: '.g.dart',
       this.isStandalone: false}) {
     // TODO: validate that generatedExtension starts with a `.'
@@ -75,10 +77,9 @@ class GeneratorBuilder extends Builder {
 
     var genPartContent = contentBuffer.toString();
 
-    if (formatOutput) {
-      var formatter = new DartFormatter();
+    if (formatOutput != null) {
       try {
-        genPartContent = formatter.format(genPartContent);
+        genPartContent = formatOutput(genPartContent);
       } catch (e, stack) {
         log.severe(
             'Error formatting generated source code for ${library.identifier}'
@@ -128,6 +129,9 @@ Stream<GeneratedOutput> _processUnitMember(
     }
   }
 }
+
+final _formatter = new DartFormatter();
+String _dartFormat(String input) =>_formatter.format(input);
 
 const _topHeader = '''// GENERATED CODE - DO NOT MODIFY BY HAND
 
