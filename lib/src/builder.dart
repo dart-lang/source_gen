@@ -12,12 +12,15 @@ import 'generator.dart';
 import 'utils.dart';
 
 class GeneratorBuilder extends Builder {
+  final bool formatOutput;
   final List<Generator> generators;
   final String generatedExtension;
   final bool isStandalone;
 
   GeneratorBuilder(this.generators,
-      {this.generatedExtension: '.g.dart', this.isStandalone: false}) {
+      {this.formatOutput: true,
+      this.generatedExtension: '.g.dart',
+      this.isStandalone: false}) {
     // TODO: validate that generatedExtension starts with a `.'
     //       not null, empty, etc
     if (this.isStandalone && this.generators.length > 1) {
@@ -72,19 +75,21 @@ class GeneratorBuilder extends Builder {
 
     var genPartContent = contentBuffer.toString();
 
-    var formatter = new DartFormatter();
-    try {
-      genPartContent = formatter.format(genPartContent);
-    } catch (e, stack) {
-      log.severe(
-          'Error formatting generated source code for ${library.identifier}'
-          'which was output to ${_generatedFile(buildStep.inputId).path}.\n'
-          'This may indicate an issue in the generated code or in the '
-          'formatter.\n'
-          'Please check the generated code and file an issue on source_gen if '
-          'appropriate.',
-          e,
-          stack);
+    if (formatOutput) {
+      var formatter = new DartFormatter();
+      try {
+        genPartContent = formatter.format(genPartContent);
+      } catch (e, stack) {
+        log.severe(
+            'Error formatting generated source code for ${library.identifier}'
+            'which was output to ${_generatedFile(buildStep.inputId).path}.\n'
+            'This may indicate an issue in the generated code or in the '
+            'formatter.\n'
+            'Please check the generated code and file an issue on source_gen if '
+            'appropriate.',
+            e,
+            stack);
+      }
     }
 
     buildStep.writeAsString(

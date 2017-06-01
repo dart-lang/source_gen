@@ -1,3 +1,9 @@
+## 0.5.8
+
+* Add `formatOutput` optional parameter to the `GeneratorBuilder` constructor,
+  which defaults to `true`. Setting this to false will speed up builds at the
+  cost of uglier output.
+
 ## 0.5.7
 
 * Support for package:analyzer 0.30.0
