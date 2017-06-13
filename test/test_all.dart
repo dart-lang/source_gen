@@ -9,7 +9,6 @@ import 'builder_test.dart' as builder;
 import 'find_libraries_test.dart' as find_libraries;
 import 'json_serializable_test.dart' as json_generator;
 
-
 void main() {
   group('annotation', annotation.main);
   group('builder', builder.main);
