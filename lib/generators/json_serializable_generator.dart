@@ -24,15 +24,24 @@ class JsonSerializableGenerator
     const DateTimeHelper()
   ];
 
-  final List<TypeHelper> typeHelpers;
+  final List<TypeHelper> _typeHelpers;
 
-  const JsonSerializableGenerator({this.typeHelpers: _defaultHelpers});
+  /// Creates an instance of [JsonSerializableGenerator].
+  ///
+  /// If [typeHelpers] is not provided, two built-in helpers are used:
+  /// [JsonHelper] and [DateTimeHelper].
+  const JsonSerializableGenerator({List<TypeHelper> typeHelpers})
+      : this._typeHelpers = typeHelpers ?? _defaultHelpers;
 
+  /// Creates an instance of [JsonSerializableGenerator].
+  ///
+  /// [typeHelpers] provides a set of [TypeHelper] that will be used along with
+  /// the built-in helpers: [JsonHelper] and [DateTimeHelper].
   factory JsonSerializableGenerator.withDefaultHelpers(
           Iterable<TypeHelper> typeHelpers) =>
       new JsonSerializableGenerator(
           typeHelpers: new List.unmodifiable(
-              [_defaultHelpers, typeHelpers].expand((e) => e)));
+              [typeHelpers, _defaultHelpers].expand((e) => e)));
 
   @override
   Future<String> generateForAnnotatedElement(
@@ -190,7 +199,7 @@ class JsonSerializableGenerator
   /// representing the serialization of a value.
   String _fieldToJsonMapValue(String expression, DartType fieldType,
       [int depth = 0]) {
-    for (var helper in typeHelpers) {
+    for (var helper in _typeHelpers) {
       if (helper.canSerialize(fieldType)) {
         return helper.serialize(fieldType, expression);
       }
@@ -232,7 +241,7 @@ class JsonSerializableGenerator
       searchType = ctorParam.type as InterfaceType;
     }
 
-    for (var helper in typeHelpers) {
+    for (var helper in _typeHelpers) {
       if (helper.canDeserialize(searchType)) {
         return "$varExpression == null ? null : "
             "${helper.deserialize(searchType, varExpression)}";

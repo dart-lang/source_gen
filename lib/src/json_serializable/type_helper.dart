@@ -31,7 +31,7 @@ abstract class TypeHelper {
   /// literal to into [targetType].
   ///
   /// Let's say you want to deserialize a class `Foo` by taking an `int` stored
-  /// in a JSON literal and calling they `Foo.fromInt` constructor.
+  /// in a JSON literal and calling the `Foo.fromInt` constructor.
   ///
   /// Treating [expression] as a opaque Dart expression representing a JSON
   /// literal, the [deserialize] implementation could be a simple as:
