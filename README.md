@@ -24,8 +24,8 @@
 
 It's main purpose is to expose a developer-friendly API on top of lower-level
 packages like the [analyzer](https://pub.dartlang.org/packages/analyzer) or
-[build][]. You don't _have_ to use `source_gen` in order to generate source code
-- we also expose a set of library APIs that might be useful in your generators.
+[build][]. You don't _have_ to use `source_gen` in order to generate source code;
+we also expose a set of library APIs that might be useful in your generators.
 
 ## Quick Start Guide
 
