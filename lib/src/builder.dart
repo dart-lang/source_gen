@@ -50,7 +50,6 @@ class GeneratorBuilder extends Builder {
 
   Future _generateForLibrary(
       LibraryElement library, BuildStep buildStep) async {
-    print('Hello');
     log.fine('Running $generators for ${buildStep.inputId}');
     var generatedOutputs =
         await _generate(library, generators, buildStep).toList();
