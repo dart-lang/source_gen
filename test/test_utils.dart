@@ -21,11 +21,10 @@ String getPackagePath() {
         .path;
 
     _packagePathCache = p.normalize(p.join(p.dirname(currentFilePath), '..'));
+    // On Windows, the tests will crash because _packagePathCache starts with a backslash.
+    if (Platform.isWindows && _packagePathCache.startsWith('\\'))
+      _packagePathCache = _packagePathCache.substring(1);
   }
-
-  // On Windows, the tests will crash because _packagePathCache starts with a backslash.
-  if (Platform.isWindows && _packagePathCache.startsWith('\\'))
-    _packagePathCache = _packagePathCache.substring(1);
   return _packagePathCache;
 }
 
