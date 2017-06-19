@@ -34,6 +34,9 @@ abstract class TypeChecker {
   ///
   /// Otherwise returns `null`.
   DartObject firstAnnotationOf(Element element) {
+    if (element.metadata.isEmpty) {
+      return null;
+    }
     final results = annotationsOf(element);
     return results.isEmpty ? null : results.first;
   }
@@ -57,29 +60,50 @@ abstract class TypeChecker {
   bool isSuperTypeOf(DartType staticType) => isSuperOf(staticType.element);
 }
 
-String _urlOf(Element element) {
-  if (element.kind == ElementKind.DYNAMIC) {
-    return 'dart:core#dynamic';
-  }
-  var sourceUri = element.source.uri;
-  switch (sourceUri.scheme) {
+Uri _normalizeUrl(Uri url) {
+  switch (url.scheme) {
     case 'dart':
-      // Some internal dart: URLs are something like dart:core/map.dart.
-      //
-      // This isn't a user-knowable path, so we strip out extra path segments
-      // and only expose dart:core.
-      if (sourceUri.pathSegments.isNotEmpty) {
-        final path = sourceUri.pathSegments.first;
-        sourceUri = sourceUri.replace(pathSegments: [path]);
-      }
-      break;
+      return _normalizeDartUrl(url);
     case 'package':
-      break;
+      return _packageToAssetUrl(url);
     default:
-      throw new StateError('Cannot resolve "$sourceUri".');
+      return url;
   }
-  return sourceUri.replace(fragment: element.name).toString();
 }
+
+/// Make `dart:`-type URLs look like a user-knowable path.
+///
+/// Some internal dart: URLs are something like `dart:core/map.dart`.
+///
+/// This isn't a user-knowable path, so we strip out extra path segments
+/// and only expose `dart:core`.
+Uri _normalizeDartUrl(Uri url) => url.pathSegments.isNotEmpty
+    ? url.replace(pathSegments: url.pathSegments.take(1))
+    : url;
+
+/// Returns a `package:` URL into a `asset:` URL.
+///
+/// This makes internal comparison logic much easier, but still allows users
+/// to define assets in terms of `package:`, which is something that makes more
+/// sense to most.
+///
+/// For example this transforms `package:source_gen/source_gen.dart` into:
+/// `asset:source_gen/lib/source_gen.dart`.
+Uri _packageToAssetUrl(Uri url) => url.scheme == 'package'
+    ? url.replace(
+        scheme: 'asset',
+        pathSegments: <String>[]
+          ..add(url.pathSegments.first)
+          ..add('lib')
+          ..addAll(url.pathSegments.skip(1)))
+    : url;
+
+/// Returns
+String _urlOfElement(Element element) => element.kind == ElementKind.DYNAMIC
+    ? 'dart:core#dynmaic'
+    : _normalizeUrl(element.source.uri)
+        .replace(fragment: element.name)
+        .toString();
 
 // Checks a static type against another static type;
 class _LibraryTypeChecker extends TypeChecker {
@@ -92,25 +116,14 @@ class _LibraryTypeChecker extends TypeChecker {
       element is ClassElement && element == _type.element;
 
   @override
-  String toString() => '${_urlOf(_type.element)}';
+  String toString() => '${_urlOfElement(_type.element)}';
 }
 
 // Checks a runtime type against a static type.
 class _MirrorTypeChecker extends TypeChecker {
-  static Uri _uriOf(ClassMirror mirror) {
-    final sourceUri = (mirror.owner as LibraryMirror).uri;
-    switch (sourceUri.scheme) {
-      case 'dart':
-      case 'package':
-        return sourceUri.replace(
-          fragment: MirrorSystem.getName(mirror.simpleName),
-        );
-      default:
-        throw new StateError(
-            'Cannot resolve "$sourceUri". You must import ${mirror.simpleName} '
-            'class using a package: or dart: url.');
-    }
-  }
+  static Uri _uriOf(ClassMirror mirror) =>
+      _normalizeUrl((mirror.owner as LibraryMirror).uri).replace(
+          fragment: MirrorSystem.getName(mirror.simpleName));
 
   // Precomputed type checker for types that already have been used.
   static final _cache = new Expando<TypeChecker>();
@@ -133,6 +146,9 @@ class _MirrorTypeChecker extends TypeChecker {
 class _UriTypeChecker extends TypeChecker {
   final String _url;
 
+  // Precomputed cache of String --> Uri.
+  static final _cache = new Expando<Uri>();
+
   const _UriTypeChecker(dynamic url)
       : _url = '$url',
         super._();
@@ -143,9 +159,16 @@ class _UriTypeChecker extends TypeChecker {
   @override
   int get hashCode => _url.hashCode;
 
-  @override
-  bool isExactly(Element element) => _urlOf(element) == _url;
+  /// Url as a [Uri] object, lazily constructed.
+  Uri get uri => _cache[this] ??= Uri.parse(_url);
+
+  /// Returns whether this type represents the same as [url].
+  bool hasSameUrl(dynamic url) =>
+      uri.toString() == (url is String ? url : _normalizeUrl(url).toString());
 
   @override
-  String toString() => '$_url';
+  bool isExactly(Element element) => hasSameUrl(_urlOfElement(element));
+
+  @override
+  String toString() => '${uri}';
 }

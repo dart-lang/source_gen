@@ -37,7 +37,7 @@ void main() {
     group('(Map)', () {
       test('should equal dart:core#Map', () {
         expect(checkMap().isExactlyType(staticMap), isTrue,
-            reason: '$checkMap != $staticMap');
+            reason: '${checkMap()} != $staticMap');
       });
 
       test('should not be a super type of dart:core#Map', () {
@@ -46,7 +46,7 @@ void main() {
 
       test('should not equal dart:core#HashMap', () {
         expect(checkMap().isExactlyType(staticHashMap), isFalse,
-            reason: '$checkMap == $staticHashMapChecker');
+            reason: '${checkMap()} == $staticHashMapChecker');
       });
 
       test('should be a super type of dart:collection#HashMap', () {
@@ -57,7 +57,7 @@ void main() {
     group('(HashMap)', () {
       test('should equal dart:collection#HashMap', () {
         expect(checkHashMap().isExactlyType(staticHashMap), isTrue,
-            reason: '$checkHashMap != $staticHashMapChecker');
+            reason: '${checkHashMap()} != $staticHashMapChecker');
       });
 
       test('should not be a super type of dart:core#Map', () {
