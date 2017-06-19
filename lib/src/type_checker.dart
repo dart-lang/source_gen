@@ -113,6 +113,9 @@ class _MirrorTypeChecker extends TypeChecker {
 // Checks a runtime type against an Uri and Symbol.
 class _UriTypeChecker extends TypeChecker {
   static String _urlOf(Element element) {
+    if (element.kind == ElementKind.DYNAMIC) {
+      return 'dart:core#dynamic';
+    }
     var sourceUri = element.source.uri;
     switch (sourceUri.scheme) {
       case 'dart':

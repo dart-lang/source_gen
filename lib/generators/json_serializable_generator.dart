@@ -314,11 +314,7 @@ T _firstNotNull<T>(Iterable<T> values) =>
     values.firstWhere((value) => value != null, orElse: () => null);
 
 bool _isDartIterable(DartType type) =>
-    type.element.library != null &&
-    type.element.library.isDartCore &&
-    type.name == 'Iterable';
+    const TypeChecker.fromUrl('dart:core#Iterable').isExactlyType(type);
 
 bool _isDartList(DartType type) =>
-    type.element.library != null &&
-    type.element.library.isDartCore &&
-    type.name == 'List';
+    const TypeChecker.fromUrl('dart:core#List').isExactlyType(type);
