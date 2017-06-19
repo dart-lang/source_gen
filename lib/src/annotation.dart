@@ -140,29 +140,41 @@ dynamic _createFromConstructor(
     ConstructorElementImpl ctor, DartObjectImpl obj) {
   var positionalArgs = [];
   var namedArgs = <Symbol, dynamic>{};
+  DartObjectImpl fieldObjectImpl;
+
   for (var p in ctor.parameters) {
     var paramName = p.name;
     String fieldName;
     if (p is FieldFormalParameterElement) {
       fieldName = p.name;
     } else {
+      // If the parameter is not a field parameter, then it is one of two things:
+      // * An argument corresponding to a field assigned in the object
+      // * An argument that is passed to a super constructor
+      //
+      // If the argument is one merely passed to a super constructor,
+      // then there will not be an entry in `obj.fields` for its name.
+      //
+      // So what should we add to positionalArgs/namedArgs instead???
+
+
       // Trying to find the relationship between the ctor argument name and the
       // field assigned in the object. Then we can take the field value and
       // set it as the argument value
 
-      if (ctor.constantInitializers.length == 1
-          && ctor.constantInitializers.first is SuperConstructorInvocation) {
-        // If the annotation class's constructor has no initializers and just
-        // forwards to a `super` class constructor, then there is no need
-        // to add a ctor argument name as a field value.
-        //
-        // In this case `singleWhere` would throw a StateError.
-        continue;
-      }
-
       var initializer = ctor.constantInitializers.singleWhere((ci) {
-        // Avoid crashing on SuperConstructor
-        if (ci is SuperConstructorInvocation) return false;
+        if (ci is SuperConstructorInvocation) {
+          // If this is a super constructor invocation, we need to find the right field
+          // from the parent class.
+
+          // 1. Find parent class
+          
+
+          // 2. Determine the name of the field this parameter is assigned to on the parent class.
+
+          // 3. Assign fieldObjectImpl
+        }
+
         var expression = (ci as ConstructorFieldInitializer).expression;
         if (expression is SimpleIdentifier) {
           return expression.name == paramName;
@@ -174,16 +186,15 @@ dynamic _createFromConstructor(
 
         throw new UnsupportedError(
             "${ctor.enclosingElement.type} is too complex. Initializers of "
-            "type '${expression.runtimeType}' are not supported.");
+                "type '${expression.runtimeType}' are not supported.");
       }) as ConstructorFieldInitializer;
 
-      // get the field value now
       fieldName = initializer.fieldName.name;
     }
 
     var typeProvider = ctor.context.typeProvider;
 
-    var fieldObjectImpl = obj.fields[fieldName];
+    fieldObjectImpl ??= obj.fields[fieldName];
     if (p.parameterKind == ParameterKind.NAMED) {
       namedArgs[new Symbol(p.name)] = _getValue(fieldObjectImpl, typeProvider);
     } else {

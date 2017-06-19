@@ -60,6 +60,15 @@ class ExtendedAnnotationClass extends PublicAnnotationClass {
   const ExtendedAnnotationClass():super();
 }
 
+class ExtendedAnnotationClassWithForwardedParameters extends PublicAnnotationClass {
+  const ExtendedAnnotationClassWithForwardedParameters(int forwardedInt):super.withPositionalArgs(forwardedInt, 'hello');
+}
+
+class ExtendedAnnotationClassWithCustomAndForwardedParameters extends PublicAnnotationClass {
+  final int customInt;
+  const ExtendedAnnotationClassWithCustomAndForwardedParameters(this.customInt, int forwardedInt):super.withPositionalArgs(forwardedInt, 'hello');
+}
+
 class OtherPublicAnnotationClass {
   const OtherPublicAnnotationClass();
 }

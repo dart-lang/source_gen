@@ -78,6 +78,26 @@ void main() {
       expect(instance.aBool, isFalse);
     });
 
+    test('annotated with extended class and forwarded parameters', () {
+      var instance = _getInstantiatedAnnotation(libElement, 'WithChildClassAnnotationAndForwardedParameters');
+      expect(instance is defs.PublicAnnotationClass, isTrue);
+      expect(instance is defs.ExtendedAnnotationClassWithForwardedParameters, isTrue);
+      expect(instance.anInt, 24);
+      expect(instance.aBool, isFalse);
+      expect(instance.aString, 'hello');
+    });
+
+
+    test('annotated with extended class and custom and forwarded parameters', () {
+      var instance = _getInstantiatedAnnotation(libElement, 'WithChildClassAnnotationAndCustomForwardedParameters');
+      expect(instance is defs.PublicAnnotationClass, isTrue);
+      expect(instance is defs.ExtendedAnnotationClassWithCustomAndForwardedParameters, isTrue);
+      expect(instance.customInt, 23);
+      expect(instance.anInt, 24);
+      expect(instance.aBool, isFalse);
+      expect(instance.aString, 'hello');
+    });
+
     test('annotated with class using a non-default ctor', () {
       var instance =
           _getInstantiatedAnnotation(libElement, 'NonDefaultCtorNoParams');

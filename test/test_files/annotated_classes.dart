@@ -60,3 +60,9 @@ class WithAFieldFromNonDefaultCtor {}
 
 @ExtendedAnnotationClass()
 class WithChildClassAnnotation {}
+
+@ExtendedAnnotationClassWithForwardedParameters(24)
+class WithChildClassAnnotationAndForwardedParameters {}
+
+@ExtendedAnnotationClassWithCustomAndForwardedParameters(23, 24)
+class WithChildClassAnnotationAndCustomForwardedParameters {}
