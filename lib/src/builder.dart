@@ -99,7 +99,7 @@ class GeneratorBuilder extends Builder {
       contentBuffer.writeln();
     }
 
-    // Don't outputs useless files.
+    // Don't output useless files.
     if (generatedOutputs.isEmpty) return;
 
     for (GeneratedOutput output in generatedOutputs) {
