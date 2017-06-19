@@ -168,7 +168,7 @@ dynamic _createFromConstructor(
           // from the parent class.
 
           // 1. Find parent class
-          
+
 
           // 2. Determine the name of the field this parameter is assigned to on the parent class.
 
