@@ -151,6 +151,8 @@ dynamic _createFromConstructor(
       // set it as the argument value
 
       var initializer = ctor.constantInitializers.singleWhere((ci) {
+        // Avoid crashing on SuperConstructor
+        if (ci is SuperConstructorInvocation) return false;
         var expression = (ci as ConstructorFieldInitializer).expression;
         if (expression is SimpleIdentifier) {
           return expression.name == paramName;

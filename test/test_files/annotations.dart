@@ -56,6 +56,10 @@ class PublicAnnotationClass {
         child2 = const PublicAnnotationClass.withAnIntAsOne();
 }
 
+class ExtendedAnnotationClass extends PublicAnnotationClass {
+  const ExtendedAnnotationClass():super();
+}
+
 class OtherPublicAnnotationClass {
   const OtherPublicAnnotationClass();
 }

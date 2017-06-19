@@ -57,3 +57,6 @@ class WithUntypedField {}
 
 @untypedAnnotationWithNonDefaultCtor
 class WithAFieldFromNonDefaultCtor {}
+
+@ExtendedAnnotationClass()
+class WithChildClassAnnotation {}

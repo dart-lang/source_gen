@@ -70,6 +70,14 @@ void main() {
       expect(instance.aBool, isFalse);
     });
 
+    test('annotated with extended class', () {
+      var instance = _getInstantiatedAnnotation(libElement, 'WithChildClass');
+      expect(instance is defs.PublicAnnotationClass, isTrue);
+      expect(instance is defs.ExtendedAnnotationClass, isTrue);
+      expect(instance.anInt, 0);
+      expect(instance.aBool, isFalse);
+    });
+
     test('annotated with class using a non-default ctor', () {
       var instance =
           _getInstantiatedAnnotation(libElement, 'NonDefaultCtorNoParams');
