@@ -4,6 +4,7 @@
 
 import 'dart:mirrors';
 
+import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 
@@ -28,6 +29,19 @@ abstract class TypeChecker {
   /// );
   /// ```
   const factory TypeChecker.fromUrl(dynamic url) = _UriTypeChecker;
+
+  /// Returns the first constant annotating [element] that is this type.
+  ///
+  /// Otherwise returns `null`.
+  DartObject annotationOf(Element element) {
+    for (final metadata in element.metadata) {
+      final constant = metadata.computeConstantValue();
+      if (isExactlyType(constant.type)) {
+        return constant;
+      }
+    }
+    return null;
+  }
 
   /// Returns `true` if representing the exact same class as [element].
   bool isExactly(Element element);
