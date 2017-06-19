@@ -1,5 +1,10 @@
+// Copyright (c) 2017, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:source_gen/src/type_checker.dart';
 
 abstract class TypeHelper {
   const TypeHelper();
@@ -100,7 +105,7 @@ class DateTimeHelper extends TypeHelper {
   bool canDeserialize(DartType type) => _matchesType(type);
 
   bool _matchesType(DartType type) =>
-      type.element.library?.isDartCore == true && type.name == 'DateTime';
+      const TypeChecker.fromUrl('dart:core#DateTime').isExactlyType(type);
 
   @override
   String serialize(DartType targetType, String name) =>
