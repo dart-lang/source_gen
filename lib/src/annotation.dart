@@ -150,6 +150,14 @@ dynamic _createFromConstructor(
       // field assigned in the object. Then we can take the field value and
       // set it as the argument value
 
+      // If the annotation class's constructor has no initializers and just
+      // forwards to a `super` class constructor, then there is no need
+      // to add a ctor argument name as a field value.
+      //
+      // In this case `singleWhere` would throw a StateError.
+      if (ctor.constantInitializers.length == 1 && ctor.constantInitializers.first is SuperConstructorInvocation)
+        continue;
+
       var initializer = ctor.constantInitializers.singleWhere((ci) {
         // Avoid crashing on SuperConstructor
         if (ci is SuperConstructorInvocation) return false;
