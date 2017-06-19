@@ -71,7 +71,7 @@ void main() {
     });
 
     test('annotated with extended class', () {
-      var instance = _getInstantiatedAnnotation(libElement, 'WithChildClass');
+      var instance = _getInstantiatedAnnotation(libElement, 'WithChildClassAnnotation');
       expect(instance is defs.PublicAnnotationClass, isTrue);
       expect(instance is defs.ExtendedAnnotationClass, isTrue);
       expect(instance.anInt, 0);

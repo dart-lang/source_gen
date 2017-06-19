@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:io';
 import 'dart:mirrors';
 
 import 'package:path/path.dart' as p;
@@ -21,6 +22,10 @@ String getPackagePath() {
 
     _packagePathCache = p.normalize(p.join(p.dirname(currentFilePath), '..'));
   }
+
+  // On Windows, the tests will crash because _packagePathCache starts with a backslash.
+  if (Platform.isWindows && _packagePathCache.startsWith('\\'))
+    _packagePathCache = _packagePathCache.substring(1);
   return _packagePathCache;
 }
 
