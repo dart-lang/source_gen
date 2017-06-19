@@ -278,7 +278,7 @@ class JsonSerializableGenerator
 /// case [JsonKey.jsonName] is used.
 String _fieldToJsonMapKey(String fieldName, FieldElement field) {
   const $JsonKey = const TypeChecker.fromRuntime(JsonKey);
-  var jsonKey = $JsonKey.annotationOf(field);
+  var jsonKey = $JsonKey.firstAnnotationOf(field);
   if (jsonKey != null) {
     var jsonName = jsonKey.getField('jsonName').toStringValue();
     return jsonName;

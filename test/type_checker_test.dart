@@ -36,63 +36,52 @@ void main() {
   }) {
     group('(Map)', () {
       test('should equal dart:core#Map', () {
-        expect(
-          checkMap().isExactlyType(staticMap),
-          isTrue,
-          reason: '$checkMap != $staticMap',
-        );
+        expect(checkMap().isExactlyType(staticMap), isTrue,
+            reason: '$checkMap != $staticMap');
       });
 
       test('should not be a super type of dart:core#Map', () {
-        expect(checkMap().isSuperType(staticMap), isTrue);
+        expect(checkMap().isSuperTypeOf(staticMap), isFalse);
       });
 
       test('should not equal dart:core#HashMap', () {
-        expect(
-          checkMap().isExactlyType(staticHashMap),
-          isFalse,
-          reason: '$checkMap == $staticHashMapChecker',
-        );
+        expect(checkMap().isExactlyType(staticHashMap), isFalse,
+            reason: '$checkMap == $staticHashMapChecker');
       });
 
       test('should be a super type of dart:collection#HashMap', () {
-        expect(checkMap().isSuperType(staticHashMap), isTrue);
+        expect(checkMap().isSuperTypeOf(staticHashMap), isTrue);
       });
     });
 
     group('(HashMap)', () {
       test('should equal dart:collection#HashMap', () {
-        expect(
-          checkHashMap().isExactlyType(staticHashMap),
-          isTrue,
-          reason: '$checkHashMap != $staticHashMapChecker',
-        );
+        expect(checkHashMap().isExactlyType(staticHashMap), isTrue,
+            reason: '$checkHashMap != $staticHashMapChecker');
       });
 
       test('should not be a super type of dart:core#Map', () {
-        expect(checkHashMap().isSuperType(staticMap), isFalse);
+        expect(checkHashMap().isSuperTypeOf(staticMap), isFalse);
       });
     });
   }
 
   group('TypeChecker.forRuntime', () {
     commonTests(
-      checkMap: () => const TypeChecker.fromRuntime(Map),
-      checkHashMap: () => const TypeChecker.fromRuntime(HashMap),
-    );
+        checkMap: () => const TypeChecker.fromRuntime(Map),
+        checkHashMap: () => const TypeChecker.fromRuntime(HashMap));
   });
 
   group('TypeChecker.forStatic', () {
     commonTests(
-      checkMap: () => staticMapChecker,
-      checkHashMap: () => staticHashMapChecker,
-    );
+        checkMap: () => staticMapChecker,
+        checkHashMap: () => staticHashMapChecker);
   });
 
   group('TypeChecker.fromUrl', () {
     commonTests(
-      checkMap: () => const TypeChecker.fromUrl('dart:core#Map'),
-      checkHashMap: () => const TypeChecker.fromUrl('dart:collection#HashMap'),
-    );
+        checkMap: () => const TypeChecker.fromUrl('dart:core#Map'),
+        checkHashMap: () =>
+            const TypeChecker.fromUrl('dart:collection#HashMap'));
   });
 }

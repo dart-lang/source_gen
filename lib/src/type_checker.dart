@@ -33,15 +33,15 @@ abstract class TypeChecker {
   /// Returns the first constant annotating [element] that is this type.
   ///
   /// Otherwise returns `null`.
-  DartObject annotationOf(Element element) {
-    for (final metadata in element.metadata) {
-      final constant = metadata.computeConstantValue();
-      if (isExactlyType(constant.type)) {
-        return constant;
-      }
-    }
-    return null;
+  DartObject firstAnnotationOf(Element element) {
+    final results = annotationsOf(element);
+    return results.isEmpty ? null : results.first;
   }
+
+  /// Returns every constant annotating [element] that is this type.
+  Iterable<DartObject> annotationsOf(Element element) => element.metadata
+      .map((a) => a.computeConstantValue())
+      .where((a) => isExactlyType(a.type));
 
   /// Returns `true` if representing the exact same class as [element].
   bool isExactly(Element element);
@@ -51,11 +51,34 @@ abstract class TypeChecker {
 
   /// Returns `true` if representing a super class of [element].
   bool isSuperOf(Element element) =>
-      isExactly(element) ||
       element is ClassElement && element.allSupertypes.any(isExactlyType);
 
   /// Returns `true` if representing a super type of [staticType].
-  bool isSuperType(DartType staticType) => isSuperOf(staticType.element);
+  bool isSuperTypeOf(DartType staticType) => isSuperOf(staticType.element);
+}
+
+String _urlOf(Element element) {
+  if (element.kind == ElementKind.DYNAMIC) {
+    return 'dart:core#dynamic';
+  }
+  var sourceUri = element.source.uri;
+  switch (sourceUri.scheme) {
+    case 'dart':
+      // Some internal dart: URLs are something like dart:core/map.dart.
+      //
+      // This isn't a user-knowable path, so we strip out extra path segments
+      // and only expose dart:core.
+      if (sourceUri.pathSegments.isNotEmpty) {
+        final path = sourceUri.pathSegments.first;
+        sourceUri = sourceUri.replace(pathSegments: [path]);
+      }
+      break;
+    case 'package':
+      break;
+    default:
+      throw new StateError('Cannot resolve "$sourceUri".');
+  }
+  return sourceUri.replace(fragment: element.name).toString();
 }
 
 // Checks a static type against another static type;
@@ -66,16 +89,10 @@ class _LibraryTypeChecker extends TypeChecker {
 
   @override
   bool isExactly(Element element) =>
-      element is ClassElement && element.type == _type;
+      element is ClassElement && element == _type.element;
 
   @override
-  bool isSuperOf(Element element) =>
-      isExactly(element) ||
-      element is ClassElement &&
-          element.allSupertypes.any((t) => t.element == _type.element);
-
-  @override
-  String toString() => '${_UriTypeChecker._urlOf(_type.element)}';
+  String toString() => '${_urlOf(_type.element)}';
 }
 
 // Checks a runtime type against a static type.
@@ -89,7 +106,9 @@ class _MirrorTypeChecker extends TypeChecker {
           fragment: MirrorSystem.getName(mirror.simpleName),
         );
       default:
-        throw new StateError('Cannot resolve "$sourceUri".');
+        throw new StateError(
+            'Cannot resolve "$sourceUri". You must import ${mirror.simpleName} '
+            'class using a package: or dart: url.');
     }
   }
 
@@ -112,26 +131,6 @@ class _MirrorTypeChecker extends TypeChecker {
 
 // Checks a runtime type against an Uri and Symbol.
 class _UriTypeChecker extends TypeChecker {
-  static String _urlOf(Element element) {
-    if (element.kind == ElementKind.DYNAMIC) {
-      return 'dart:core#dynamic';
-    }
-    var sourceUri = element.source.uri;
-    switch (sourceUri.scheme) {
-      case 'dart':
-        if (sourceUri.pathSegments.isNotEmpty) {
-          final path = sourceUri.pathSegments.first;
-          sourceUri = sourceUri.replace(pathSegments: [path]);
-        }
-        break;
-      case 'package':
-        break;
-      default:
-        throw new StateError('Cannot resolve "$sourceUri".');
-    }
-    return sourceUri.replace(fragment: element.name).toString();
-  }
-
   final String _url;
 
   const _UriTypeChecker(dynamic url)
