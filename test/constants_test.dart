@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:build_test/build_test.dart';
+import 'package:collection/collection.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
@@ -18,6 +19,8 @@ void main() {
         const aInt = 1234;
         const aBool = true;
         const aNull = null;
+        const aList = const [1, 2, 3];
+        const aMap = const {1: 'A', 2: 'B'};
         
         @aString    // [0]
         @aInt       // [1]
@@ -27,10 +30,11 @@ void main() {
           aString: aString,
           aInt: aInt,
           aBool: aBool,
-          aNull: aNull,
-          nested: const Exampe(),
+          nested: const Example(),
         )
         @Super()    // [5]
+        @aList      // [6]
+        @aMap       // [7]
         class Example {
           final String aString;
           final int aInt;
@@ -67,7 +71,7 @@ void main() {
     });
 
     test('should read a Null', () {
-      expect(constants[3].isNull, isTrue);
+      expect(constants[3].isNull, isTrue, reason: '${constants[3]}');
     });
 
     test('should read an arbitrary object', () {
@@ -86,6 +90,19 @@ void main() {
     test('should read from a super object', () {
       final constant = constants[5];
       expect(constant.readString('aString'), 'Super Hello');
+    });
+
+    test('should read a list', () {
+      expect(constants[6].isList, isTrue, reason: '${constants[6]}');
+      expect(constants[6].listValue.map((c) => c.intValue), [1, 2, 3]);
+    });
+
+    test('should read a map', () {
+      expect(constants[7].isMap, isTrue, reason: '${constants[7]}');
+      expect(
+          mapMap<Constant, Constant, int, String>(constants[7].mapValue,
+              key: (k, _) => k.intValue, value: (_, v) => v.stringValue),
+          {1: 'A', 2: 'B'});
     });
   });
 }
