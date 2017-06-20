@@ -73,20 +73,20 @@ void main() {
 
     test('should read an arbitrary object', () {
       final constant = constants[4];
-      expect(constant.readString('aString'), 'Hello');
-      expect(constant.readInt('aInt'), 1234);
-      expect(constant.readBool('aBool'), true);
+      expect(constant.read('aString').stringValue, 'Hello');
+      expect(constant.read('aInt').intValue, 1234);
+      expect(constant.read('aBool').boolValue, true);
       expect(constant.read('aNull').isNull, isTrue);
 
       final nested = constant.read('nested');
-      expect(nested.readString('aString', defaultTo: () => 'Nope'), 'Nope');
-      expect(nested.readInt('aInt', defaultTo: () => 5678), 5678);
-      expect(nested.readBool('aBool', defaultTo: () => false), isFalse);
+      expect(nested.read('aString').isNull, isTrue);
+      expect(nested.read('aInt').isNull, isTrue);
+      expect(nested.read('aBool').isNull, isTrue);
     });
 
     test('should read from a super object', () {
       final constant = constants[5];
-      expect(constant.readString('aString'), 'Super Hello');
+      expect(constant.read('aString').stringValue, 'Super Hello');
     });
   });
 }

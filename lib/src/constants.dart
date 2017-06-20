@@ -4,9 +4,6 @@
 
 import 'package:analyzer/dart/constant/value.dart';
 
-/// Always returns `null` (used as a default for `defaultTo` methods).
-Null _alwaysNull() => null;
-
 /// Returns whether or not [object] is or represents a `null` value.
 bool _isNull(DartObject object) => object?.isNull != false;
 
@@ -61,21 +58,6 @@ abstract class Constant {
 
   /// Reads[ field] from the constant as another constant value.
   Constant read(String field);
-
-  /// Reads [field] from the constant as a boolean.
-  ///
-  /// If the resulting value is `null`, uses [defaultTo] if defined.
-  bool readBool(String field, {bool defaultTo()});
-
-  /// Reads [field] from the constant as an int.
-  ///
-  /// If the resulting value is `null`, uses [defaultTo] if defined.
-  int readInt(String field, {int defaultTo()});
-
-  /// Reads [field] from the constant as a string.
-  ///
-  /// If the resulting value is `null`, uses [defaultTo] if defined.
-  String readString(String field, {String defaultTo()});
 }
 
 /// Implements a [Constant] representing a `null` value.
@@ -105,15 +87,6 @@ class _NullConstant implements Constant {
 
   @override
   Constant read(_) => this;
-
-  @override
-  bool readBool(_, {bool defaultTo(): _alwaysNull}) => defaultTo();
-
-  @override
-  int readInt(_, {int defaultTo(): _alwaysNull}) => defaultTo();
-
-  @override
-  String readString(_, {String defaultTo(): _alwaysNull}) => defaultTo();
 }
 
 /// Default implementation of [Constant].
@@ -152,16 +125,4 @@ class _Constant implements Constant {
   @override
   Constant read(String field) =>
       new Constant(_getFieldRecursive(_object, field));
-
-  @override
-  bool readBool(String field, {bool defaultTo()}) =>
-      _getFieldRecursive(_object, field)?.toBoolValue() ?? defaultTo();
-
-  @override
-  int readInt(String field, {int defaultTo()}) =>
-      _getFieldRecursive(_object, field)?.toIntValue() ?? defaultTo();
-
-  @override
-  String readString(String field, {String defaultTo()}) =>
-      _getFieldRecursive(_object, field)?.toStringValue() ?? defaultTo();
 }
