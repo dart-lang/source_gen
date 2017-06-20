@@ -5,6 +5,7 @@
 library source_gen;
 
 export 'src/builder.dart';
+export 'src/constants.dart' show Constant;
 export 'src/find_type.dart' show findType;
 export 'src/generator.dart';
 export 'src/generator_for_annotation.dart';
