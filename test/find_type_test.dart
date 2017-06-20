@@ -8,7 +8,7 @@ import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
 void main() {
-  Library library;
+  LibraryReader library;
 
   setUpAll(() async {
     final resolver = await resolveSource(r'''
@@ -20,7 +20,7 @@ void main() {
       
       class Example {}
     ''');
-    library = new Library(resolver.getLibraryByName('test_lib'));
+    library = new LibraryReader(resolver.getLibraryByName('test_lib'));
   });
 
   final isClassElement = const isInstanceOf<ClassElement>();

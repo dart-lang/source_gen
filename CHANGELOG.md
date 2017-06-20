@@ -34,14 +34,14 @@
   
   In Dart SDK `>=1.25.0` this can be relaxed as `part of` can refer to a path.
 
-* Added `Library`, a utility class for `LibraryElement` that exposes high-level
-  APIs, including `findType`, which traverses `export` directives for publicly
-  exported types. For example, to find `Generator` from
+* Added `LibraryReader`, a utility class for `LibraryElement` that exposes
+  high-level APIs, including `findType`, which traverses `export` directives
+  for publicly exported types. For example, to find `Generator` from
   `package:source_gen/source_gen.dart`:
   
   ```dart
   void example(LibraryElement pkgSourceGen) {
-    var library = new Library(pkgSourceGen);
+    var library = new LibraryReader(pkgSourceGen);
   
     // Instead of pkgSourceGen.getType('Generator'), which is null.
     library.findType('Generator');

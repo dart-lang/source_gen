@@ -6,20 +6,20 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/src/dart/resolver/scope.dart';
 
 /// A high-level wrapper API with common functionality for [LibraryElement].
-class Library {
+class LibraryReader {
   final LibraryElement _element;
 
-  Namespace _namespace;
+  Namespace _namespaceCache;
 
-  Library(this._element);
+  LibraryReader(this._element);
+
+  Namespace get _namespace => _namespaceCache ??=
+      new NamespaceBuilder().createExportNamespaceForLibrary(_element);
 
   /// Returns a top-level [ClassElement] publicly visible in by [name].
   ///
   /// Unlike [LibraryElement.getType], this also correctly traverses identifiers
   /// that are accessible via one or more `export` directives.
   ClassElement findType(String name) =>
-      _element.getType(name) ??
-      (_namespace ??=
-              new NamespaceBuilder().createExportNamespaceForLibrary(_element))
-          .get(name) as ClassElement;
+      _element.getType(name) ?? _namespace.get(name) as ClassElement;
 }

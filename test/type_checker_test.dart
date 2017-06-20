@@ -36,7 +36,8 @@ void main() {
     staticHashMap = collection.getType('HashMap').type;
     staticHashMapChecker = new TypeChecker.fromStatic(staticHashMap);
 
-    final sourceGen = new Library(resolver.getLibraryByName('source_gen'));
+    final sourceGen =
+        new LibraryReader(resolver.getLibraryByName('source_gen'));
     staticGenerator = sourceGen.findType('Generator').type;
     staticGeneratorChecker = new TypeChecker.fromStatic(staticGenerator);
     staticGeneratorForAnnotation =
