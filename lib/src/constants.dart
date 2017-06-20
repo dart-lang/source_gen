@@ -11,6 +11,8 @@ Null _alwaysNull() => null;
 bool _isNull(DartObject object) => object?.isNull != false;
 
 /// Similar to [DartObject.getField], but traverses super classes.
+///
+/// Returns `null` if ultimately [field] is never found.
 DartObject _getFieldRecursive(DartObject object, String field) {
   if (_isNull(object)) {
     return null;
@@ -31,18 +33,12 @@ abstract class Constant {
       _isNull(object) ? const _NullConstant() : new _Constant(object);
 
   /// Returns whether this constant represents a `bool` literal.
-  ///
-  /// If `true`, [boolValue] will return either `true` or `false` (not throw).
   bool get isBool;
 
   /// Returns this constant as a `bool` value.
-  ///
-  /// Throws [FormatException] if [isBool] is `false`.
   bool get boolValue;
 
   /// Returns whether this constant represents an `int` literal.
-  ///
-  /// If `true`, [intValue] will return an `int` (not throw).
   bool get isInt;
 
   /// Returns this constant as an `int` value.
@@ -148,7 +144,7 @@ class _Constant implements Constant {
   bool get isInt => _object.toIntValue() != null;
 
   @override
-  bool get isNull => false;
+  bool get isNull => _isNull(_object);
 
   @override
   bool get isString => _object.toStringValue() != null;

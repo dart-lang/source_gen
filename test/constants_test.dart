@@ -11,7 +11,7 @@ void main() {
     List<Constant> constants;
 
     setUpAll(() async {
-      constants = (await resolveSource(r'''
+      final resolver = await resolveSource(r'''
         library test_lib;
         
         const aString = 'Hello';
@@ -43,7 +43,8 @@ void main() {
         class Super extends Example {
           const Super() : super(aString: 'Super Hello');
         }
-      '''))
+      ''');
+      constants = resolver
           .getLibraryByName('test_lib')
           .getType('Example')
           .metadata
