@@ -8,16 +8,15 @@ part of source_gen.test.example;
 // **************************************************************************
 
 ListGenericTests _$ListGenericTestsFromJson(Map json) => new ListGenericTests()
-  ..iterable = (json['iterable'] as List)?.map((v0) => v0)
-  ..dynamicIterable = (json['dynamicIterable'] as List)?.map((v0) => v0)
-  ..objectIterable = (json['objectIterable'] as List)?.map((v0) => v0 as Object)
+  ..iterable = json['iterable']
+  ..dynamicIterable = json['dynamicIterable']
+  ..objectIterable = json['objectIterable']
   ..intIterable = (json['intIterable'] as List)?.map((v0) => v0 as int)
   ..dateTimeIterable = (json['dateTimeIterable'] as List)
       ?.map((v0) => v0 == null ? null : DateTime.parse(v0))
-  ..list = (json['list'] as List)?.map((v0) => v0)?.toList()
-  ..dynamicList = (json['dynamicList'] as List)?.map((v0) => v0)?.toList()
-  ..objectList =
-      (json['objectList'] as List)?.map((v0) => v0 as Object)?.toList()
+  ..list = json['list']
+  ..dynamicList = json['dynamicList']
+  ..objectList = json['objectList']
   ..intList = (json['intList'] as List)?.map((v0) => v0 as int)?.toList()
   ..dateTimeList = (json['dateTimeList'] as List)
       ?.map((v0) => v0 == null ? null : DateTime.parse(v0))

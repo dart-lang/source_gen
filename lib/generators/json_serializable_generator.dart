@@ -245,6 +245,12 @@ class JsonSerializableGenerator
           _getIterableGenericType(searchType as InterfaceType);
 
       var itemVal = "v$depth";
+      var itemSubVal =
+          _writeAccessToVar(itemVal, iterableGenericType, depth: depth + 1);
+
+      if (itemVal == itemSubVal) {
+        return varExpression;
+      }
 
       var output = "($varExpression as List)?.map(($itemVal) => "
           "${_writeAccessToVar(itemVal, iterableGenericType, depth: depth+1)}"
@@ -257,7 +263,7 @@ class JsonSerializableGenerator
       return output;
     }
 
-    if (!searchType.isDynamic) {
+    if (!searchType.isDynamic && !searchType.isObject) {
       return "$varExpression as $searchType";
     }
 
