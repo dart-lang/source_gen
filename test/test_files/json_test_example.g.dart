@@ -16,11 +16,11 @@ ListGenericTests _$ListGenericTestsFromJson(Map json) => new ListGenericTests()
       ?.map((v0) => v0 == null ? null : DateTime.parse(v0));
 
 abstract class _$ListGenericTestsSerializerMixin {
-  Iterable get iterable;
-  Iterable get dynamicIterable;
-  Iterable get objectIterable;
-  Iterable get intIterable;
-  Iterable get dateTimeIterable;
+  Iterable<dynamic> get iterable;
+  Iterable<dynamic> get dynamicIterable;
+  Iterable<Object> get objectIterable;
+  Iterable<int> get intIterable;
+  Iterable<DateTime> get dateTimeIterable;
   Map<String, dynamic> toJson() => <String, dynamic>{
         'iterable': iterable,
         'dynamicIterable': dynamicIterable,
@@ -68,7 +68,7 @@ Order _$OrderFromJson(Map json) => new Order((json['items'] as List)
 abstract class _$OrderSerializerMixin {
   int get count;
   bool get isRushed;
-  UnmodifiableListView get items;
+  UnmodifiableListView<Item> get items;
   Map<String, dynamic> toJson() =>
       <String, dynamic>{'count': count, 'isRushed': isRushed, 'items': items};
 }
@@ -88,8 +88,8 @@ Item _$ItemFromJson(Map json) => new Item(json['price'] as int)
 abstract class _$ItemSerializerMixin {
   int get price;
   int get itemNumber;
-  List get saleDates;
-  List get rates;
+  List<DateTime> get saleDates;
+  List<int> get rates;
   Map<String, dynamic> toJson() => <String, dynamic>{
         'price': price,
         'itemNumber': itemNumber,

@@ -88,8 +88,7 @@ class JsonSerializableGenerator
       // write fields
       fields.forEach((name, field) {
         //TODO - handle aliased imports
-        //TODO - write generic types. Now `List<int>` turns into `List`
-        buffer.writeln('  ${field.type.name} get $name;');
+        buffer.writeln('  ${field.type} get $name;');
       });
 
       // write toJson method
