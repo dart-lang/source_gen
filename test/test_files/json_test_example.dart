@@ -18,6 +18,12 @@ class ListGenericTests {
   Iterable<Object> objectIterable;
   Iterable<int> intIterable;
   Iterable<DateTime> dateTimeIterable;
+
+  List list;
+  List<dynamic> dynamicList;
+  List<Object> objectList;
+  List<int> intList;
+  List<DateTime> dateTimeList;
 }
 
 @JsonSerializable()

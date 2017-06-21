@@ -13,7 +13,15 @@ ListGenericTests _$ListGenericTestsFromJson(Map json) => new ListGenericTests()
   ..objectIterable = (json['objectIterable'] as List)?.map((v0) => v0 as Object)
   ..intIterable = (json['intIterable'] as List)?.map((v0) => v0 as int)
   ..dateTimeIterable = (json['dateTimeIterable'] as List)
-      ?.map((v0) => v0 == null ? null : DateTime.parse(v0));
+      ?.map((v0) => v0 == null ? null : DateTime.parse(v0))
+  ..list = (json['list'] as List)?.map((v0) => v0)?.toList()
+  ..dynamicList = (json['dynamicList'] as List)?.map((v0) => v0)?.toList()
+  ..objectList =
+      (json['objectList'] as List)?.map((v0) => v0 as Object)?.toList()
+  ..intList = (json['intList'] as List)?.map((v0) => v0 as int)?.toList()
+  ..dateTimeList = (json['dateTimeList'] as List)
+      ?.map((v0) => v0 == null ? null : DateTime.parse(v0))
+      ?.toList();
 
 abstract class _$ListGenericTestsSerializerMixin {
   Iterable<dynamic> get iterable;
@@ -21,12 +29,23 @@ abstract class _$ListGenericTestsSerializerMixin {
   Iterable<Object> get objectIterable;
   Iterable<int> get intIterable;
   Iterable<DateTime> get dateTimeIterable;
+  List<dynamic> get list;
+  List<dynamic> get dynamicList;
+  List<Object> get objectList;
+  List<int> get intList;
+  List<DateTime> get dateTimeList;
   Map<String, dynamic> toJson() => <String, dynamic>{
         'iterable': iterable,
         'dynamicIterable': dynamicIterable,
         'objectIterable': objectIterable,
         'intIterable': intIterable,
-        'dateTimeIterable': dateTimeIterable
+        'dateTimeIterable': dateTimeIterable,
+        'list': list,
+        'dynamicList': dynamicList,
+        'objectList': objectList,
+        'intList': intList,
+        'dateTimeList':
+            dateTimeList?.map((v0) => v0?.toIso8601String())?.toList()
       };
 }
 
