@@ -203,7 +203,11 @@ class JsonSerializableGenerator
       }
     }
 
-    if (_coreListChecker.isAssignableFromType(fieldType)) {
+    var isList = false;
+    if (_coreIterableChecker.isAssignableFromType(fieldType)) {
+      if (_coreListChecker.isAssignableFromType(fieldType)) {
+        isList = true;
+      }
       var substitute = "v$depth";
       var subFieldValue = _fieldToJsonMapValue(substitute,
           _getIterableGenericType(fieldType as InterfaceType), depth + 1);
@@ -213,8 +217,17 @@ class JsonSerializableGenerator
       // If they are not equal, then we to write out the substitution.
       if (subFieldValue != substitute) {
         // TODO: the type could be imported from a library with a prefix!
-        return "${expression}?.map(($substitute) => $subFieldValue)?.toList()";
+        expression = "${expression}?.map(($substitute) => $subFieldValue)";
+
+        // expression now represents an Iterable (even if it started as a List
+        // ...resetting `isList` to `false`.
+        isList = false;
       }
+    }
+
+    if (!isList && _coreIterableChecker.isAssignableFromType(fieldType)) {
+      // Then we need to add `?.toList()
+      expression += "?.toList()";
     }
 
     return expression;
@@ -248,6 +261,7 @@ class JsonSerializableGenerator
       var itemSubVal =
           _writeAccessToVar(itemVal, iterableGenericType, depth: depth + 1);
 
+      // If `itemSubVal` is the same, then we don't need to do anything fancy
       if (itemVal == itemSubVal) {
         return varExpression;
       }

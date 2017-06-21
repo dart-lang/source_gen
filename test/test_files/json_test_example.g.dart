@@ -34,11 +34,12 @@ abstract class _$ListGenericTestsSerializerMixin {
   List<int> get intList;
   List<DateTime> get dateTimeList;
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'iterable': iterable,
-        'dynamicIterable': dynamicIterable,
-        'objectIterable': objectIterable,
-        'intIterable': intIterable,
-        'dateTimeIterable': dateTimeIterable,
+        'iterable': iterable?.toList(),
+        'dynamicIterable': dynamicIterable?.toList(),
+        'objectIterable': objectIterable?.toList(),
+        'intIterable': intIterable?.toList(),
+        'dateTimeIterable':
+            dateTimeIterable?.map((v0) => v0?.toIso8601String())?.toList(),
         'list': list,
         'dynamicList': dynamicList,
         'objectList': objectList,
