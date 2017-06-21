@@ -93,10 +93,7 @@ abstract class _$ItemSerializerMixin {
   Map<String, dynamic> toJson() => <String, dynamic>{
         'price': price,
         'itemNumber': itemNumber,
-        'saleDates': saleDates == null
-            ? null
-            : new List.generate(
-                saleDates.length, (int i0) => saleDates[i0]?.toIso8601String()),
+        'saleDates': saleDates?.map((v0) => v0?.toIso8601String())?.toList(),
         'rates': rates
       };
 }

@@ -205,22 +205,16 @@ class JsonSerializableGenerator
     }
 
     if (_coreListChecker.isAssignableFromType(fieldType)) {
-      var indexVal = "i${depth}";
-
-      var substitute = '${expression}[$indexVal]';
+      var substitute = "v$depth";
       var subFieldValue = _fieldToJsonMapValue(substitute,
           _getIterableGenericType(fieldType as InterfaceType), depth + 1);
 
-      // If we're dealing with `List<T>` where `T` must be serialized, then
-      // generate a value that does the equivalent of .map(...).toList(), but
-      // Does so efficiently by creating a known-length List.
-      //TODO(kevmoo) this might be overkill. I think .map on iterable returns
-      //  an efficient-length iterable, so .map(...).toList() might be fine. :-/
+      // In the case of trivial JSON types (int, String, etc), `subFieldValue`
+      // will be identical to `substitute` – so no explicit mapping is needed.
+      // If they are not equal, then we to write out the substitution.
       if (subFieldValue != substitute) {
         // TODO: the type could be imported from a library with a prefix!
-        return "${expression} == null ? null : "
-            "new List.generate(${expression}.length, "
-            "(int $indexVal) => $subFieldValue)";
+        return "${expression}?.map(($substitute) => $subFieldValue)?.toList()";
       }
     }
 
