@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('Constant', () {
-    List<Constant> constants;
+    List<ConstantReader> constants;
 
     setUpAll(() async {
       final resolver = await resolveSource(r'''
@@ -48,7 +48,7 @@ void main() {
           .getLibraryByName('test_lib')
           .getType('Example')
           .metadata
-          .map((e) => new Constant(e.computeConstantValue()))
+          .map((e) => new ConstantReader(e.computeConstantValue()))
           .toList();
     });
 

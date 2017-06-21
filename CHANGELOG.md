@@ -44,18 +44,18 @@
   }
   ```
 
-* Added `Constant`, a high-level API for reading from constant (static) values
-  from Dart source code (usually represented by `DartObject` from the
+* Added `ConstantReader`, a high-level API for reading from constant (static)
+  values from Dart source code (usually represented by `DartObject` from the
   `analyzer` package):
   
   ```dart
-  abstract class Constant {
-    factory Constant(DartObject object) => ...
+  abstract class ConstantReader {
+    factory ConstantReader(DartObject object) => ...
   
     // Other methods and properties also exist.
   
     /// Reads[ field] from the constant as another constant value.
-    Constant read(String field);
+    ConstantReader read(String field);
   
     /// Reads [field] from the constant as a boolean.
     ///

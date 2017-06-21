@@ -25,8 +25,8 @@ DartObject _getFieldRecursive(DartObject object, String field) {
 ///
 /// Unlike [DartObject.getField], all `readX` methods attempt to access super
 /// classes for the field value if not found.
-abstract class Constant {
-  factory Constant(DartObject object) =>
+abstract class ConstantReader {
+  factory ConstantReader(DartObject object) =>
       _isNull(object) ? const _NullConstant() : new _Constant(object);
 
   /// Returns whether this constant represents a `bool` literal.
@@ -57,11 +57,11 @@ abstract class Constant {
   bool get isNull;
 
   /// Reads[ field] from the constant as another constant value.
-  Constant read(String field);
+  ConstantReader read(String field);
 }
 
-/// Implements a [Constant] representing a `null` value.
-class _NullConstant implements Constant {
+/// Implements a [ConstantReader] representing a `null` value.
+class _NullConstant implements ConstantReader {
   const _NullConstant();
 
   @override
@@ -86,11 +86,11 @@ class _NullConstant implements Constant {
   bool get isString => false;
 
   @override
-  Constant read(_) => this;
+  ConstantReader read(_) => this;
 }
 
-/// Default implementation of [Constant].
-class _Constant implements Constant {
+/// Default implementation of [ConstantReader].
+class _Constant implements ConstantReader {
   final DartObject _object;
 
   const _Constant(this._object);
@@ -123,6 +123,6 @@ class _Constant implements Constant {
   bool get isString => _object.toStringValue() != null;
 
   @override
-  Constant read(String field) =>
-      new Constant(_getFieldRecursive(_object, field));
+  ConstantReader read(String field) =>
+      new ConstantReader(_getFieldRecursive(_object, field));
 }
