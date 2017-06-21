@@ -4,6 +4,34 @@ part of source_gen.test.example;
 
 // **************************************************************************
 // Generator: JsonSerializableGenerator
+// Target: class ListGenericTests
+// **************************************************************************
+
+ListGenericTests _$ListGenericTestsFromJson(Map json) => new ListGenericTests()
+  ..iterable = (json['iterable'] as List)?.map((v0) => v0)
+  ..dynamicIterable = (json['dynamicIterable'] as List)?.map((v0) => v0)
+  ..objectIterable = (json['objectIterable'] as List)?.map((v0) => v0 as Object)
+  ..intIterable = (json['intIterable'] as List)?.map((v0) => v0 as int)
+  ..dateTimeIterable = (json['dateTimeIterable'] as List)
+      ?.map((v0) => v0 == null ? null : DateTime.parse(v0));
+
+abstract class _$ListGenericTestsSerializerMixin {
+  Iterable get iterable;
+  Iterable get dynamicIterable;
+  Iterable get objectIterable;
+  Iterable get intIterable;
+  Iterable get dateTimeIterable;
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'iterable': iterable,
+        'dynamicIterable': dynamicIterable,
+        'objectIterable': objectIterable,
+        'intIterable': intIterable,
+        'dateTimeIterable': dateTimeIterable
+      };
+}
+
+// **************************************************************************
+// Generator: JsonSerializableGenerator
 // Target: class Person
 // **************************************************************************
 

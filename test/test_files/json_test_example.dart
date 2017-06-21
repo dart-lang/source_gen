@@ -12,6 +12,15 @@ import 'package:source_gen/generators/json_serializable.dart';
 part 'json_test_example.g.dart';
 
 @JsonSerializable()
+class ListGenericTests {
+  Iterable iterable;
+  Iterable<dynamic> dynamicIterable;
+  Iterable<Object> objectIterable;
+  Iterable<int> intIterable;
+  Iterable<DateTime> dateTimeIterable;
+}
+
+@JsonSerializable()
 class Person extends Object with _$PersonSerializerMixin {
   final String firstName, middleName, lastName;
   final DateTime dateOfBirth;
