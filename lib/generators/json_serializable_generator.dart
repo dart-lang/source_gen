@@ -237,10 +237,10 @@ class JsonSerializableGenerator
       {ParameterElement ctorParam}) {
     name = _fieldToJsonMapKey(name, field);
     var result = "json['$name']";
-    return _writeAccessToVar(result, field.type, ctorParam: ctorParam);
+    return _writeAccessToJsonValue(result, field.type, ctorParam: ctorParam);
   }
 
-  String _writeAccessToVar(String varExpression, DartType searchType,
+  String _writeAccessToJsonValue(String varExpression, DartType searchType,
       {ParameterElement ctorParam, int depth: 0}) {
     if (ctorParam != null) {
       searchType = ctorParam.type as InterfaceType;
@@ -258,8 +258,8 @@ class JsonSerializableGenerator
           _getIterableGenericType(searchType as InterfaceType);
 
       var itemVal = "v$depth";
-      var itemSubVal =
-          _writeAccessToVar(itemVal, iterableGenericType, depth: depth + 1);
+      var itemSubVal = _writeAccessToJsonValue(itemVal, iterableGenericType,
+          depth: depth + 1);
 
       // If `itemSubVal` is the same, then we don't need to do anything fancy
       if (itemVal == itemSubVal) {
@@ -267,7 +267,7 @@ class JsonSerializableGenerator
       }
 
       var output = "($varExpression as List)?.map(($itemVal) => "
-          "${_writeAccessToVar(itemVal, iterableGenericType, depth: depth+1)}"
+          "${_writeAccessToJsonValue(itemVal, iterableGenericType, depth: depth+1)}"
           ")";
 
       if (_coreListChecker.isAssignableFromType(searchType)) {
