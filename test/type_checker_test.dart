@@ -12,6 +12,7 @@ import 'package:test/test.dart';
 
 void main() {
   // Resolved top-level types from dart:core and dart:collection.
+  InterfaceType staticUri;
   DartType staticMap;
   DartType staticHashMap;
   TypeChecker staticMapChecker;
@@ -29,6 +30,7 @@ void main() {
     ''');
 
     final core = resolver.getLibraryByName('dart.core');
+    staticUri = core.getType('Uri').type;
     staticMap = core.getType('Map').type;
     staticMapChecker = new TypeChecker.fromStatic(staticMap);
 
@@ -74,6 +76,16 @@ void main() {
 
       test('should be assignable from dart:collection#HashMap', () {
         expect(checkMap().isAssignableFromType(staticHashMap), isTrue);
+      });
+
+      // Ensure we're consistent WRT generic types
+      test('should be assignable from Map<String, String>', () {
+        // Using Uri.queryParamaters to get a Map<String, String>
+        var stringStringMapType =
+            staticUri.getGetter('queryParameters').returnType;
+
+        expect(checkMap().isAssignableFromType(stringStringMapType), isTrue);
+        expect(checkMap().isExactlyType(stringStringMapType), isTrue);
       });
     });
 
