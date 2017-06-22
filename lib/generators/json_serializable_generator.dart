@@ -310,10 +310,10 @@ DartType _getImplementationType(DartType type, TypeChecker checker) {
   if (checker.isExactlyType(type)) return type;
 
   if (type is InterfaceType) {
-    var tests = [type.interfaces, type.mixins]
+    var match = [type.interfaces, type.mixins]
         .expand((e) => e)
-        .map((type) => _getImplementationType(type, checker));
-    var match = _firstNotNull(tests);
+        .map((type) => _getImplementationType(type, checker))
+        .firstWhere((value) => value != null, orElse: () => null);
 
     if (match != null) return match;
 
@@ -323,9 +323,6 @@ DartType _getImplementationType(DartType type, TypeChecker checker) {
   }
   return null;
 }
-
-T _firstNotNull<T>(Iterable<T> values) =>
-    values.firstWhere((value) => value != null, orElse: () => null);
 
 final _coreIterableChecker = const TypeChecker.fromUrl('dart:core#Iterable');
 
