@@ -20,7 +20,10 @@ KitchenSink _$KitchenSinkFromJson(Map json) => new KitchenSink()
   ..intList = (json['intList'] as List)?.map((v0) => v0 as int)?.toList()
   ..dateTimeList = (json['dateTimeList'] as List)
       ?.map((v0) => v0 == null ? null : DateTime.parse(v0))
-      ?.toList();
+      ?.toList()
+  ..stopWatch = json['stopWatch'] /* unsafe */
+  ..stopwatchList =
+      (json['stopwatchList'] as List)?.map((v0) => v0 /* unsafe */)?.toList();
 
 abstract class _$KitchenSinkSerializerMixin {
   Iterable<dynamic> get iterable;
@@ -33,6 +36,8 @@ abstract class _$KitchenSinkSerializerMixin {
   List<Object> get objectList;
   List<int> get intList;
   List<DateTime> get dateTimeList;
+  Stopwatch get stopWatch;
+  List<Stopwatch> get stopwatchList;
   Map<String, dynamic> toJson() => <String, dynamic>{
         'iterable': iterable?.toList(),
         'dynamicIterable': dynamicIterable?.toList(),
@@ -45,7 +50,9 @@ abstract class _$KitchenSinkSerializerMixin {
         'objectList': objectList,
         'intList': intList,
         'dateTimeList':
-            dateTimeList?.map((v0) => v0?.toIso8601String())?.toList()
+            dateTimeList?.map((v0) => v0?.toIso8601String())?.toList(),
+        'stopWatch': stopWatch,
+        'stopwatchList': stopwatchList
       };
 }
 

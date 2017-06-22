@@ -277,11 +277,16 @@ class JsonSerializableGenerator
       return output;
     }
 
-    if (!searchType.isDynamic && !searchType.isObject) {
+    if (searchType.isDynamic || searchType.isObject) {
+      // just return it as-is. We'll hope it's safe.
+      return varExpression;
+    }
+
+    if (_jsonTypeCheckers.any((tc) => tc.isAssignableFromType(searchType))) {
       return "$varExpression as $searchType";
     }
 
-    return varExpression;
+    return "$varExpression /* unsafe */";
   }
 }
 
@@ -327,3 +332,9 @@ DartType _getImplementationType(DartType type, TypeChecker checker) {
 final _coreIterableChecker = const TypeChecker.fromUrl('dart:core#Iterable');
 
 final _coreListChecker = const TypeChecker.fromUrl('dart:core#List');
+
+final _jsonTypeCheckers = new List<TypeChecker>.unmodifiable([
+  'String',
+  'bool',
+  'num'
+].map((s) => new TypeChecker.fromUrl('dart:core#$s')));

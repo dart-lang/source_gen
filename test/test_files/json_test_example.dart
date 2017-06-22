@@ -29,6 +29,12 @@ class KitchenSink extends Object with _$KitchenSinkSerializerMixin {
   List<Object> objectList;
   List<int> intList;
   List<DateTime> dateTimeList;
+
+  /// Intentionally unsafe
+  Stopwatch stopWatch;
+
+  /// Intentionally unsafe
+  List<Stopwatch> stopwatchList;
 }
 
 @JsonSerializable()
