@@ -84,6 +84,26 @@ void main() {
       roundTripItem(item);
     });
   });
+
+  group('KitchenSink', () {
+    roundTripItem(KitchenSink p) {
+      _roundTripObject(p, (json) => new KitchenSink.fromJson(json));
+    }
+
+    test('empty json', () {
+      var item = new KitchenSink();
+      roundTripItem(item);
+    });
+
+    test("list and map of DateTime", () {
+      var now = new DateTime.now();
+      var item = new KitchenSink(dateTimeIterable: <DateTime>[now])
+        ..dateTimeList = <DateTime>[now, null]
+        ..stringDateTimeMap = <String, DateTime>{'value': now, 'null': null};
+
+      roundTripItem(item);
+    });
+  });
 }
 
 void _roundTripObject(object, factory(Map<String, dynamic> json)) {
@@ -98,11 +118,15 @@ void _roundTripObject(object, factory(Map<String, dynamic> json)) {
   expect(json2, equals(json));
 }
 
-_loudEncode(object) {
+String _loudEncode(object) {
   try {
     return JSON.encode(object.toJson());
   } on JsonUnsupportedObjectError catch (e) {
-    print(e.cause);
+    var error = e;
+    do {
+      print(error.cause);
+      error = (error.cause is JsonUnsupportedObjectError) ? error.cause : null;
+    } while (error != null);
     rethrow;
   }
 }
