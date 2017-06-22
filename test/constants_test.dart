@@ -138,6 +138,10 @@ void main() {
         
         @Int64Like.ZERO
         @Duration(seconds: 30)
+        @Enum.field1
+        @MapLike()
+        @VisibleClass.secret()
+        @fieldOnly
         class Example {}
         
         class Int64Like {
@@ -149,6 +153,33 @@ void main() {
           
           const Int64Like._bits(this._l, this._m, this._h);
         }
+        
+        enum Enum {
+          field1,
+          field2,
+        }
+        
+        abstract class MapLike {
+          const factory MapLike() = LinkedHashMapLike;
+        }
+        
+        class LinkedHashMapLike implements MapLike {
+          const LinkedHashMapLike();
+        }
+        
+        class VisibleClass {
+          const factory VisbileClass.secret() = _HiddenClass;
+        }
+        
+        class _HiddenClass implements VisibleClass {
+          const _HiddenClass();
+        }
+        
+        class _FieldOnlyVisible {
+          const _FieldOnlyVisible();
+        }
+        
+        const fieldOnly = const _FieldOnlyVisible();
       ''');
       constants = resolver
           .getLibraryByName('test_lib')
@@ -159,13 +190,13 @@ void main() {
     });
 
     test('should decode Int64Like.ZERO', () {
-      final int64Like0 = constants[0].revive() as RevivableInstance;
+      final int64Like0 = constants[0].revive();
       expect(int64Like0.source.toString(), endsWith('#Int64Like'));
       expect(int64Like0.accessor, 'ZERO');
     });
 
     test('should decode Duration', () {
-      final duration30s = constants[1].revive() as RevivableInstance;
+      final duration30s = constants[1].revive();
       expect(duration30s.source.toString(), 'dart:core#Duration');
       expect(duration30s.accessor, isEmpty);
       expect(
@@ -174,6 +205,30 @@ void main() {
           {
             'seconds': 30,
           });
+    });
+
+    test('should decode enums', () {
+      final enumField1 = constants[2].revive();
+      expect(enumField1.source.toString(), endsWith('#Enum'));
+      expect(enumField1.accessor, 'field1');
+    });
+
+    test('should decode forwarding factories', () {
+      final mapLike = constants[3].revive();
+      expect(mapLike.source.toString(), endsWith('#MapLike'));
+      expect(mapLike.accessor, isEmpty);
+    });
+
+    test('should decode forwarding factories to hidden classes', () {
+      final hiddenClass = constants[4].revive();
+      expect(hiddenClass.source.toString(), endsWith('#VisibleClass'));
+      expect(hiddenClass.accessor, 'secret');
+    });
+
+    test('should decode top-level fields', () {
+      final fieldOnly = constants[5].revive();
+      expect(fieldOnly.source.fragment, isEmpty);
+      expect(fieldOnly.accessor, 'fieldOnly');
     });
   });
 }

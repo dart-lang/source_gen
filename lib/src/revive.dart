@@ -8,55 +8,53 @@ import 'package:analyzer/src/dart/constant/value.dart';
 
 import 'utils.dart';
 
-/// Base interface for a meta-analyzed [DartObject].
-abstract class Revivable {}
-
 /// Returns a revivable instance of [object].
 ///
-/// Optionally specify the [clazz] type that contains the constructor.
+/// Optionally specify the [library] type that contains the reference.
 ///
 /// Returns [null] if not revivable.
-RevivableInstance reviveInstance(DartObject object, [ClassElement clazz]) {
-  clazz ??= object.type.element;
-  final url = Uri.parse(urlOfElement(clazz));
-  ClassMemberElement element = _findPublicConstField(object, clazz);
-  if (element != null) {
-    return new RevivableInstance._(source: url, accessor: element.name);
+Revivable reviveInstance(DartObject object, [LibraryElement library]) {
+  library ??= object.type.element.library;
+  var url = Uri.parse(urlOfElement(object.type.element));
+  final clazz = object?.type?.element as ClassElement;
+  for (final e in clazz.fields.where(
+    (f) => f.isPublic && f.isConst && f.computeConstantValue() == object,
+  )) {
+    return new Revivable._(source: url, accessor: e.name);
   }
-  final invocation = _findPublicConstConstructor(object, clazz);
-  if (invocation != null) {
-    return new RevivableInstance._(
+  final i = (object as DartObjectImpl).getInvocation();
+  if (i != null &&
+      i.constructor.isPublic &&
+      i.constructor.enclosingElement.isPublic) {
+    url = Uri.parse(urlOfElement(i.constructor.enclosingElement));
+    return new Revivable._(
       source: url,
-      accessor: invocation.constructor.name,
-      namedArguments: invocation.namedArguments,
-      positionalArguments: invocation.positionalArguments,
+      accessor: i.constructor.name,
+      namedArguments: i.namedArguments,
+      positionalArguments: i.positionalArguments,
+    );
+  }
+  if (library == null) {
+    return null;
+  }
+  for (final e in library.definingCompilationUnit.topLevelVariables.where(
+    (f) => f.isPublic && f.isConst && f.computeConstantValue() == object,
+  )) {
+    return new Revivable._(
+      source: Uri.parse(urlOfElement(library)).replace(fragment: ''),
+      accessor: e.name,
     );
   }
   return null;
 }
 
-FieldElement _findPublicConstField(DartObject object, ClassElement clazz) =>
-    clazz.fields.firstWhere(
-        (f) => f.isConst && f.isPublic && f.computeConstantValue() == object,
-        orElse: () => null);
-
-ConstructorInvocation _findPublicConstConstructor(
-  DartObject object,
-  ClassElement clazz,
-) {
-  final invocation = (object as DartObjectImpl).getInvocation();
-  final constructor = invocation.constructor;
-  if (constructor.isConst && constructor.isPublic) {
-    return invocation;
-  }
-  return null;
-}
-
 /// Decoded "instructions" for re-creating a const [DartObject] at runtime.
-class RevivableInstance implements Revivable {
+class Revivable {
   /// A URL pointing to the location and class name.
   ///
   /// For example, `LinkedHashMap` looks like: `dart:collection#LinkedHashMap`.
+  ///
+  /// An accessor to a top-level do does not have a fragment.
   final Uri source;
 
   /// Constructor or getter name used to invoke `const Class(...)`.
@@ -70,10 +68,13 @@ class RevivableInstance implements Revivable {
   /// Named arguments used to invoke the constructor.
   final Map<String, DartObject> namedArguments;
 
-  const RevivableInstance._({
+  const Revivable._({
     this.source,
     this.accessor: '',
     this.positionalArguments: const [],
     this.namedArguments: const {},
   });
+
+  /// Whether this instance is visible outside the same library.
+  bool get isPrivate => accessor.startsWith('_');
 }
