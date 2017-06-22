@@ -140,17 +140,41 @@ dynamic _createFromConstructor(
     ConstructorElementImpl ctor, DartObjectImpl obj) {
   var positionalArgs = [];
   var namedArgs = <Symbol, dynamic>{};
+  DartObjectImpl fieldObjectImpl;
+
   for (var p in ctor.parameters) {
     var paramName = p.name;
     String fieldName;
     if (p is FieldFormalParameterElement) {
       fieldName = p.name;
     } else {
+      // If the parameter is not a field parameter, then it is one of two things:
+      // * An argument corresponding to a field assigned in the object
+      // * An argument that is passed to a super constructor
+      //
+      // If the argument is one merely passed to a super constructor,
+      // then there will not be an entry in `obj.fields` for its name.
+      //
+      // So what should we add to positionalArgs/namedArgs instead???
+
+
       // Trying to find the relationship between the ctor argument name and the
       // field assigned in the object. Then we can take the field value and
       // set it as the argument value
 
       var initializer = ctor.constantInitializers.singleWhere((ci) {
+        if (ci is SuperConstructorInvocation) {
+          // If this is a super constructor invocation, we need to find the right field
+          // from the parent class.
+
+          // 1. Find parent class
+
+
+          // 2. Determine the name of the field this parameter is assigned to on the parent class.
+
+          // 3. Assign fieldObjectImpl
+        }
+
         var expression = (ci as ConstructorFieldInitializer).expression;
         if (expression is SimpleIdentifier) {
           return expression.name == paramName;
@@ -162,16 +186,15 @@ dynamic _createFromConstructor(
 
         throw new UnsupportedError(
             "${ctor.enclosingElement.type} is too complex. Initializers of "
-            "type '${expression.runtimeType}' are not supported.");
+                "type '${expression.runtimeType}' are not supported.");
       }) as ConstructorFieldInitializer;
 
-      // get the field value now
       fieldName = initializer.fieldName.name;
     }
 
     var typeProvider = ctor.context.typeProvider;
 
-    var fieldObjectImpl = obj.fields[fieldName];
+    fieldObjectImpl ??= obj.fields[fieldName];
     if (p.parameterKind == ParameterKind.NAMED) {
       namedArgs[new Symbol(p.name)] = _getValue(fieldObjectImpl, typeProvider);
     } else {
