@@ -15,6 +15,8 @@ void main() {
   InterfaceType staticUri;
   DartType staticMap;
   DartType staticHashMap;
+  DartType staticUnmodifiableListView;
+  TypeChecker staticIterableChecker;
   TypeChecker staticMapChecker;
   TypeChecker staticHashMapChecker;
 
@@ -30,6 +32,8 @@ void main() {
     ''');
 
     final core = resolver.getLibraryByName('dart.core');
+    var staticIterable = core.getType('Iterable').type;
+    staticIterableChecker = new TypeChecker.fromStatic(staticIterable);
     staticUri = core.getType('Uri').type;
     staticMap = core.getType('Map').type;
     staticMapChecker = new TypeChecker.fromStatic(staticMap);
@@ -37,6 +41,8 @@ void main() {
     final collection = resolver.getLibraryByName('dart.collection');
     staticHashMap = collection.getType('HashMap').type;
     staticHashMapChecker = new TypeChecker.fromStatic(staticHashMap);
+    staticUnmodifiableListView =
+        collection.getType('UnmodifiableListView').type;
 
     final sourceGen =
         new LibraryReader(resolver.getLibraryByName('source_gen'));
@@ -50,11 +56,20 @@ void main() {
 
   // Run a common set of type comparison checks with various implementations.
   void commonTests({
+    @required TypeChecker checkIterable(),
     @required TypeChecker checkMap(),
     @required TypeChecker checkHashMap(),
     @required TypeChecker checkGenerator(),
     @required TypeChecker checkGeneratorForAnnotation(),
   }) {
+    group('(Iterable)', () {
+      test('should be assignable from dart:collection#UnmodifiableListView',
+          () {
+        expect(checkIterable().isAssignableFromType(staticUnmodifiableListView),
+            true);
+      });
+    });
+
     group('(Map)', () {
       test('should equal dart:core#Map', () {
         expect(checkMap().isExactlyType(staticMap), isTrue,
@@ -71,7 +86,7 @@ void main() {
       });
 
       test('should be a super type of dart:collection#HashMap', () {
-        expect(checkMap().isSuperTypeOf(staticHashMap), isTrue);
+        expect(checkMap().isSuperTypeOf(staticHashMap), isFalse);
       });
 
       test('should be assignable from dart:collection#HashMap', () {
@@ -134,6 +149,7 @@ void main() {
 
   group('TypeChecker.forRuntime', () {
     commonTests(
+        checkIterable: () => const TypeChecker.fromRuntime(Iterable),
         checkMap: () => const TypeChecker.fromRuntime(Map),
         checkHashMap: () => const TypeChecker.fromRuntime(HashMap),
         checkGenerator: () => const TypeChecker.fromRuntime(Generator),
@@ -143,6 +159,7 @@ void main() {
 
   group('TypeChecker.forStatic', () {
     commonTests(
+        checkIterable: () => staticIterableChecker,
         checkMap: () => staticMapChecker,
         checkHashMap: () => staticHashMapChecker,
         checkGenerator: () => staticGeneratorChecker,
@@ -151,6 +168,7 @@ void main() {
 
   group('TypeChecker.fromUrl', () {
     commonTests(
+        checkIterable: () => const TypeChecker.fromUrl('dart:core#Iterable'),
         checkMap: () => const TypeChecker.fromUrl('dart:core#Map'),
         checkHashMap: () =>
             const TypeChecker.fromUrl('dart:collection#HashMap'),
