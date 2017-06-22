@@ -3,6 +3,25 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:analyzer/dart/constant/value.dart';
+import 'package:analyzer/dart/element/element.dart';
+
+/// Throws an exception if [root] or its super(s) does not contain [name].
+void _assertHasField(ClassElement root, String name) {
+  var element = root;
+  while (element != null) {
+    final field = element.getField(name);
+    if (field != null) {
+      return;
+    }
+    element = element.supertype?.element;
+  }
+  final allFields = root.fields.toSet();
+  root.allSupertypes.forEach((t) => allFields.addAll(t.element.fields));
+  throw new FormatException(
+    'Class ${root.name} does not have field "$name".',
+    'Fields: $allFields',
+  );
+}
 
 /// Returns whether or not [object] is or represents a `null` value.
 bool _isNull(DartObject object) => object?.isNull != false;
@@ -12,11 +31,17 @@ bool _isNull(DartObject object) => object?.isNull != false;
 /// Returns `null` if ultimately [field] is never found.
 DartObject _getFieldRecursive(DartObject object, String field) {
   if (_isNull(object)) {
+    if (object?.type?.element is ClassElement) {
+      _assertHasField(object.type.element, field);
+    }
     return null;
   }
   final result = object.getField(field);
   if (_isNull(result)) {
     return _getFieldRecursive(object.getField('(super)'), field);
+  }
+  if (_isNull(result)) {
+    _assertHasField(object.type.element, field);
   }
   return result;
 }
@@ -132,29 +157,23 @@ class _Constant implements ConstantReader {
   const _Constant(this._object);
 
   @override
-  bool get boolValue => isBool
-      ? _object.toBoolValue()
-      : _throw('bool', _object);
+  bool get boolValue =>
+      isBool ? _object.toBoolValue() : _throw('bool', _object);
 
   @override
-  int get intValue => isInt
-      ? _object.toIntValue()
-      : _throw('int', _object);
+  int get intValue => isInt ? _object.toIntValue() : _throw('int', _object);
 
   @override
-  String get stringValue => isString
-      ? _object.toStringValue()
-      : _throw('String', _object);
+  String get stringValue =>
+      isString ? _object.toStringValue() : _throw('String', _object);
 
   @override
-  List<DartObject> get listValue => isList
-      ? _object.toListValue()
-      : _throw('List', _object);
+  List<DartObject> get listValue =>
+      isList ? _object.toListValue() : _throw('List', _object);
 
   @override
-  Map<DartObject, DartObject> get mapValue => isMap
-      ? _object.toListValue()
-      : _throw('Map', _object);
+  Map<DartObject, DartObject> get mapValue =>
+      isMap ? _object.toMapValue() : _throw('Map', _object);
 
   @override
   bool get isBool => _object.toBoolValue() != null;
@@ -169,7 +188,7 @@ class _Constant implements ConstantReader {
   bool get isNull => _isNull(_object);
 
   @override
-  bool get isMap => _isNull(_object);
+  bool get isMap => _object?.toMapValue() != null;
 
   @override
   bool get isString => _object.toStringValue() != null;
@@ -177,4 +196,7 @@ class _Constant implements ConstantReader {
   @override
   ConstantReader read(String field) =>
       new ConstantReader(_getFieldRecursive(_object, field));
+
+  @override
+  String toString() => 'ConstantReader ${_object}';
 }

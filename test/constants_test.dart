@@ -20,6 +20,8 @@ void main() {
         const aInt = 1234;
         const aBool = true;
         const aNull = null;
+        const aList = const [1, 2, 3];
+        const aMap = const {1: 'A', 2: 'B'};
         
         @aString    // [0]
         @aInt       // [1]
@@ -33,6 +35,8 @@ void main() {
           nested: const Exampe(),
         )
         @Super()    // [5]
+        @aList      // [6]
+        @aMap       // [7]
         class Example {
           final String aString;
           final int aInt;
@@ -104,6 +108,17 @@ void main() {
               key: (k, _) => new ConstantReader(k).intValue,
               value: (_, v) => new ConstantReader(v).stringValue),
           {1: 'A', 2: 'B'});
+    });
+
+    test('should fail reading from `null`', () {
+      final $null = constants[3];
+      expect($null.isNull, isTrue, reason: '${$null}');
+      expect(() => $null.read('foo'), throwsFormatException);
+    });
+
+    test('should fail reading a missing field', () {
+      final $super = constants[5];
+      expect(() => $super.read('foo'), throwsFormatException);
     });
   });
 }
