@@ -32,7 +32,7 @@ void main() {
           aInt: aInt,
           aBool: aBool,
           aNull: aNull,
-          nested: const Exampe(),
+          nested: const Example(),
         )
         @Super()    // [5]
         @aList      // [6]
@@ -82,9 +82,9 @@ void main() {
       expect(constant.read('aString').stringValue, 'Hello');
       expect(constant.read('aInt').intValue, 1234);
       expect(constant.read('aBool').boolValue, true);
-      expect(constant.read('aNull').isNull, isTrue);
 
       final nested = constant.read('nested');
+      expect(nested.isNull, isFalse, reason: '$nested');
       expect(nested.read('aString').isNull, isTrue);
       expect(nested.read('aInt').isNull, isTrue);
       expect(nested.read('aBool').isNull, isTrue);
@@ -113,7 +113,7 @@ void main() {
     test('should fail reading from `null`', () {
       final $null = constants[3];
       expect($null.isNull, isTrue, reason: '${$null}');
-      expect(() => $null.read('foo'), throwsFormatException);
+      expect(() => $null.read('foo'), throwsUnsupportedError);
     });
 
     test('should fail reading a missing field', () {

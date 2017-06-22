@@ -31,17 +31,11 @@ bool _isNull(DartObject object) => object?.isNull != false;
 /// Returns `null` if ultimately [field] is never found.
 DartObject _getFieldRecursive(DartObject object, String field) {
   if (_isNull(object)) {
-    if (object?.type?.element is ClassElement) {
-      _assertHasField(object.type.element, field);
-    }
     return null;
   }
   final result = object.getField(field);
   if (_isNull(result)) {
     return _getFieldRecursive(object.getField('(super)'), field);
-  }
-  if (_isNull(result)) {
-    _assertHasField(object.type.element, field);
   }
   return result;
 }
@@ -147,7 +141,7 @@ class _NullConstant implements ConstantReader {
   bool get isString => false;
 
   @override
-  ConstantReader read(_) => this;
+  ConstantReader read(_) => throw new UnsupportedError('Null');
 }
 
 /// Default implementation of [ConstantReader].
@@ -194,8 +188,13 @@ class _Constant implements ConstantReader {
   bool get isString => _object.toStringValue() != null;
 
   @override
-  ConstantReader read(String field) =>
-      new ConstantReader(_getFieldRecursive(_object, field));
+  ConstantReader read(String field) {
+    final constant = new ConstantReader(_getFieldRecursive(_object, field));
+    if (constant.isNull) {
+      _assertHasField(_object?.type?.element, field);
+    }
+    return constant;
+  }
 
   @override
   String toString() => 'ConstantReader ${_object}';
