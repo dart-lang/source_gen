@@ -15,7 +15,7 @@ import 'constants.dart';
 import 'type_checker.dart';
 
 dynamic instantiateAnnotation(ElementAnnotation annotation) {
-  var annotationObject = annotation.constantValue;
+  var annotationObject = annotation.computeConstantValue();
   try {
     return _getValue(annotation.constantValue);
   } on CannotCreateFromAnnotationException catch (e) {
