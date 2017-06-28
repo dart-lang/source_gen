@@ -44,6 +44,11 @@ KitchenSink _$KitchenSinkFromJson(Map json) => new KitchenSink(
   ..intDateTimeMap = json['intDateTimeMap'] /* unsafe key type */;
 
 abstract class _$KitchenSinkSerializerMixin {
+  Iterable<dynamic> get iterable;
+  Iterable<dynamic> get dynamicIterable;
+  Iterable<Object> get objectIterable;
+  Iterable<int> get intIterable;
+  Iterable<DateTime> get dateTimeIterable;
   List<dynamic> get list;
   List<dynamic> get dynamicList;
   List<Object> get objectList;
@@ -56,12 +61,13 @@ abstract class _$KitchenSinkSerializerMixin {
   Map<String, int> get stringIntMap;
   Map<String, DateTime> get stringDateTimeMap;
   Map<int, DateTime> get intDateTimeMap;
-  Iterable<dynamic> get iterable;
-  Iterable<dynamic> get dynamicIterable;
-  Iterable<Object> get objectIterable;
-  Iterable<int> get intIterable;
-  Iterable<DateTime> get dateTimeIterable;
   Map<String, dynamic> toJson() => <String, dynamic>{
+        'iterable': iterable?.toList(),
+        'dynamicIterable': dynamicIterable?.toList(),
+        'objectIterable': objectIterable?.toList(),
+        'intIterable': intIterable?.toList(),
+        'dateTimeIterable':
+            dateTimeIterable?.map((v0) => v0?.toIso8601String())?.toList(),
         'list': list,
         'dynamicList': dynamicList,
         'objectList': objectList,
@@ -77,13 +83,7 @@ abstract class _$KitchenSinkSerializerMixin {
             ? null
             : new Map<String, dynamic>.fromIterables(stringDateTimeMap.keys,
                 stringDateTimeMap.values.map((v0) => v0?.toIso8601String())),
-        'intDateTimeMap': intDateTimeMap /* unsafe */,
-        'iterable': iterable?.toList(),
-        'dynamicIterable': dynamicIterable?.toList(),
-        'objectIterable': objectIterable?.toList(),
-        'intIterable': intIterable?.toList(),
-        'dateTimeIterable':
-            dateTimeIterable?.map((v0) => v0?.toIso8601String())?.toList()
+        'intDateTimeMap': intDateTimeMap /* unsafe */
       };
 }
 

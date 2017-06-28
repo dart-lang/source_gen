@@ -95,6 +95,34 @@ void main() {
       roundTripItem(item);
     });
 
+    test('json keys should be defined in field/property order', () {
+      var item = new KitchenSink();
+
+      var json = item.toJson();
+
+      var expectedOrder = [
+        'iterable',
+        'dynamicIterable',
+        'objectIterable',
+        'intIterable',
+        'dateTimeIterable',
+        'list',
+        'dynamicList',
+        'objectList',
+        'intList',
+        'dateTimeList',
+        'stopWatch',
+        'stopwatchList',
+        'map',
+        'stringStringMap',
+        'stringIntMap',
+        'stringDateTimeMap',
+        'intDateTimeMap'
+      ];
+
+      expect(json.keys, orderedEquals(expectedOrder));
+    });
+
     test("list and map of DateTime", () {
       var now = new DateTime.now();
       var item = new KitchenSink(dateTimeIterable: <DateTime>[now])

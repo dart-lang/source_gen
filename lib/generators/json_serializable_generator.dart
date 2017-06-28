@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -57,11 +58,16 @@ class JsonSerializableGenerator
 
     // Get all of the fields that need to be assigned
     // TODO: support overriding the field set with an annotation option
-    var fields = classElement.fields.fold(<String, FieldElement>{},
-        (Map<String, FieldElement> map, field) {
-      map[field.name] = field;
-      return map;
-    });
+    var fieldsList = classElement.fields.toList();
+
+    // Sort these in the order in which they appear in the class
+    // Sadly, `classElement.fields` puts properties after fields
+    fieldsList.sort((a, b) => a.nameOffset.compareTo(b.nameOffset));
+
+    // Explicitly using `LinkedHashMap` – we want these ordered.
+    var fields = new LinkedHashMap<String, FieldElement>.fromIterable(
+        fieldsList,
+        key: (f) => f.name);
 
     // Get the constructor to use for the factory
 
