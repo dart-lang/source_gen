@@ -1,3 +1,7 @@
+## 0.5.11
+
+* Support serializing `Map` instances with conversions.
+
 ## 0.5.10
 
 * Bug fixes:
@@ -5,6 +9,8 @@
   * Do not fail on extensions that don't end in ".dart" (valid use case).
 
 ## 0.5.9
+
+* Added `TypeHelper` support to `JsonSerializableGenerator`
 
 * Update the minimum Dart SDK to `1.22.1`.
 * Deprecated `builder.dart`: import `source_gen.dart` instead.
