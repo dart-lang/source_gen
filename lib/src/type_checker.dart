@@ -71,13 +71,14 @@ abstract class TypeChecker {
   /// Returns annotating constants on [element] assignable to this type.
   Iterable<DartObject> annotationsOf(Element element) => element.metadata
       .map(_checkedConstantValue)
-      .where((a) => a?.type != null && isAssignableFromType(a.type));
+      .where((a) => isAssignableFromType(a.type));
 
   /// Returns annotating constants on [element] of exactly this type.
   Iterable<DartObject> annotationsOfExact(Element element) => element.metadata
       .map(_checkedConstantValue)
-      .where((a) => a?.type != null && isExactlyType(a.type));
+      .where((a) => a?.type != null && isAssignableFromType(a.type));
 
+  /// Returns `true` if the type of [element] can be assigned to this type.
   /// Returns `true` if the type of [element] can be assigned to this type.
   bool isAssignableFrom(Element element) =>
       isExactly(element) || _getAllSupertypes(element).any(isExactlyType);
