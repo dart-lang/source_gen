@@ -15,7 +15,7 @@ void main() {
     final resolver = await resolveSource(r'''
       library test_lib;
       
-      class Example {}
+      abstract class Example implements List {}
     ''', inputId: new AssetId('test_lib', 'lib/test_lib.dart'));
     library = resolver.getLibraryByName('test_lib');
   });
@@ -24,8 +24,8 @@ void main() {
     expect(
         spanForElement(library.getType('Example')).message('Here it is'),
         ''
-        'line 3, column 13 of package:test_lib/test_lib.dart: Here it is\n'
-        '      class Example {}\n'
-        '            ^^^^^^^');
+        'line 3, column 22 of package:test_lib/test_lib.dart: Here it is\n'
+        '      abstract class Example implements List {}\n'
+        '                     ^^^^^^^');
   });
 }
