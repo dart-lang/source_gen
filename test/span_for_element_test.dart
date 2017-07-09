@@ -13,12 +13,13 @@ void main() {
 
   setUpAll(() async {
     final resolver = await resolveSource(
-        r'''
+      r'''
       library test_lib;
-      
+
       abstract class Example implements List {}
     ''',
-        inputId: new AssetId('test_lib', 'lib/test_lib.dart'));
+      inputId: new AssetId('test_lib', 'lib/test_lib.dart'),
+    );
     library = resolver.getLibraryByName('test_lib');
   });
 
