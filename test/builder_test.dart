@@ -191,8 +191,7 @@ Map<String, String> _createPackageStub(String pkgName,
     {String testLibContent, String testLibPartContent}) {
   return {
     '$pkgName|lib/test_lib.dart': testLibContent ?? _testLibContent,
-    '$pkgName|lib/test_lib.g.dart':
-        testLibPartContent ?? _testLibPartContent,
+    '$pkgName|lib/test_lib.g.dart': testLibPartContent ?? _testLibPartContent,
   };
 }
 
