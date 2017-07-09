@@ -127,6 +127,10 @@ Uri packageToAssetUrl(Uri url) => url.scheme == 'package'
 /// For example, this transformers `asset:source_gen/lib/source_gen.dart' into:
 /// `package:source_gen/source_gen.dart`. Asset URLs that aren't pointing to a
 /// file in the 'lib' folder are not modified.
+///
+/// Asset URLs come from `package:build`, as they are able to describe URLs that
+/// are not describable using `package:...`, such as files in the `bin`, `tool`,
+/// `web`, or even root directory of a package - `asset:some_lib/web/main.dart`.
 Uri assetToPackageUrl(Uri url) => url.scheme == 'asset' &&
         url.pathSegments.length >= 1 &&
         url.pathSegments[1] == 'lib'
