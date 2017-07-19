@@ -18,7 +18,7 @@ void main() {
 
   test('Bad generated source', () async {
     var srcs = _createPackageStub(pkgName);
-    var builder = new GeneratorBuilder([const _BadOutputGenerator()]);
+    var builder = new PartBuilder([const _BadOutputGenerator()]);
 
     await testBuilder(builder, srcs,
         generateFor: new Set.from(['$pkgName|lib/test_lib.dart']),
@@ -27,10 +27,9 @@ void main() {
         });
   });
 
-  test('Generate standalone output file', () async {
+  test('Generate standalone source file', () async {
     var srcs = _createPackageStub(pkgName);
-    var builder =
-        new GeneratorBuilder([const CommentGenerator()], isStandalone: true);
+    var builder = new SourceBuilder(const CommentGenerator());
     await testBuilder(builder, srcs,
         generateFor: new Set.from(['$pkgName|lib/test_lib.dart']),
         outputs: {
@@ -38,10 +37,9 @@ void main() {
         });
   });
 
-  test('Generate explicitly non-standalone output file', () async {
+  test('Generate part file', () async {
     var srcs = _createPackageStub(pkgName);
-    var builder =
-        new GeneratorBuilder([const CommentGenerator()], isStandalone: false);
+    var builder = new PartBuilder([const CommentGenerator()]);
     await testBuilder(builder, srcs,
         generateFor: new Set.from(['$pkgName|lib/test_lib.dart']),
         outputs: {
@@ -49,26 +47,17 @@ void main() {
         });
   });
 
-  test('Expect error when multiple generators used on a standalone builder',
-      () async {
-    expect(
-        () => new GeneratorBuilder(
-            [const CommentGenerator(), const _NoOpGenerator()],
-            isStandalone: true),
-        throwsA(new isInstanceOf<ArgumentError>()));
-  });
-
   test('Expect no error when multiple generators used on nonstandalone builder',
       () async {
     expect(
-        () => new GeneratorBuilder(
-            [const CommentGenerator(), const _NoOpGenerator()]),
+        () =>
+            new PartBuilder([const CommentGenerator(), const _NoOpGenerator()]),
         returnsNormally);
   });
 
   test('Throws an exception when no library identifier is found', () async {
     var sources = _createPackageStub(pkgName, testLibContent: 'class A {}');
-    var builder = new GeneratorBuilder([const CommentGenerator()]);
+    var builder = new PartBuilder([const CommentGenerator()]);
     expect(
         testBuilder(builder, sources,
             outputs: {'$pkgName|lib/test_lib.g.dart': ''}),
@@ -77,14 +66,13 @@ void main() {
 
   test('Does not fail when there is no output', () async {
     var sources = _createPackageStub(pkgName, testLibContent: 'class A {}');
-    var builder =
-        new GeneratorBuilder([new CommentGenerator(forClasses: false)]);
+    var builder = new PartBuilder([new CommentGenerator(forClasses: false)]);
     await testBuilder(builder, sources, outputs: {});
   });
 
   test('Allow no "library" when requireLibraryDirective=false', () async {
     var sources = _createPackageStub(pkgName, testLibContent: 'class A {}');
-    var builder = new GeneratorBuilder([const CommentGenerator()],
+    var builder = new PartBuilder([const CommentGenerator()],
         requireLibraryDirective: false);
     await testBuilder(builder, sources,
         outputs: {'$pkgName|lib/test_lib.g.dart': _testGenNoLibrary});
@@ -104,14 +92,14 @@ void main() {
 
   test('No-op generator produces no generated parts', () async {
     var srcs = _createPackageStub(pkgName);
-    var builder = new GeneratorBuilder([const _NoOpGenerator()]);
+    var builder = new PartBuilder([const _NoOpGenerator()]);
     await testBuilder(builder, srcs, outputs: {});
   });
 
   test('handle generator errors well', () async {
     var srcs =
         _createPackageStub(pkgName, testLibContent: _testLibContentWithError);
-    var builder = new GeneratorBuilder([const CommentGenerator()]);
+    var builder = new PartBuilder([const CommentGenerator()]);
     await testBuilder(builder, srcs,
         generateFor: new Set.from(['$pkgName|lib/test_lib.dart']),
         outputs: {
@@ -122,7 +110,7 @@ void main() {
   test('warns when a non-standalone builder does not see "part"', () async {
     var srcs =
         _createPackageStub(pkgName, testLibContent: _testLibContentNoPart);
-    var builder = new GeneratorBuilder([const CommentGenerator()]);
+    var builder = new PartBuilder([const CommentGenerator()]);
     var logs = <String>[];
     await testBuilder(
       builder,
@@ -136,7 +124,7 @@ void main() {
 
   test('defaults to formatting generated code with the DartFormatter',
       () async {
-    await testBuilder(new GeneratorBuilder([new UnformattedCodeGenerator()]),
+    await testBuilder(new PartBuilder([new UnformattedCodeGenerator()]),
         {'$pkgName|lib/a.dart': 'library a; part "a.part.dart";'},
         generateFor: new Set.from(['$pkgName|lib/a.dart']),
         outputs: {
@@ -147,7 +135,7 @@ void main() {
 
   test('can skip formatting with a trivial lambda', () async {
     await testBuilder(
-        new GeneratorBuilder([new UnformattedCodeGenerator()],
+        new PartBuilder([new UnformattedCodeGenerator()],
             formatOutput: (s) => s),
         {'$pkgName|lib/a.dart': 'library a; part "a.part.dart";'},
         generateFor: new Set.from(['$pkgName|lib/a.dart']),
@@ -160,7 +148,7 @@ void main() {
   test('can pass a custom formatter with formatOutput', () async {
     var customOutput = 'final String hello = "hello";';
     await testBuilder(
-        new GeneratorBuilder([new UnformattedCodeGenerator()],
+        new PartBuilder([new UnformattedCodeGenerator()],
             formatOutput: (_) => customOutput),
         {'$pkgName|lib/a.dart': 'library a; part "a.part.dart";'},
         generateFor: new Set.from(['$pkgName|lib/a.dart']),
@@ -176,7 +164,7 @@ Future _simpleTest() => _generateTest(
 
 Future _generateTest(CommentGenerator gen, String expectedContent) async {
   var srcs = _createPackageStub(pkgName);
-  var builder = new GeneratorBuilder([gen]);
+  var builder = new PartBuilder([gen]);
 
   await testBuilder(builder, srcs,
       generateFor: new Set.from(['$pkgName|lib/test_lib.dart']),

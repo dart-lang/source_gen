@@ -15,16 +15,7 @@ import 'utils.dart';
 /// Returns [generatedCode] formatted, usually with something like `dartfmt`.
 typedef String OutputFormatter(String generatedCode);
 
-/// Wraps multiple [Generator]s and exposes them as a [Builder] for tooling.
-///
-/// ```dart
-/// // Creates a new builder that the following two generators.
-/// new GeneratorBuilder([
-///   new JsonSerializableGenerator(),
-///   new JsonLiteralGenerator(),
-/// ]);
-/// ```
-class GeneratorBuilder extends Builder {
+class _Builder extends Builder {
   /// Function that determines how the generated code is formatted.
   final OutputFormatter formatOutput;
 
@@ -36,37 +27,15 @@ class GeneratorBuilder extends Builder {
   /// Defaults to `.g.dart`.
   final String generatedExtension;
 
-  /// Whether to emit a standalone (non-`part`) file in this builder.
-  final bool isStandalone;
-
-  final bool _requireLibraryDirective;
-
-  /// Wrap [generators] to form a [Builder]-compatible API.
-  ///
-  /// May set [requireLibraryDirective] to `false` in order to opt-in to
-  /// supporting a `1.25.0` feature of `part of` being usable without an
-  /// explicit `library` directive. Developers should restrict their `pubspec`
-  /// accordingly:
-  /// ```yaml
-  /// sdk: '>=1.25.0 <2.0.0'
-  /// ```
-  GeneratorBuilder(this.generators,
-      {OutputFormatter formatOutput,
-      this.generatedExtension: '.g.dart',
-      this.isStandalone: false,
-      bool requireLibraryDirective: true})
-      : formatOutput = formatOutput ?? _formatter.format,
-        _requireLibraryDirective = requireLibraryDirective {
+  _Builder(this.generators,
+      {OutputFormatter formatOutput, this.generatedExtension: '.g.dart'})
+      : formatOutput = formatOutput ?? _formatter.format {
     if (generatedExtension == null) {
       throw new ArgumentError.notNull('generatedExtension');
     }
     if (generatedExtension.isEmpty || !generatedExtension.startsWith('.')) {
       throw new ArgumentError.value(generatedExtension, 'generatedExtension',
           'Extension must be in the format of .*');
-    }
-    if (this.isStandalone && this.generators.length > 1) {
-      throw new ArgumentError(
-          'A standalone file can only be generated from a single Generator.');
     }
   }
 
@@ -101,29 +70,7 @@ class GeneratorBuilder extends Builder {
     final outputId = _generatedFile(buildStep.inputId);
 
     var contentBuffer = new StringBuffer();
-    if (!isStandalone) {
-      var asset = buildStep.inputId;
-      var name = nameOfPartial(
-        library,
-        asset,
-        allowUnnamedPartials: !_requireLibraryDirective,
-      );
-      if (name == null) {
-        var suggest = suggestLibraryName(asset);
-        throw new InvalidGenerationSourceError(
-            'Could not find library identifier so a "part of" cannot be built.',
-            todo: ''
-                'Consider adding the following to your source file:\n\n'
-                'library $suggest;');
-      }
-      final part = computePartUrl(buildStep.inputId, outputId);
-      if (!library.parts.map((c) => c.uri).contains(part)) {
-        // TODO: Upgrade to error in a future breaking change?
-        log.warning('Missing "part \'$part\';".');
-      }
-      contentBuffer.writeln('part of $name;');
-      contentBuffer.writeln();
-    }
+    _addPreamble(library, buildStep, outputId, contentBuffer);
 
     for (GeneratedOutput output in generatedOutputs) {
       contentBuffer.writeln('');
@@ -156,8 +103,8 @@ class GeneratorBuilder extends Builder {
     buildStep.writeAsString(outputId, '$_topHeader$genPartContent');
   }
 
-  @override
-  String toString() => 'GeneratorBuilder:$generators';
+  void _addPreamble(LibraryElement library, BuildStep buildStep,
+      AssetId outputId, StringBuffer contentBuffer) {}
 }
 
 Stream<GeneratedOutput> _generate(LibraryElement unit,
@@ -187,6 +134,80 @@ Stream<GeneratedOutput> _processUnitMember(
       yield new GeneratedOutput.fromError(element, gen, e, stack);
     }
   }
+}
+
+/// Wraps multiple [Generator]s and exposes them as a [Builder] which produces
+/// Dart `part` files.
+///
+/// ```dart
+/// // Creates a new builder that runs the following two generators.
+/// new PartBuilder([
+///   new JsonSerializableGenerator(),
+///   new JsonLiteralGenerator(),
+/// ]);
+/// ```
+class PartBuilder extends _Builder {
+  final bool _requireLibraryDirective;
+
+  /// Wrap [generators] in a [Builder]-compatible API.
+  ///
+  /// May set [requireLibraryDirective] to `false` in order to opt-in to
+  /// supporting a `1.25.0` feature of `part of` being usable without an
+  /// explicit `library` directive. Developers should restrict their `pubspec`
+  /// accordingly:
+  /// ```yaml
+  /// sdk: '>=1.25.0 <2.0.0'
+  /// ```
+  PartBuilder(List<Generator> generators,
+      {OutputFormatter formatOutput,
+      String generatedExtension: '.g.dart',
+      bool requireLibraryDirective: true})
+      : _requireLibraryDirective = requireLibraryDirective,
+        super(generators,
+            generatedExtension: generatedExtension, formatOutput: formatOutput);
+
+  @override
+  void _addPreamble(LibraryElement library, BuildStep buildStep,
+      AssetId outputId, StringBuffer contentBuffer) {
+    var asset = buildStep.inputId;
+    var name = nameOfPartial(
+      library,
+      asset,
+      allowUnnamedPartials: !_requireLibraryDirective,
+    );
+    if (name == null) {
+      var suggest = suggestLibraryName(asset);
+      throw new InvalidGenerationSourceError(
+          'Could not find library identifier so a "part of" cannot be built.',
+          todo: ''
+              'Consider adding the following to your source file:\n\n'
+              'library $suggest;');
+    }
+    final part = computePartUrl(buildStep.inputId, outputId);
+    if (!library.parts.map((c) => c.uri).contains(part)) {
+      // TODO: Upgrade to error in a future breaking change?
+      log.warning('Missing "part \'$part\';".');
+    }
+    contentBuffer.writeln('part of $name;');
+    contentBuffer.writeln();
+  }
+
+  @override
+  String toString() => 'PartBuilder:$generators';
+}
+
+/// Wraps a [Generator] and exposes it as a [Builder] which produces a Dart
+/// library file.
+class SourceBuilder extends _Builder {
+  SourceBuilder(Generator generator,
+      {OutputFormatter formatOutput,
+      String generatedExtension: '.g.dart',
+      bool requireLibraryDirective: true})
+      : super([generator],
+            generatedExtension: generatedExtension, formatOutput: formatOutput);
+
+  @override
+  String toString() => 'SourceBuilder:${generators.first}';
 }
 
 final _formatter = new DartFormatter();
