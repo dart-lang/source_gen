@@ -32,7 +32,7 @@ import 'utils.dart';
 abstract class GeneratorForAnnotation<T> extends Generator {
   const GeneratorForAnnotation();
 
-  final typeChecker = const TypeChecker.fromRuntime(T);
+  TypeChecker get typeChecker => new TypeChecker.fromRuntime(T);
 
   @override
   Future<String> generate(LibraryElement library, BuildStep buildStep) async {
