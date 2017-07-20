@@ -2,30 +2,21 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library source_gen.generator;
-
 import 'dart:async';
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 
-/// A simple API surface for emitting Dart source code from existing code.
-///
-/// Clients should _extend_ this class and _override_ [generate]:
-/// ```dart
-/// class MyGenerator extends Generator {
-///   Future<String> generate(Element element, BuildStep buildStep) async {
-///     // Return a string representing the code to emit.
-///   }
-/// }
-/// ```
 abstract class Generator {
   const Generator();
 
-  /// Override to return source code for a given [element].
+  /// Generates Dart code for an input Dart library.
   ///
-  /// May return `null` to signify "nothing to generate".
-  Future<String> generate(Element element, BuildStep buildStep) => null;
+  /// May create additional outputs through the `buildStep`, but the 'primary'
+  /// output is Dart code returned through the Future. If there is nothing to
+  /// generate for this library may return null, or a Future that resolves to
+  /// null or the empty string.
+  Future<String> generate(LibraryElement element, BuildStep buildStep) => null;
 
   @override
   String toString() => this.runtimeType.toString();
