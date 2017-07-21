@@ -46,7 +46,7 @@ DartObject _getFieldRecursive(DartObject object, String field) {
 
 /// A wrapper for analyzer's [DartObject] with a predictable high-level API.
 ///
-/// Unlike [DartObject.getField], the `read` method attempts to access super
+/// Unlike [DartObject.getField], the [read] method attempts to access super
 /// classes for the field value if not found.
 abstract class ConstantReader {
   factory ConstantReader(DartObject object) =>
