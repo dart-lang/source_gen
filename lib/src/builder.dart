@@ -13,13 +13,12 @@ import 'generated_output.dart';
 import 'generator.dart';
 import 'utils.dart';
 
-/// Returns [generatedCode] formatted, usually with something like `dartfmt`.
-typedef String OutputFormatter(String generatedCode);
+typedef String _OutputFormatter(String code);
 
 /// A [Builder] wrapping on one or more [Generator]s.
 class _Builder extends Builder {
   /// Function that determines how the generated code is formatted.
-  final OutputFormatter formatOutput;
+  final _OutputFormatter formatOutput;
 
   /// What underlying generators are wrapped to form this [Builder].
   final List<Generator> generators;
@@ -44,7 +43,7 @@ class _Builder extends Builder {
   /// sdk: '>=1.25.0 <2.0.0'
   /// ```
   _Builder(this.generators,
-      {OutputFormatter formatOutput,
+      {String formatOutput(String code),
       this.generatedExtension: '.g.dart',
       this.isStandalone: false,
       bool requireLibraryDirective: true})
@@ -150,7 +149,7 @@ class _Builder extends Builder {
 
 class PartBuilder extends _Builder {
   PartBuilder(List<Generator> generators,
-      {OutputFormatter formatOutput,
+      {String formatOutput(String code),
       String generatedExtension: '.g.dart',
       bool requireLibraryDirective: true})
       : super(generators,
@@ -161,7 +160,7 @@ class PartBuilder extends _Builder {
 
 class LibraryBuilder extends _Builder {
   LibraryBuilder(Generator generator,
-      {OutputFormatter formatOutput, String generatedExtension: '.g.dart'})
+      {String formatOutput(String code), String generatedExtension: '.g.dart'})
       : super([generator],
             formatOutput: formatOutput,
             generatedExtension: generatedExtension,
