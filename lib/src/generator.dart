@@ -7,6 +7,9 @@ import 'dart:async';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 
+/// A tool to generate Dart code based on a Dart library source.
+///
+/// During a build [generate] is called once per input library.
 abstract class Generator {
   const Generator();
 
