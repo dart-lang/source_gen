@@ -145,29 +145,3 @@ Uri assetToPackageUrl(Uri url) => url.scheme == 'asset' &&
         pathSegments: [url.pathSegments.first]
           ..addAll(url.pathSegments.skip(2)))
     : url;
-
-/// Returns all of the declarations in [library], including [library] as the
-/// first item.
-Iterable<Element> allElements(LibraryElement library) sync* {
-  yield library;
-  for (var cu in library.units) {
-    for (var compUnitMember in cu.unit.declarations) {
-      yield* _getElements(compUnitMember);
-    }
-  }
-}
-
-Iterable<Element> _getElements(CompilationUnitMember member) {
-  if (member is TopLevelVariableDeclaration) {
-    return member.variables.variables
-        .map(resolutionMap.elementDeclaredByVariableDeclaration);
-  }
-  var element = resolutionMap.elementDeclaredByDeclaration(member);
-
-  if (element == null) {
-    print([member, member.runtimeType, member.element]);
-    throw new Exception('Could not find any elements for the provided unit.');
-  }
-
-  return [element];
-}
