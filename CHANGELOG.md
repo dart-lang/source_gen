@@ -13,9 +13,11 @@
     `package:json_serializable`.
   * Removed `lib/builder.dart`. Import through `source_gen.dart` instead.
   * Removed `OutputFormatter` typedef.
+  
 * Add `LibraryReader.allElements` - a utility to iterate across all `Element`
   instances contained in Dart library.
 * Add `LibraryReader.element` to get back to the `LibraryElement` instance.
+* Add `ConstantReader.objectValue` to get back to the `DartObject` instance.
 
 ## 0.6.1+1
 
