@@ -150,7 +150,7 @@ void main() {
       expect(() => $null.read('foo'), throwsUnsupportedError);
     });
 
-    test('should not reading from `null` when using peek', () {
+    test('should not fail reading from `null` when using peek', () {
       final $null = constants[3];
       expect($null.isNull, isTrue, reason: '${$null}');
       expect($null.peek('foo'), isNull);
