@@ -323,7 +323,7 @@ class _Constant implements ConstantReader {
 
   @override
   ConstantReader peek(String field) {
-    final constant = new ConstantReader(_getFieldRecursive(_object, field));
+    final constant = new ConstantReader(_getFieldRecursive(objectValue, field));
     if (constant.isNull) {
       return null;
     }
@@ -334,14 +334,14 @@ class _Constant implements ConstantReader {
   ConstantReader read(String field) {
     final reader = peek(field);
     if (reader == null) {
-      _assertHasField(_object?.type?.element, field);
+      _assertHasField(objectValue?.type?.element, field);
       return const _NullConstant();
     }
     return reader;
   }
 
   @override
-  Revivable revive() => reviveInstance(_object);
+  Revivable revive() => reviveInstance(objectValue);
 
   @override
   String toString() => 'ConstantReader ${objectValue}';
