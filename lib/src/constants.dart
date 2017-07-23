@@ -155,6 +155,11 @@ abstract class ConstantReader {
   /// [FormatException].
   ConstantReader read(String field);
 
+  /// Reads [field] from the constant as another constant value.
+  ///
+  /// Unlike [read], returns `null` if the field is not found.
+  ConstantReader peek(String field);
+
   /// Returns as a revived meta class.
   ///
   /// This is appropriate for cases where the underlying object is not a literal
@@ -229,6 +234,9 @@ class _NullConstant implements ConstantReader {
 
   @override
   ConstantReader read(_) => throw new UnsupportedError('Null');
+
+  @override
+  ConstantReader peek(_) => null;
 
   @override
   Revivable revive() => throw new UnsupportedError('Null');
@@ -314,16 +322,26 @@ class _Constant implements ConstantReader {
       checker.isAssignableFromType(objectValue.type);
 
   @override
-  ConstantReader read(String field) {
-    final constant = new ConstantReader(_getFieldRecursive(objectValue, field));
+  ConstantReader peek(String field) {
+    final constant = new ConstantReader(_getFieldRecursive(_object, field));
     if (constant.isNull) {
-      _assertHasField(objectValue?.type?.element, field);
+      return null;
     }
     return constant;
   }
 
   @override
-  Revivable revive() => reviveInstance(objectValue);
+  ConstantReader read(String field) {
+    final reader = peek(field);
+    if (reader == null) {
+      _assertHasField(_object?.type?.element, field);
+      return const _NullConstant();
+    }
+    return reader;
+  }
+
+  @override
+  Revivable revive() => reviveInstance(_object);
 
   @override
   String toString() => 'ConstantReader ${objectValue}';
