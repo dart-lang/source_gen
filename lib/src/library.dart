@@ -29,7 +29,6 @@ class LibraryReader {
   /// All of the declarations in this library, including the [LibraryElement] as
   /// the first item.
   Iterable<Element> get allElements sync* {
-    yield element;
     for (var cu in element.units) {
       for (var compUnitMember in cu.unit.declarations) {
         yield* _getElements(compUnitMember);
