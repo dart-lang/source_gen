@@ -55,6 +55,8 @@ abstract class TypeChecker {
   /// Returns the first constant annotating [element] assignable to this type.
   ///
   /// Otherwise returns `null`.
+  ///
+  /// Throws on unresolved annotations unless [throwOnUnresolved] is `false`.
   DartObject firstAnnotationOf(Element element, {bool throwOnUnresolved}) {
     if (element.metadata.isEmpty) {
       return null;
@@ -65,6 +67,8 @@ abstract class TypeChecker {
   }
 
   /// Returns the first constant annotating [element] that is exactly this type.
+  ///
+  /// Throws on unresolved annotations unless [throwOnUnresolved] is `false`.
   DartObject firstAnnotationOfExact(Element element, {bool throwOnUnresolved}) {
     if (element.metadata.isEmpty) {
       return null;
@@ -74,7 +78,7 @@ abstract class TypeChecker {
     return results.isEmpty ? null : results.first;
   }
 
-  DartObject _checkedConstantValue(ElementAnnotation annotation,
+  DartObject _computeConstantValue(ElementAnnotation annotation,
       {bool throwOnUnresolved}) {
     throwOnUnresolved ??= true;
     final result = annotation.computeConstantValue();
@@ -87,18 +91,22 @@ abstract class TypeChecker {
   }
 
   /// Returns annotating constants on [element] assignable to this type.
+  ///
+  /// Throws on unresolved annotations unless [throwOnUnresolved] is `false`.
   Iterable<DartObject> annotationsOf(Element element,
           {bool throwOnUnresolved}) =>
       element.metadata
-          .map((annotation) => _checkedConstantValue(annotation,
+          .map((annotation) => _computeConstantValue(annotation,
               throwOnUnresolved: throwOnUnresolved))
           .where((a) => a?.type != null && isAssignableFromType(a.type));
 
   /// Returns annotating constants on [element] of exactly this type.
+  ///
+  /// Throws on unresolved annotations unless [throwOnUnresolved] is `false`.
   Iterable<DartObject> annotationsOfExact(Element element,
           {bool throwOnUnresolved}) =>
       element.metadata
-          .map((annotation) => _checkedConstantValue(annotation,
+          .map((annotation) => _computeConstantValue(annotation,
               throwOnUnresolved: throwOnUnresolved))
           .where((a) => a?.type != null && isExactlyType(a.type));
 
