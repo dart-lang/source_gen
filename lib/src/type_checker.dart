@@ -55,26 +55,30 @@ abstract class TypeChecker {
   /// Returns the first constant annotating [element] assignable to this type.
   ///
   /// Otherwise returns `null`.
-  DartObject firstAnnotationOf(Element element) {
+  DartObject firstAnnotationOf(Element element, {bool throwOnUnresolved}) {
     if (element.metadata.isEmpty) {
       return null;
     }
-    final results = annotationsOf(element);
+    final results =
+        annotationsOf(element, throwOnUnresolved: throwOnUnresolved);
     return results.isEmpty ? null : results.first;
   }
 
   /// Returns the first constant annotating [element] that is exactly this type.
-  DartObject firstAnnotationOfExact(Element element) {
+  DartObject firstAnnotationOfExact(Element element, {bool throwOnUnresolved}) {
     if (element.metadata.isEmpty) {
       return null;
     }
-    final results = annotationsOfExact(element);
+    final results =
+        annotationsOfExact(element, throwOnUnresolved: throwOnUnresolved);
     return results.isEmpty ? null : results.first;
   }
 
-  DartObject _checkedConstantValue(ElementAnnotation annotation) {
+  DartObject _checkedConstantValue(ElementAnnotation annotation,
+      {bool throwOnUnresolved}) {
+    throwOnUnresolved ??= true;
     final result = annotation.computeConstantValue();
-    if (result == null) {
+    if (result == null && throwOnUnresolved) {
       throw new StateError(
           'Could not resolve $annotation. An import or dependency may be '
           'missing or invalid.');
@@ -83,14 +87,20 @@ abstract class TypeChecker {
   }
 
   /// Returns annotating constants on [element] assignable to this type.
-  Iterable<DartObject> annotationsOf(Element element) => element.metadata
-      .map(_checkedConstantValue)
-      .where((a) => a?.type != null && isAssignableFromType(a.type));
+  Iterable<DartObject> annotationsOf(Element element,
+          {bool throwOnUnresolved}) =>
+      element.metadata
+          .map((annotation) => _checkedConstantValue(annotation,
+              throwOnUnresolved: throwOnUnresolved))
+          .where((a) => a?.type != null && isAssignableFromType(a.type));
 
   /// Returns annotating constants on [element] of exactly this type.
-  Iterable<DartObject> annotationsOfExact(Element element) => element.metadata
-      .map(_checkedConstantValue)
-      .where((a) => a?.type != null && isExactlyType(a.type));
+  Iterable<DartObject> annotationsOfExact(Element element,
+          {bool throwOnUnresolved}) =>
+      element.metadata
+          .map((annotation) => _checkedConstantValue(annotation,
+              throwOnUnresolved: throwOnUnresolved))
+          .where((a) => a?.type != null && isExactlyType(a.type));
 
   /// Returns `true` if the type of [element] can be assigned to this type.
   bool isAssignableFrom(Element element) =>
