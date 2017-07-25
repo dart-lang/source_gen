@@ -26,8 +26,7 @@ class LibraryReader {
   ClassElement findType(String name) =>
       element.getType(name) ?? _namespace.get(name) as ClassElement;
 
-  /// All of the declarations in this library, including the [LibraryElement] as
-  /// the first item.
+  /// All of the declarations in this library.
   Iterable<Element> get allElements sync* {
     for (var cu in element.units) {
       for (var compUnitMember in cu.unit.declarations) {
