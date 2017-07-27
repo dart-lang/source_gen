@@ -5,6 +5,16 @@
 * Added `annotatedElements` to return all elements annotated with something.
 * Added `classElements` getter for returning all `class`-es in a library.
 
+### `TypeChecker`
+
+* Added `hasAnnotationOf` and `hasAnnotationOfExact`.
+
+### ConstantReader
+
+* Added `isAny`.
+* Allow `anyValue` to return `null` if the value is actually `null`.
+* Fixed a bug where a `Symbol` would return as a `String` for `anyValue`.
+
 ## 0.7.0
 
 * **Breaking changes**: See [the wiki](https://github.com/dart-lang/source_gen/wiki/Migrating-to-0.7.x)
