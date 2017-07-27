@@ -258,13 +258,12 @@ class _Constant implements ConstantReader {
   @override
   final DartObject objectValue;
 
-  dynamic get _anyValue => objectValue.toBoolValue() ??
-          objectValue.toIntValue() ??
-          objectValue.toStringValue() ??
-          objectValue.toDoubleValue() ??
-          isSymbol
-      ? symbolValue
-      : null;
+  dynamic get _anyValue =>
+      objectValue.toBoolValue() ??
+      objectValue.toIntValue() ??
+      objectValue.toStringValue() ??
+      objectValue.toDoubleValue() ??
+      (isSymbol ? symbolValue : null);
 
   @override
   dynamic get anyValue =>
