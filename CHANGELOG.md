@@ -1,8 +1,18 @@
-## 0.7.1-dev
+## 0.7.1
 
-* Updated return type of `Generator.generate` and
-  `GeneratorForAnnotation.generateForAnnotatedElement` to `FutureOr<String>`
-  instead of `Future<String>`.
+### `Generator{ForAnnotation}`
+
+* Return type of `generate{ForAnnotatedElement}` is now `FutureOr<String>`.
+
+### `TypeChecker`
+
+* Added `hasAnnotationOf` and `hasAnnotationOfExact`.
+
+### ConstantReader
+
+* Added `isAny`.
+* Allow `anyValue` to return `null` if the value is actually `null`.
+* Fixed a bug where a `Symbol` would return as a `String` for `anyValue`.
 
 ## 0.7.0
 
