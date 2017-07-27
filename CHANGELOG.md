@@ -1,3 +1,9 @@
+## 0.7.1
+
+### `TypeChecker`
+
+* Added `hasAnnotationOf` and `hasAnnotationOfExact`.
+
 ## 0.7.0
 
 * **Breaking changes**: See [the wiki](https://github.com/dart-lang/source_gen/wiki/Migrating-to-0.7.x)
