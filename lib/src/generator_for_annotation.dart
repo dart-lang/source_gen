@@ -39,7 +39,7 @@ abstract class GeneratorForAnnotation<T> extends Generator {
     var elements = library.allElements
         .map((e) => new _AnnotatedElement(e, typeChecker.firstAnnotationOf(e)))
         .where((e) => e.annotation != null);
-    var allOutput = await Future.wait(elements.map((e) =>
+    var allOutput = await Future.wait(elements.map((e) async =>
         generateForAnnotatedElement(
             e.element, new ConstantReader(e.annotation), buildStep)));
     // TODO interleave comments indicating which element produced the output?
@@ -50,7 +50,7 @@ abstract class GeneratorForAnnotation<T> extends Generator {
   ///
   /// This method is invoked based on finding elements annotated with an
   /// instance of [T]. The [annotation] is provided as a [ConstantReader].
-  Future<String> generateForAnnotatedElement(
+  FutureOr<String> generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep);
 }
 
