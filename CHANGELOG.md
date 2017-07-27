@@ -4,11 +4,16 @@
 
 * Return type of `generate{ForAnnotatedElement}` is now `FutureOr<String>`.
 
+### `LibraryReader`
+
+* Added `annotatedElements` to return all elements annotated with something.
+* Added `classElements` getter for returning all `class`-es in a library.
+
 ### `TypeChecker`
 
 * Added `hasAnnotationOf` and `hasAnnotationOfExact`.
 
-### ConstantReader
+### `ConstantReader`
 
 * Added `isAny`.
 * Allow `anyValue` to return `null` if the value is actually `null`.
