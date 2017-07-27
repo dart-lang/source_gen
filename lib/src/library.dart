@@ -59,7 +59,7 @@ class LibraryReader {
   }
 
   /// All of the declarations in this library annotated with exactly [checker].
-  Iterable<AnnotatedElement> annotationWithExact(TypeChecker checker,
+  Iterable<AnnotatedElement> annotatedWithExact(TypeChecker checker,
       {bool throwOnUnresolved}) sync* {
     for (final element in allElements) {
       final annotation = checker.firstAnnotationOfExact(element,
