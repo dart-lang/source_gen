@@ -116,21 +116,19 @@ void main() {
 
     test('should read a list', () {
       expect(constants[6].isList, isTrue, reason: '${constants[6]}');
+      expect(constants[6].isLiteral, isTrue);
       expect(constants[6].listValue.map((c) => new ConstantReader(c).intValue),
           [1, 2, 3]);
-      expect(constants[6].isLiteral, isFalse);
-      expect(() => constants[6].literalValue, throwsFormatException);
     });
 
     test('should read a map', () {
       expect(constants[7].isMap, isTrue, reason: '${constants[7]}');
+      expect(constants[7].isLiteral, isTrue);
       expect(
           mapMap<DartObject, DartObject, int, String>(constants[7].mapValue,
               key: (k, _) => new ConstantReader(k).intValue,
               value: (_, v) => new ConstantReader(v).stringValue),
           {1: 'A', 2: 'B'});
-      expect(constants[7].isLiteral, isFalse);
-      expect(() => constants[7].literalValue, throwsFormatException);
     });
 
     test('should read a double', () {

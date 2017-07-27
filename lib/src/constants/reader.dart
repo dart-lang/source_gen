@@ -179,6 +179,34 @@ class _DartObjectConstant extends ConstantReader {
   }
 
   @override
+  Object get literalValue =>
+      objectValue.toBoolValue() ??
+      objectValue.toStringValue() ??
+      objectValue.toIntValue() ??
+      objectValue.toDoubleValue() ??
+      objectValue.toListValue() ??
+      objectValue.toMapValue() ??
+      new Symbol(_check(objectValue.toSymbolValue(), 'literal'));
+
+  @override
+  bool get isLiteral =>
+      isBool ||
+      isString ||
+      isInt ||
+      isDouble ||
+      isList ||
+      isMap ||
+      isSymbol ||
+      isNull;
+
+  @override
+  bool instanceOf(TypeChecker checker) =>
+      checker.isAssignableFromType(objectValue.type);
+
+  @override
+  bool get isNull => isNullLike(objectValue);
+
+  @override
   bool get isBool => objectValue.toBoolValue() != null;
 
   @override
