@@ -1,3 +1,9 @@
+## 0.7.1-dev
+
+* Updated return type of `Generator.generate` and
+  `GeneratorForAnnotation.generateForAnnotatedElement` to `FutureOr<String>`
+  instead of `Future<String>`.
+
 ## 0.7.0
 
 * **Breaking changes**: See [the wiki](https://github.com/dart-lang/source_gen/wiki/Migrating-to-0.7.x)
