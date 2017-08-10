@@ -57,8 +57,7 @@ void main() {
           const Super() : super(aString: 'Super Hello');
         }
       ''');
-      constants = resolver
-          .getLibraryByName('test_lib')
+      constants = (await resolver.findLibraryByName('test_lib'))
           .getType('Example')
           .metadata
           .map((e) => new ConstantReader(e.computeConstantValue()))
@@ -236,8 +235,7 @@ void main() {
         
         const fieldOnly = const _FieldOnlyVisible();
       ''');
-      constants = resolver
-          .getLibraryByName('test_lib')
+      constants = (await resolver.findLibraryByName('test_lib'))
           .getType('Example')
           .metadata
           .map((e) => new ConstantReader(e.computeConstantValue()))

@@ -20,7 +20,7 @@ void main() {
     ''',
       inputId: new AssetId('test_lib', 'lib/test_lib.dart'),
     );
-    library = resolver.getLibraryByName('test_lib');
+    library = await resolver.findLibraryByName('test_lib');
   });
 
   test('should highlight the use of "class Example"', () {
