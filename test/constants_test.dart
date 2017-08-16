@@ -15,8 +15,7 @@ void main() {
     List<ConstantReader> constants;
 
     setUpAll(() async {
-      var resolverDone = new Completer<Null>();
-      final resolver = await resolveSource(r'''
+      final library = await resolveSource(r'''
         library test_lib;
         
         const aString = 'Hello';
@@ -59,13 +58,12 @@ void main() {
         class Super extends Example {
           const Super() : super(aString: 'Super Hello');
         }
-      ''', tearDown: resolverDone.future);
-      constants = (await resolver.findLibraryByName('test_lib'))
+      ''', (resolver) => resolver.findLibraryByName('test_lib'));
+      constants = library
           .getType('Example')
           .metadata
           .map((e) => new ConstantReader(e.computeConstantValue()))
           .toList();
-      resolverDone.complete();
     });
 
     test('should read a String', () {
@@ -189,8 +187,7 @@ void main() {
     List<ConstantReader> constants;
 
     setUpAll(() async {
-      var resolverDone = new Completer<Null>();
-      final resolver = await resolveSource(r'''
+      final library = await resolveSource(r'''
         library test_lib;
         
         @Int64Like.ZERO
@@ -237,13 +234,12 @@ void main() {
         }
         
         const fieldOnly = const _FieldOnlyVisible();
-      ''', tearDown: resolverDone.future);
-      constants = (await resolver.findLibraryByName('test_lib'))
+      ''', (resolver) => resolver.findLibraryByName('test_lib'));
+      constants = library
           .getType('Example')
           .metadata
           .map((e) => new ConstantReader(e.computeConstantValue()))
           .toList();
-      resolverDone.complete();
     });
 
     test('should decode Int64Like.ZERO', () {
