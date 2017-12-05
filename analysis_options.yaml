@@ -52,5 +52,5 @@ linter:
     - type_init_formals
     - unnecessary_brace_in_string_interps
     - unnecessary_getters_setters
-    - unnecessary_lambda
+    - unnecessary_lambdas
     - unnecessary_null_aware_assignments
