@@ -1,3 +1,9 @@
+## 0.7.4-dev
+
+* Added `typeNameOf`, which is a safe way to get the name of a `DartType`,
+  even when the type is a `FunctionType`, which has a `null` name in newer
+  versions of the Dart analyzer.
+
 ## 0.7.3
 
 * Allow null and empty outputs form `GeneratorForAnnotation`.
