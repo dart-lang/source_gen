@@ -49,12 +49,23 @@ void main() {
       topLevelFieldTypes = b.element.definingCompilationUnit.topLevelVariables;
     });
 
+    Element field(String name) =>
+        topLevelFieldTypes.firstWhere((e) => e.name == name,
+            orElse: () => throw new ArgumentError.value(
+                name, 'name', 'Could not find a field named $name.'));
+
     test('should read the prefix of a type', () {
-      expect(testingPrefixForType(b, topLevelFieldTypes[0]), 'a_prefixed');
+      expect(
+        testingPrefixForType(b, field('topLevelFieldWithPrefix')),
+        'a_prefixed',
+      );
     });
 
     test('should read null when the type is not prefixed', () {
-      expect(testingPrefixForType(b, topLevelFieldTypes[1]), isNull);
+      expect(
+        testingPrefixForType(b, field('topLevelFieldWithoutPrefix')),
+        isNull,
+      );
     });
   });
 }
