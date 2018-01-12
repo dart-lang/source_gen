@@ -60,7 +60,6 @@ String typeNameOf(DartType type) {
   return type.name;
 }
 
-
 /// Returns a name suitable for `part of "..."` when pointing to [element].
 ///
 /// Returns `null` if [element] is missing identifier.
