@@ -93,10 +93,10 @@ class LibraryReader {
   /// ```
   /// import 'bar.dart' as bar;
   ///
-  /// const b = const bar.Bar();
+  /// bar.Bar b;
   /// ```
   ///
-  /// ... we'd assume that `b`'s element has a prefix of `bar`.
+  /// ... we'd assume that `b`'s type has a prefix of `bar`.
   ///
   /// If there is no prefix, one could not be computed, `null` is returned.
   ///
