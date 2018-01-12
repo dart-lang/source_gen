@@ -78,6 +78,11 @@ class LibraryReader {
   /// the library, falling back to relative paths if required (such as in the
   /// `test` directory).
   ///
+  /// The support [Uri.scheme]s are (others throw [ArgumentError]):
+  /// * `dart`
+  /// * `package`
+  /// * `asset`
+  ///
   /// May throw [ArgumentError] if it is not possible to resolve a path.
   Uri pathToUrl(dynamic toUrlOrString) {
     final to = toUrlOrString is Uri
