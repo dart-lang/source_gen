@@ -33,11 +33,9 @@ Revivable reviveInstance(DartObject object, [LibraryElement origin]) {
     }
   }
   for (final e in origin.definingCompilationUnit.types
-      .map((c) => c.fields)
-      .expand((f) => f)
-      .where(
-        (f) => f.isPublic && f.isConst && f.computeConstantValue() == object,
-      )) {
+      .expand((t) => t.fields)
+      .where((f) =>
+          f.isPublic && f.isConst && f.computeConstantValue() == object)) {
     return new Revivable._(
       source: url.removeFragment(),
       accessor: '${clazz.name}.${e.name}',
