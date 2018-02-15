@@ -198,6 +198,9 @@ class PartBuilder extends _Builder {
             // ignore: deprecated_member_use
             requireLibraryDirective: requireLibraryDirective,
             header: header);
+
+  @override
+  String toString() => 'PartBuilder of $_generators';
 }
 
 /// A [Builder] which generates Dart library files.
@@ -225,6 +228,9 @@ class LibraryBuilder extends _Builder {
             additionalOutputExtensions: additionalOutputExtensions,
             isStandalone: true,
             header: header);
+
+  @override
+  String toString() => 'LibraryBuilder of $_generators';
 }
 
 Stream<GeneratedOutput> _generate(LibraryElement library,
