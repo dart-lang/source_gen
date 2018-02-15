@@ -1,3 +1,8 @@
+## 0.7.6
+
+* Include Generator types in `toString()` on builder implementations. This will
+  improve the error messages in `build_runner`.
+
 ## 0.7.5
 
 * The `PartBuilder` constructor parameter `requireLibraryDirective` now defaults
