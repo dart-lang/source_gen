@@ -1,4 +1,4 @@
-## 0.7.5+2
+## 0.7.6
 
 * `TypeChecker` now throws an `UnresolvedAnnotationException` with a more
   detailed exception body (and properties useful for further debugging) instead
