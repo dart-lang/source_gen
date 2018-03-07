@@ -7,6 +7,7 @@ import 'dart:mirrors' hide SourceLocation;
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+// TODO(https://github.com/dart-lang/sdk/issues/32454):
 // ignore: implementation_imports
 import 'package:analyzer/src/dart/element/element.dart';
 import 'package:source_span/source_span.dart';
@@ -289,6 +290,7 @@ class UnresolvedAnnotationException implements Exception {
   final SourceSpan annotationSource;
 
   // TODO: Remove internal API once ElementAnnotation has source information.
+  // https://github.com/dart-lang/sdk/issues/32454
   static SourceSpan _getSourceSpanFrom(ElementAnnotation annotation) {
     final internals = annotation as ElementAnnotationImpl;
     final astNode = internals.annotationAst;
