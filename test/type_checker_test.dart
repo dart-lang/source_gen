@@ -195,8 +195,21 @@ void main() {
     final classX = library.getType('X');
     final $deprecated = const TypeChecker.fromRuntime(Deprecated);
 
-    expect(() => $deprecated.annotationsOf(classX), throwsStateError,
-        reason: 'deprecated was spelled wrong; no annotation can be resolved');
+    expect(
+      () => $deprecated.annotationsOf(classX),
+      throwsA(
+        allOf(
+          const isInstanceOf<UnresolvedAnnotationException>(),
+          predicate((e) => e.toString().contains(
+                'Could not resolve annotation for "class X"',
+              )),
+          predicate((e) => e.toString().contains(
+                '@depreacated',
+              )),
+        ),
+      ),
+      reason: 'deprecated was spelled wrong; no annotation can be resolved',
+    );
   });
 
   test('should check multiple checkers', () {
