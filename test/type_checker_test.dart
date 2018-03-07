@@ -202,7 +202,7 @@ void main() {
           predicate((e) => e
               .toString()
               .contains('Could not resolve annotation for class X')),
-          predicate((e) => e.toString().contains('@depreacated')))),
+          predicate((e) => e.toString().contains('@depracated')))),
       reason: 'deprecated was spelled wrong; no annotation can be resolved',
     );
   });
