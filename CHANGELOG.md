@@ -1,4 +1,7 @@
-## 0.7.7
+## 0.8.0
+
+* **BREAKING** removed the deprecated `requireLibraryDirective` parameter in
+  `PartBuilder`.
 
 * `Revivable` no longer throws a type error when attempting to revive a
   reference to a top-level function or static-class method. Now is returns a
