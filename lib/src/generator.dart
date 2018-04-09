@@ -4,9 +4,11 @@
 
 import 'dart:async';
 
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 
 import 'library.dart';
+import 'span_for_element.dart';
 
 /// A tool to generate Dart code based on a Dart library source.
 ///
@@ -36,9 +38,26 @@ class InvalidGenerationSourceError extends Error {
   /// May be an empty string if unknown.
   final String todo;
 
-  InvalidGenerationSourceError(this.message, {String todo})
+  /// The code element associated with this error.
+  ///
+  /// May be `null` if the error had no associated element.
+  final Element associatedElement;
+
+  InvalidGenerationSourceError(this.message,
+      {String todo, this.associatedElement})
       : this.todo = todo ?? '';
 
   @override
-  String toString() => message;
+  String toString() {
+    var buffer = new StringBuffer(message);
+
+    if (associatedElement != null) {
+      var span = spanForElement(associatedElement);
+      buffer.writeln();
+      buffer.writeln(span.start.toolString);
+      buffer.write(span.highlight());
+    }
+
+    return buffer.toString();
+  }
 }
