@@ -41,18 +41,18 @@ class InvalidGenerationSourceError extends Error {
   /// The code element associated with this error.
   ///
   /// May be `null` if the error had no associated element.
-  final Element associatedElement;
+  final Element element;
 
   InvalidGenerationSourceError(this.message,
-      {String todo, this.associatedElement})
+      {String todo, this.element})
       : this.todo = todo ?? '';
 
   @override
   String toString() {
     var buffer = new StringBuffer(message);
 
-    if (associatedElement != null) {
-      var span = spanForElement(associatedElement);
+    if (element != null) {
+      var span = spanForElement(element);
       buffer.writeln();
       buffer.writeln(span.start.toolString);
       buffer.write(span.highlight());

@@ -30,7 +30,7 @@ class CommentGenerator extends Generator {
           throw new InvalidGenerationSourceError(
               "Don't use classes with the word 'Error' in the name",
               todo: 'Rename ${classElement.displayName} to something else.',
-              associatedElement: classElement);
+              element: classElement);
         }
         output.writeln('// Code for "$classElement"');
       }

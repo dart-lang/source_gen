@@ -1,6 +1,6 @@
 ## 0.8.1
 
-* `InvalidGenerationSourceError` added an optional `associatedElement`
+* `InvalidGenerationSourceError` added an optional `element`
   parameter to support more helpful error messages.
 
 ## 0.8.0
