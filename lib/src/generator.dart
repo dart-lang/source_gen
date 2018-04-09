@@ -43,8 +43,7 @@ class InvalidGenerationSourceError extends Error {
   /// May be `null` if the error had no associated element.
   final Element element;
 
-  InvalidGenerationSourceError(this.message,
-      {String todo, this.element})
+  InvalidGenerationSourceError(this.message, {String todo, this.element})
       : this.todo = todo ?? '';
 
   @override
