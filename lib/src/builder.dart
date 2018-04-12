@@ -72,7 +72,6 @@ class _Builder extends Builder {
 
   Future _generateForLibrary(
       LibraryElement library, BuildStep buildStep) async {
-    log.fine('Running $runtimeType with ${_generators.length} generator(s).');
     var generatedOutputs =
         await _generate(library, _generators, buildStep).toList();
 
@@ -207,7 +206,11 @@ Stream<GeneratedOutput> _generate(LibraryElement library,
   for (var i = 0; i < generators.length; i++) {
     var gen = generators[i];
     try {
-      log.finer('Running $gen - ${i+1} of ${generators.length}');
+      var msg ='Running $gen';
+      if (generators.length > 1) {
+        msg = '$msg - ${i+1} of ${generators.length}';
+      }
+      log.fine(msg);
       var createdUnit = await gen.generate(libraryReader, buildStep);
 
       if (createdUnit != null && createdUnit.isNotEmpty) {
