@@ -206,7 +206,7 @@ Stream<GeneratedOutput> _generate(LibraryElement library,
   for (var i = 0; i < generators.length; i++) {
     var gen = generators[i];
     try {
-      var msg ='Running $gen';
+      var msg = 'Running $gen';
       if (generators.length > 1) {
         msg = '$msg - ${i+1} of ${generators.length}';
       }
