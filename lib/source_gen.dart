@@ -11,4 +11,4 @@ export 'src/library.dart' show AnnotatedElement, LibraryReader;
 export 'src/sorted_fields.dart' show sortedFields;
 export 'src/span_for_element.dart' show spanForElement;
 export 'src/type_checker.dart' show TypeChecker, UnresolvedAnnotationException;
-export 'src/utils.dart' show typeNameOf;
+export 'src/utils.dart' show typeNameOf, isEnum;

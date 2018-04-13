@@ -7,6 +7,10 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:path/path.dart' as p;
 
+/// Returns `true` if [targetType] represents an `enum`.
+bool isEnum(DartType targetType) =>
+    targetType is InterfaceType && targetType.element.isEnum;
+
 /// Returns a non-null name for the provided [type].
 ///
 /// In newer versions of the Dart analyzer, a `typedef` does not keep the
