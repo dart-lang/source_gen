@@ -6,6 +6,11 @@
 * `InvalidGenerationSourceError` added an optional `element`
   parameter to support more helpful error messages.
 
+* Added a new top-level function `sortedFields`. Useful when generating code
+  that wants to align with the field order in a `ClassElement`.
+
+* Added a new top-level function `isEnum`.
+
 ## 0.8.0
 
 * **BREAKING** removed the deprecated `requireLibraryDirective` parameter in

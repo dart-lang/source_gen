@@ -11,6 +11,7 @@ import 'package:test/test.dart';
 
 void main() {
   ClassElement example;
+  LibraryReader reader;
 
   setUpAll(() async {
     const source = r'''
@@ -23,21 +24,36 @@ void main() {
 
       class ClassType {}
       typedef FunctionType();
+      enum Sample { first, second, third }
     ''';
-    example = await resolveSource(
-        source,
-        (resolver) => resolver
-            .findLibraryByName('example')
-            .then((e) => e.getType('Example')));
+
+    reader = new LibraryReader(await resolveSource(
+        source, (resolver) => resolver.findLibraryByName('example')));
+
+    example = reader.classElements.singleWhere((ce) => ce.name == 'Example');
   });
 
-  test('should return the name of a class type', () {
-    final classType = example.methods.first.returnType;
-    expect(typeNameOf(classType), 'ClassType');
+  group('typeNameOf', () {
+    test('should return the name of a class type', () {
+      final classType = example.methods.first.returnType;
+      expect(typeNameOf(classType), 'ClassType');
+    });
+
+    test('should return the name of a function type', () {
+      final functionType = example.methods.last.returnType;
+      expect(typeNameOf(functionType), 'FunctionType');
+    });
   });
 
-  test('should return the name of a function type', () {
-    final functionType = example.methods.last.returnType;
-    expect(typeNameOf(functionType), 'FunctionType');
+  group('isEnum', () {
+    test('class', () {
+      expect(isEnum(example.type), isFalse);
+    });
+
+    test('enum', () {
+      var enumElement = reader.allElements
+          .singleWhere((e) => e.name == 'Sample') as ClassElement;
+      expect(isEnum(enumElement.type), isTrue);
+    });
   });
 }

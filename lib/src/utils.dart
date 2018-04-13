@@ -7,38 +7,9 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:path/path.dart' as p;
 
-String friendlyNameForElement(Element element) {
-  var friendlyName = element.displayName;
-
-  if (friendlyName == null) {
-    throw new ArgumentError(
-        'Cannot get friendly name for $element - ${element.runtimeType}.');
-  }
-
-  var names = <String>[friendlyName];
-  if (element is ClassElement) {
-    names.insert(0, 'class');
-    if (element.isAbstract) {
-      names.insert(0, 'abstract');
-    }
-  }
-  if (element is VariableElement) {
-    names.insert(0, element.type.toString());
-
-    if (element.isConst) {
-      names.insert(0, 'const');
-    }
-
-    if (element.isFinal) {
-      names.insert(0, 'final');
-    }
-  }
-  if (element is LibraryElement) {
-    names.insert(0, 'library');
-  }
-
-  return names.join(' ');
-}
+/// Returns `true` if [targetType] represents an `enum`.
+bool isEnum(DartType targetType) =>
+    targetType is InterfaceType && targetType.element.isEnum;
 
 /// Returns a non-null name for the provided [type].
 ///
