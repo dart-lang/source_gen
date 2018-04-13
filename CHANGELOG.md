@@ -1,3 +1,7 @@
+## 0.8.2
+
+* Added `dartStringLiteral` helper.
+
 ## 0.8.1
 
 * Cleanup logging output that duplicates headers provided by 
