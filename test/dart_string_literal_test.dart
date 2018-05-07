@@ -14,39 +14,68 @@ import 'package:source_gen/src/dart_string_literal.dart';
 
 void main() {
   group('targetted values', () {
-    void testValue(String name, String value, String withEscaped$,
-        [String withoutEscaped$]) {
-      assert(withEscaped$ != withoutEscaped$,
-          r'Just leave `withoutEscaped\$` unassigned!');
-      test(name, () {
+    void testValue(String name, String value, String expectedLiteral,
+        {String expectedValue,
+        String expectedWithoutEscapedDollar,
+        String expectedValueWithoutEscapedDollar,
+        bool unescapedThrows: false}) {
+      unescapedThrows ??= false;
+
+      assert(expectedLiteral != expectedWithoutEscapedDollar,
+          'Just leave `withoutEscaped\$` unassigned! for `$expectedWithoutEscapedDollar`');
+
+      expectedWithoutEscapedDollar ??= expectedLiteral;
+
+      assert(expectedValue != value, 'Just leave it null');
+      expectedValue ??= value;
+
+      test(name, () async {
         var output = dartStringLiteral(value);
-        expect(output, withEscaped$);
+        expect(output, expectedLiteral);
+
+        expect(await _echoLiteral(value), expectedValue);
       });
-      test('$name - explicit escape\$ true', () {
+      test('$name - explicit escape\$ true', () async {
         var output = dartStringLiteral(value, escapeDollar: true);
-        expect(output, withEscaped$);
+        expect(output, expectedLiteral);
+
+        expect(await _echoLiteral(value, escapeDollar: true), expectedValue);
       });
-      test('$name - explicit escape\$ false', () {
+
+      assert(expectedValueWithoutEscapedDollar != expectedValue);
+      expectedValueWithoutEscapedDollar ??= expectedValue;
+
+      test('$name - explicit escape\$ false', () async {
         var output = dartStringLiteral(value, escapeDollar: false);
-        expect(output, withoutEscaped$ ?? withEscaped$);
+        expect(output, expectedWithoutEscapedDollar);
+
+        if (unescapedThrows) {
+          expect(() async => await _echoLiteral(value, escapeDollar: false),
+              throwsA(new isInstanceOf<IsolateSpawnException>()));
+        } else {
+          expect(await _echoLiteral(value, escapeDollar: false),
+              expectedValueWithoutEscapedDollar);
+        }
       });
     }
 
-    testValue(
-      'single quotes',
-      "'",
-      '"\'"',
-    );
+    testValue('single quotes', "'", '"\'"');
     testValue('double and single quotes', "'\"", "'\\'\\\"'");
     testValue('single and double quotes', '\'"\'', '\'\\\'\\"\\\'\'');
 
     testValue('single quotes and \$', r"$ENV{'HOME'}", 'r"\$ENV{\'HOME\'}"',
-        '"\$ENV{\'HOME\'}"');
+        expectedWithoutEscapedDollar: '"\$ENV{\'HOME\'}"',
+        unescapedThrows: true);
 
     testValue('backslash', '\\', "\'\\\\\'");
     testValue('newlines', '\n', "\'\\n\'");
     testValue('carriage returns', '\r', "\'\\r\'");
-    testValue('\$', '\$', r"r'$'", "'\$'");
+    testValue('\$', '\$', r"r'$'",
+        expectedWithoutEscapedDollar: "'\$'", unescapedThrows: true);
+
+    testValue('dollar interpolation', '\$x', r"r'$x'",
+        expectedWithoutEscapedDollar: r"'$x'",
+        expectedValueWithoutEscapedDollar: 'xyz');
   });
 
   group('bad strings', () {
@@ -65,8 +94,9 @@ final _badStrings = (jsonDecode(
             .readAsStringSync()) as List)
     .cast<String>();
 
-Future<String> _echoLiteral(String value) async {
-  var literal = dartStringLiteral(value);
+Future<String> _echoLiteral(String value, {bool escapeDollar: true}) async {
+  escapeDollar ??= true;
+  var literal = dartStringLiteral(value, escapeDollar: escapeDollar);
   var script = _echoScript(literal);
 
   Uri uri;
@@ -94,8 +124,8 @@ Future<String> _echoLiteral(String value) async {
       var message = errorList[0] as String;
       var stack = new StackTrace.fromString(errorList[1] as String);
 
-      stderr.writeln(message);
-      stderr.writeln(stack);
+      printOnFailure(message);
+      printOnFailure(stack.toString());
     });
 
     var items = await Future.wait([
@@ -109,7 +139,7 @@ Future<String> _echoLiteral(String value) async {
 
     var messages = items[0] as List;
     if (messages.isEmpty) {
-      throw new StateError('An error occurred while bootstrapping.');
+      throw new IsolateSpawnException('An error occurred while bootstrapping.');
     }
 
     assert(messages.length == 1);
@@ -125,6 +155,8 @@ String _echoScript(String literal) => '''
 import 'dart:isolate';
 
 void main(List<String> args, [SendPort sendPort]) async {
+  // Allows testing of unescaped `\$`
+  var x = 'xyz';
   sendPort.send($literal);  
 }
 ''';
