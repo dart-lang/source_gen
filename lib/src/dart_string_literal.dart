@@ -40,7 +40,6 @@ String dartStringLiteral(String value, {bool escapeDollar: true}) {
         return '"$newValue"';
       }
     } else {
-      // trivial!
       return "'$newValue'";
     }
   }
@@ -48,11 +47,9 @@ String dartStringLiteral(String value, {bool escapeDollar: true}) {
   if (hasDollar && canBeRaw) {
     if (hasSingleQuote) {
       if (!hasDoubleQuote) {
-        // quote it with single quotes!
         return 'r"$newValue"';
       }
     } else {
-      // quote it with single quotes!
       return "r'$newValue'";
     }
   }
