@@ -59,8 +59,8 @@ String dartStringLiteral(String value, {bool escapeDollar: true}) {
 
   // The only safe way to wrap the content is to escape all of the
   // problematic characters - `$`, `'`, and `"`
-  var string =
-      newValue.replaceAll(escapeDollar ? _dollarQuoteRegexp : _quoteRegexp, r'\');
+  var string = newValue.replaceAll(
+      escapeDollar ? _dollarQuoteRegexp : _quoteRegexp, r'\');
   return "'$string'";
 }
 
@@ -79,7 +79,7 @@ const _escapeMap = const {
   r'\': r'\\' // backslash
 };
 
-final _escapeMapRegexp = _escapeMap.keys.map(_getHexLiteral).join();
+String get _escapeMapRegexp => _escapeMap.keys.map(_getHexLiteral).join();
 
 /// A [RegExp] that matches whitespace characters that should be escaped and
 /// single-quote, double-quote, and `$`

@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
+import 'package:test_descriptor/test_descriptor.dart' as d;
 import 'package:source_gen/src/dart_string_literal.dart';
 
 void main() {
@@ -42,66 +45,82 @@ void main() {
     testValue('\$', '\$', r"r'$'", "'\$'");
   });
 
-  testBadStringGroup('bad strings', _badStrings());
-  testBadStringGroup('random strings', _randomStrings());
-}
-
-List<String> _randomStrings() {
-  var rnd = new Random(0);
-  return new List<String>.generate(20, (i) {
-    return new String.fromCharCodes(
-        new Iterable<int>.generate(10, (j) => rnd.nextInt(100)));
-  });
-}
-
-List<String> _badStrings() =>
-    (jsonDecode(new File('test/big-list-of-naughty-strings.json')
-            .readAsStringSync()) as List)
-        .cast<String>();
-
-void testBadStringGroup(String name, List<String> badStrings) {
-  group(name, () {
-    List<String> testOutput;
-    setUpAll(() {
-      testOutput = _getLinesFromDartSource(badStrings);
-      expect(testOutput, hasLength(badStrings.length));
-    });
-
-    for (var i = 0; i < badStrings.length; i++) {
-      test('${i+i}', () {
-        var testString = badStrings[i];
-        expect(testOutput[i], testString);
+  group('bad strings', () {
+    var count = 0;
+    for (var badString in _badStrings) {
+      test('${++count}', () async {
+        var value = await _echoLiteral(badString);
+        expect(value, badString);
       });
     }
   });
 }
 
-List<String> _getLinesFromDartSource(List<String> literals) {
-  var tempDir = Directory.systemTemp.createTempSync('test.source_gen.');
+final _badStrings = (jsonDecode(
+        new File('test/big-list-of-naughty-strings.json')
+            .readAsStringSync()) as List)
+    .cast<String>();
+
+Future<String> _echoLiteral(String value) async {
+  var literal = dartStringLiteral(value);
+  var script = _echoScript(literal);
+
+  Uri uri;
+  if (value.contains('../../../../etc/')) {
+    // TODO: stop creating temp files once dart-lang/sdk#33056 is fixed
+    await d.file('file.dart', script).create();
+    uri = p.toUri(p.join(d.sandbox, 'file.dart'));
+  } else {
+    uri = new Uri.dataFromString(script, encoding: utf8);
+  }
+
+  var messagePort = new ReceivePort();
+  var exitPort = new ReceivePort();
+  var errorPort = new ReceivePort();
 
   try {
-    var tempDartPath = p.join(tempDir.path, 'strings.dart');
-    var tempDartFile = new File(tempDartPath);
+    await Isolate.spawnUri(uri, [], messagePort.sendPort,
+        onExit: exitPort.sendPort,
+        onError: errorPort.sendPort,
+        checked: false,
+        errorsAreFatal: true);
 
-    var testSource = '''
-main() {
-${literals.map((l) => "  print(${dartStringLiteral(l)});").join('\n')}
-}
-''';
+    var allErrorsFuture = errorPort.forEach((error) {
+      var errorList = error as List;
+      var message = errorList[0] as String;
+      var stack = new StackTrace.fromString(errorList[1] as String);
 
-    print(testSource);
+      stderr.writeln(message);
+      stderr.writeln(stack);
+    });
 
-    tempDartFile.writeAsStringSync(testSource);
+    var items = await Future.wait([
+      messagePort.toList(),
+      allErrorsFuture,
+      exitPort.first.whenComplete(() {
+        messagePort.close();
+        errorPort.close();
+      })
+    ]);
 
-    var result = Process.runSync(Platform.resolvedExecutable, [tempDartPath]);
-    if (result.exitCode != 0) {
-      print(result.stdout);
-      print(result.stderr);
-      print(result.exitCode);
-      fail('process failed!');
+    var messages = items[0] as List;
+    if (messages.isEmpty) {
+      throw new StateError('An error occurred while bootstrapping.');
     }
-    return LineSplitter.split(result.stdout as String).toList();
+
+    assert(messages.length == 1);
+    return messages.single as String;
   } finally {
-    tempDir.deleteSync(recursive: true);
+    messagePort.close();
+    exitPort.close();
+    errorPort.close();
   }
 }
+
+String _echoScript(String literal) => '''
+import 'dart:isolate';
+
+void main(List<String> args, [SendPort sendPort]) async {
+  sendPort.send($literal);  
+}
+''';
