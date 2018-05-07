@@ -5,17 +5,6 @@ import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 import 'package:source_gen/src/dart_string_literal.dart';
 
-final _badStrings = (jsonDecode(
-        new File('test/big-list-of-naughty-strings.json')
-            .readAsStringSync()) as List)
-    .cast<String>();
-
-final _testSource = '''
-main() {
-${_badStrings.map((l) => "  print(${dartStringLiteral(l)});").join('\n')}
-}
-''';
-
 void main() {
   void testValue(String name, String value, String withEscaped$,
       [String withoutEscaped$]) {
@@ -53,34 +42,48 @@ void main() {
 
   group('bad strings', () {
     List<String> testOutput;
+    var badStrings = (jsonDecode(
+            new File('test/big-list-of-naughty-strings.json')
+                .readAsStringSync()) as List)
+        .cast<String>();
     setUpAll(() {
-      var tempDir = Directory.systemTemp.createTempSync('test.source_gen.');
-
-      try {
-        var tempDartPath = p.join(tempDir.path, 'strings.dart');
-        var tempDartFile = new File(tempDartPath);
-        tempDartFile.writeAsStringSync(_testSource);
-
-        var result =
-            Process.runSync(Platform.resolvedExecutable, [tempDartPath]);
-        if (result.exitCode != 0) {
-          print(result.stdout);
-          print(result.stderr);
-          print(result.exitCode);
-          fail('process failed!');
-        }
-        testOutput = LineSplitter.split(result.stdout as String).toList();
-        expect(testOutput, hasLength(_badStrings.length));
-      } finally {
-        tempDir.deleteSync(recursive: true);
-      }
+      testOutput = _getLinesFromDartSource(badStrings);
+      expect(testOutput, hasLength(badStrings.length));
     });
 
-    for (var i = 0; i < _badStrings.length; i++) {
+    for (var i = 0; i < badStrings.length; i++) {
       test('bad string ${i+i}', () {
-        var testString = _badStrings[i];
+        var testString = badStrings[i];
         expect(testOutput[i], testString);
       });
     }
   });
+}
+
+List<String> _getLinesFromDartSource(List<String> literals) {
+  var tempDir = Directory.systemTemp.createTempSync('test.source_gen.');
+
+  try {
+    var tempDartPath = p.join(tempDir.path, 'strings.dart');
+    var tempDartFile = new File(tempDartPath);
+
+    var testSource = '''
+main() {
+${literals.map((l) => "  print(${dartStringLiteral(l)});").join('\n')}
+}
+''';
+
+    tempDartFile.writeAsStringSync(testSource);
+
+    var result = Process.runSync(Platform.resolvedExecutable, [tempDartPath]);
+    if (result.exitCode != 0) {
+      print(result.stdout);
+      print(result.stderr);
+      print(result.exitCode);
+      fail('process failed!');
+    }
+    return LineSplitter.split(result.stdout as String).toList();
+  } finally {
+    tempDir.deleteSync(recursive: true);
+  }
 }
