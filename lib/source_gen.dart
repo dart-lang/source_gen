@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+export 'package:build/build.dart' show log;
+
 export 'src/builder.dart';
 export 'src/constants/reader.dart' show ConstantReader;
 export 'src/constants/revive.dart' show Revivable;

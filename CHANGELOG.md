@@ -1,3 +1,7 @@
+## 0.8.2
+
+* Expose the top-level `log` property exported from `package:build`. 
+
 ## 0.8.1+3
 
 * More redundant new lines elimination.
