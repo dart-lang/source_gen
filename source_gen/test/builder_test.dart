@@ -199,7 +199,7 @@ void main() {
         });
   });
 
-  test('SharedPartBuilder outputs <generatedExtension>.g.part files', () async {
+  test('SharedPartBuilder outputs <partId>.g.part files', () async {
     await testBuilder(
         new SharedPartBuilder([const UnformattedCodeGenerator()], '.foo',
             header: ''),
@@ -222,9 +222,8 @@ void main() {
         });
   });
 
-  test(
-      'SharedPartBuilder throws if the generatedExtension does not start '
-      'with .', () async {
+  test('SharedPartBuilder throws if the partId does not start with .',
+      () async {
     expect(
         () => testBuilder(
               new SharedPartBuilder([const UnformattedCodeGenerator()], 'foo',
