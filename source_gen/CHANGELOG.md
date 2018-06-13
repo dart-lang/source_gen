@@ -8,6 +8,9 @@
   * These changes will likely have no effect on output, unless you customize
     the code formatter.
 
+* Introduce `SharedPartBuilder` for creating part files that can be merged
+  with a new `CombiningBuilder`.
+
 ## 0.8.1+3
 
 * More redundant new lines elimination.

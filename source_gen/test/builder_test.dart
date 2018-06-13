@@ -6,6 +6,7 @@
 import 'dart:async';
 
 import 'package:build_test/build_test.dart';
+import 'package:source_gen/builders.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
@@ -196,6 +197,81 @@ void main() {
         outputs: {
           '$_pkgName|lib/a.g.dart': decodedMatches(startsWith('part of')),
         });
+  });
+
+  test('SharedPartBuilder outputs <generatedExtension>.g.part files', () async {
+    await testBuilder(
+        new SharedPartBuilder([const UnformattedCodeGenerator()], '.foo',
+            header: ''),
+        {'$_pkgName|lib/a.dart': 'library a; part "a.g.dart";'},
+        generateFor: new Set.from(['$_pkgName|lib/a.dart']),
+        outputs: {
+          '$_pkgName|lib/a.foo.g.part':
+              decodedMatches(contains(UnformattedCodeGenerator.formattedCode)),
+        });
+  });
+
+  test('SharedPartBuilder outputs `part of` files', () async {
+    await testBuilder(
+        new SharedPartBuilder([const UnformattedCodeGenerator()], '.foo',
+            header: ''),
+        {'$_pkgName|lib/a.dart': 'library a; part "a.g.dart";'},
+        generateFor: new Set.from(['$_pkgName|lib/a.dart']),
+        outputs: {
+          '$_pkgName|lib/a.foo.g.part': decodedMatches(contains('part of')),
+        });
+  });
+
+  test(
+      'SharedPartBuilder throws if the generatedExtension does not start '
+      'with .', () async {
+    expect(
+        () => testBuilder(
+              new SharedPartBuilder([const UnformattedCodeGenerator()], 'foo',
+                  header: ''),
+              {'$_pkgName|lib/a.dart': 'library a; part "a.g.dart";'},
+              generateFor: new Set.from(['$_pkgName|lib/a.dart']),
+            ),
+        throwsArgumentError);
+  });
+
+  test('CombiningBuilder outputs `.g.dart` files', () async {
+    await testBuilder(
+        new CombiningBuilder(),
+        {
+          '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
+          '$_pkgName|lib/a.foo.g.part': 'some generated content'
+        },
+        generateFor: new Set.from(['$_pkgName|lib/a.dart']),
+        outputs: {
+          '$_pkgName|lib/a.g.dart':
+              decodedMatches(contains('some generated content')),
+        });
+  });
+
+  test('CombiningBuilder joins part files', () async {
+    await testBuilder(
+        new CombiningBuilder(),
+        {
+          '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
+          '$_pkgName|lib/a.foo.g.part': 'some generated content',
+          '$_pkgName|lib/a.bar.g.part': 'more generated content',
+        },
+        generateFor: new Set.from(['$_pkgName|lib/a.dart']),
+        outputs: {
+          '$_pkgName|lib/a.g.dart': decodedMatches(
+              contains('some generated content\nmore generated content')),
+        });
+  });
+
+  test('CombiningBuilder outputs nothing if no part files are found', () async {
+    await testBuilder(
+        new CombiningBuilder(),
+        {
+          '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
+        },
+        generateFor: new Set.from(['$_pkgName|lib/a.dart']),
+        outputs: {});
   });
 
   test('can skip formatting with a trivial lambda', () async {
