@@ -12,9 +12,11 @@ const _outputExtensions = '.g.dart';
 const _partFiles = '.g.part';
 
 /// A [Builder] which combines part files generated from [SharedPartBuilder].
+///
+/// This will glob all files of the form `.*.g.part`.
 class CombiningBuilder extends Builder {
   @override
-  final Map<String, List<String>> buildExtensions = {
+  final Map<String, List<String>> buildExtensions = const {
     '.dart': const [_outputExtensions]
   };
 
