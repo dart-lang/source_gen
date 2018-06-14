@@ -185,7 +185,9 @@ class SharedPartBuilder extends _Builder {
 class PartBuilder extends _Builder {
   /// Wrap [generators] as a [Builder] that generates `part of` files.
   ///
-  /// Will create a `.g.dart` file for each `.dart` input.
+  /// [generatedExtension] indiciates what files will be created for each
+  /// `.dart` input. The [generatedExtension] should *not* be `.g.dart`. If you
+  /// wish to produce `.g.dart` files please use [SharedPartBuilder].
   ///
   /// If any generator in [generators] will create additional outputs through
   /// the [BuildStep] they should be indicated in [additionalOutputExtensions].
@@ -196,13 +198,13 @@ class PartBuilder extends _Builder {
   /// [header] is used to specify the content at the top of each generated file.
   /// If `null`, the content of [defaultFileHeader] is used.
   /// If [header] is an empty `String` no header is added.
-  PartBuilder(List<Generator> generators,
+  PartBuilder(List<Generator> generators, String generatedExtension,
       {String formatOutput(String code),
       List<String> additionalOutputExtensions = const [],
       String header})
       : super(generators,
             formatOutput: formatOutput,
-            generatedExtension: '.g.dart',
+            generatedExtension: generatedExtension,
             additionalOutputExtensions: additionalOutputExtensions,
             header: header);
 }

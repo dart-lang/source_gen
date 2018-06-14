@@ -1,9 +1,10 @@
 ## 0.9.0
 
-* `PartBuilder` no longer takes configurable generated outputs. It will only
-  output to `.g.dart`.
 * Introduce `SharedPartBuilder` for creating part files that can be merged
   with a new `CombiningBuilder`.
+* `PartBuilder` now requires a `generatedExtensions` argument. The value should
+  not be `.g.dart`. To produce `.g.dart` files please use the
+  `SharedPartBuilder`.
 
 ## 0.8.2
 
