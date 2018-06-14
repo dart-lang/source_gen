@@ -6,6 +6,7 @@ import 'dart:async';
 
 import 'package:build/build.dart';
 import 'package:glob/glob.dart';
+import 'package:stream_transform/stream_transform.dart';
 import 'src/builder.dart';
 
 const _outputExtensions = '.g.dart';
@@ -22,13 +23,13 @@ class CombiningBuilder extends Builder {
 
   @override
   Future build(BuildStep buildStep) async {
-    var assets = await Future.wait(await buildStep
-        .findAssets(
-            new Glob(buildStep.inputId.changeExtension('.*$_partFiles').path))
-        .map(buildStep.readAsString)
-        .toList());
-    final outputId = buildStep.inputId.changeExtension(_outputExtensions);
+    var pattern = buildStep.inputId.changeExtension('.*$_partFiles').path;
+    var assets = await buildStep
+        .findAssets(new Glob(pattern))
+        .transform(concurrentAsyncMap(buildStep.readAsString))
+        .join('\n');
     if (assets.isEmpty) return;
-    await buildStep.writeAsString(outputId, assets.join('\n'));
+    await buildStep.writeAsString(
+        buildStep.inputId.changeExtension(_outputExtensions), assets);
   }
 }
