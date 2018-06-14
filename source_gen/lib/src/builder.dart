@@ -28,10 +28,13 @@ class _Builder extends Builder {
   /// Whether to emit a standalone (non-`part`) file in this builder.
   final bool _isStandalone;
 
-  final String _header;
-
   /// Whether to include `part of` in the output.
+  ///
+  /// This allows the easy merging of outputs without multiple `part of`
+  /// statements.
   final bool _outputPartOf;
+
+  final String _header;
 
   @override
   final Map<String, List<String>> buildExtensions;

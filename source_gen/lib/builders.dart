@@ -6,6 +6,7 @@ import 'dart:async';
 
 import 'package:build/build.dart';
 import 'package:glob/glob.dart';
+import 'package:source_gen/src/utils.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'src/builder.dart';
 
@@ -29,7 +30,8 @@ class CombiningBuilder extends Builder {
         .transform(concurrentAsyncMap(buildStep.readAsString))
         .join('\n');
     if (assets.isEmpty) return;
-    var output = 'part of\n$assets';
+    var partOf = nameOfPartial(await buildStep.inputLibrary, buildStep.inputId);
+    var output = 'part of $partOf\n$assets';
     await buildStep.writeAsString(
         buildStep.inputId.changeExtension(_outputExtensions), output);
   }
