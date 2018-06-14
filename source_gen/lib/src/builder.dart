@@ -30,6 +30,9 @@ class _Builder extends Builder {
 
   final String _header;
 
+  /// Whether to include `part of` in the output.
+  final bool _outputPartOf;
+
   @override
   final Map<String, List<String>> buildExtensions;
 
@@ -39,14 +42,16 @@ class _Builder extends Builder {
       String generatedExtension = '.g.dart',
       List<String> additionalOutputExtensions = const [],
       bool isStandalone = false,
-      String header})
+      String header,
+      bool outputPartOf = true})
       : _generatedExtension = generatedExtension,
         buildExtensions = {
           '.dart': [generatedExtension]..addAll(additionalOutputExtensions)
         },
         _isStandalone = isStandalone,
         formatOutput = formatOutput ?? _formatter.format,
-        _header = (header ?? defaultFileHeader).trim() {
+        _header = (header ?? defaultFileHeader).trim(),
+        _outputPartOf = outputPartOf {
     if (_generatedExtension == null) {
       throw new ArgumentError.notNull('generatedExtension');
     }
@@ -104,7 +109,7 @@ class _Builder extends Builder {
         log.warning('Missing "part \'$part\';".');
       }
       contentBuffer.writeln();
-      contentBuffer.writeln('part of $name;');
+      if (_outputPartOf) contentBuffer.writeln('part of $name;');
     }
 
     for (var item in generatedOutputs) {
@@ -172,17 +177,18 @@ class SharedPartBuilder extends _Builder {
             formatOutput: formatOutput,
             generatedExtension: '$partId.g.part',
             additionalOutputExtensions: additionalOutputExtensions,
-            header: header);
+            header: header,
+            outputPartOf: false);
 }
 
 /// A [Builder] which generates `part of` files.
 class PartBuilder extends _Builder {
   /// Wrap [generators] as a [Builder] that generates `part of` files.
   ///
-  /// [generatedExtension] indicates what files will be created for each `.dart`
-  /// input. Defaults to `.g.dart`. If any generator in [generators] will create
-  /// additional outputs through the [BuildStep] they should be indicated in
-  /// [additionalOutputExtensions].
+  /// Will create a `.g.dart` file for each `.dart` input.
+  ///
+  /// If any generator in [generators] will create additional outputs through
+  /// the [BuildStep] they should be indicated in [additionalOutputExtensions].
   ///
   /// [formatOutput] is called to format the generated code. Defaults to
   /// [DartFormatter.format].
@@ -192,12 +198,11 @@ class PartBuilder extends _Builder {
   /// If [header] is an empty `String` no header is added.
   PartBuilder(List<Generator> generators,
       {String formatOutput(String code),
-      String generatedExtension = '.g.dart',
       List<String> additionalOutputExtensions = const [],
       String header})
       : super(generators,
             formatOutput: formatOutput,
-            generatedExtension: generatedExtension,
+            generatedExtension: '.g.dart',
             additionalOutputExtensions: additionalOutputExtensions,
             header: header);
 }

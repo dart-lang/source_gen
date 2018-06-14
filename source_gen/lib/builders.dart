@@ -29,7 +29,8 @@ class CombiningBuilder extends Builder {
         .transform(concurrentAsyncMap(buildStep.readAsString))
         .join('\n');
     if (assets.isEmpty) return;
+    var output = 'part of\n$assets';
     await buildStep.writeAsString(
-        buildStep.inputId.changeExtension(_outputExtensions), assets);
+        buildStep.inputId.changeExtension(_outputExtensions), output);
   }
 }

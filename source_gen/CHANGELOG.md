@@ -1,3 +1,10 @@
+## 0.9.0
+
+* `PartBuilder` no longer takes configurable generated outputs. It will only
+  output to `.g.dart`.
+* Introduce `SharedPartBuilder` for creating part files that can be merged
+  with a new `CombiningBuilder`.
+
 ## 0.8.2
 
 * Simplification to the output of generator names in header sections.
@@ -7,9 +14,6 @@
   * If the output from a generator is empty or whitespace-only, it is ignored.
   * These changes will likely have no effect on output, unless you customize
     the code formatter.
-
-* Introduce `SharedPartBuilder` for creating part files that can be merged
-  with a new `CombiningBuilder`.
 
 ## 0.8.1+3
 
