@@ -201,7 +201,8 @@ void main() {
         throwsA(const TypeMatcher<UnresolvedAnnotationException>().having(
             (e) => e.toString(),
             'toString',
-            contains('Could not resolve annotation for class X'))));
+            allOf(contains('Could not resolve annotation for class X'),
+                contains('@deprecated')))));
   });
 
   test('should check multiple checkers', () {
