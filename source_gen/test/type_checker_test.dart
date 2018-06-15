@@ -197,15 +197,11 @@ void main() {
     final $deprecated = const TypeChecker.fromRuntime(Deprecated);
 
     expect(
-      () => $deprecated.annotationsOf(classX),
-      throwsA(allOf(
-          const isInstanceOf<UnresolvedAnnotationException>(),
-          predicate((e) => e
-              .toString()
-              .contains('Could not resolve annotation for class X')),
-          predicate((e) => e.toString().contains('@depracated')))),
-      reason: 'deprecated was spelled wrong; no annotation can be resolved',
-    );
+        () => $deprecated.annotationsOf(classX),
+        throwsA(const TypeMatcher<UnresolvedAnnotationException>().having(
+            (e) => e.toString(),
+            'toString',
+            contains('Could not resolve annotation for class X'))));
   });
 
   test('should check multiple checkers', () {
@@ -357,4 +353,4 @@ void main() {
 }
 
 final throwsUnresolvedAnnotationException =
-    throwsA(const isInstanceOf<UnresolvedAnnotationException>());
+    throwsA(const TypeMatcher<UnresolvedAnnotationException>());
