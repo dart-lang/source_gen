@@ -202,7 +202,7 @@ void main() {
             (e) => e.toString(),
             'toString',
             allOf(contains('Could not resolve annotation for class X'),
-                contains('@deprecated')))));
+                contains('@depracated')))));
   });
 
   test('should check multiple checkers', () {
