@@ -204,8 +204,10 @@ void main() {
 
   test('SharedPartBuilder outputs <partId>.g.part files', () async {
     await testBuilder(
-        new SharedPartBuilder([const UnformattedCodeGenerator()], '.foo',
-            header: ''),
+        new SharedPartBuilder(
+          [const UnformattedCodeGenerator()],
+          '.foo',
+        ),
         {'$_pkgName|lib/a.dart': 'library a; part "a.g.dart";'},
         generateFor: new Set.from(['$_pkgName|lib/a.dart']),
         outputs: {
@@ -217,8 +219,10 @@ void main() {
   test('SharedPartBuilder does not output files which contain `part of`',
       () async {
     await testBuilder(
-        new SharedPartBuilder([const UnformattedCodeGenerator()], '.foo',
-            header: ''),
+        new SharedPartBuilder(
+          [const UnformattedCodeGenerator()],
+          '.foo',
+        ),
         {'$_pkgName|lib/a.dart': 'library a; part "a.g.dart";'},
         generateFor: new Set.from(['$_pkgName|lib/a.dart']),
         outputs: {
@@ -231,12 +235,43 @@ void main() {
       () async {
     expect(
         () => testBuilder(
-              new SharedPartBuilder([const UnformattedCodeGenerator()], 'foo',
-                  header: ''),
+              new SharedPartBuilder(
+                [const UnformattedCodeGenerator()],
+                'foo',
+              ),
               {'$_pkgName|lib/a.dart': 'library a; part "a.g.dart";'},
               generateFor: new Set.from(['$_pkgName|lib/a.dart']),
             ),
         throwsArgumentError);
+  });
+
+  test('CombiningBuilder uses a custom header when provided', () async {
+    await testBuilder(
+        new CombiningBuilder(header: _customHeader),
+        {
+          '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
+          '$_pkgName|lib/a.foo.g.part': 'some generated content'
+        },
+        generateFor: new Set.from(['$_pkgName|lib/a.dart']),
+        outputs: {
+          '$_pkgName|lib/a.g.dart':
+              decodedMatches(startsWith('$_customHeader\n\npart of')),
+        });
+  });
+
+  test(
+      'CombiningBuilder doesn\'t put a header in when an empty string '
+      'is provided', () async {
+    await testBuilder(
+        new CombiningBuilder(header: ''),
+        {
+          '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
+          '$_pkgName|lib/a.foo.g.part': 'some generated content'
+        },
+        generateFor: new Set.from(['$_pkgName|lib/a.dart']),
+        outputs: {
+          '$_pkgName|lib/a.g.dart': decodedMatches(startsWith('part of')),
+        });
   });
 
   test('CombiningBuilder outputs `.g.dart` files', () async {

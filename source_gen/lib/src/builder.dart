@@ -168,19 +168,13 @@ class SharedPartBuilder extends _Builder {
   ///
   /// [formatOutput] is called to format the generated code. Defaults to
   /// [DartFormatter.format].
-  ///
-  /// [header] is used to specify the content at the top of each generated file.
-  /// If `null`, the content of [defaultFileHeader] is used.
-  /// If [header] is an empty `String` no header is added.
   SharedPartBuilder(List<Generator> generators, String partId,
       {String formatOutput(String code),
-      List<String> additionalOutputExtensions = const [],
-      String header})
+      List<String> additionalOutputExtensions = const []})
       : super(generators,
             formatOutput: formatOutput,
             generatedExtension: '$partId.g.part',
             additionalOutputExtensions: additionalOutputExtensions,
-            header: header,
             outputPartOf: false);
 }
 
