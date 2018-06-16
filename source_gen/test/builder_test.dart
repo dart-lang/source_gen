@@ -202,33 +202,34 @@ void main() {
         });
   });
 
-  test('SharedPartBuilder outputs <partId>.g.part files', () async {
-    await testBuilder(
-        new SharedPartBuilder(
-          [const UnformattedCodeGenerator()],
-          'foo',
-        ),
-        {'$_pkgName|lib/a.dart': 'library a; part "a.g.dart";'},
-        generateFor: new Set.from(['$_pkgName|lib/a.dart']),
-        outputs: {
-          '$_pkgName|lib/a.foo.g.part':
-              decodedMatches(contains(UnformattedCodeGenerator.formattedCode)),
-        });
-  });
+  group('ShardPartBilder', () {
+    test('outputs <partId>.g.part files', () async {
+      await testBuilder(
+          new SharedPartBuilder(
+            [const UnformattedCodeGenerator()],
+            'foo',
+          ),
+          {'$_pkgName|lib/a.dart': 'library a; part "a.g.dart";'},
+          generateFor: new Set.from(['$_pkgName|lib/a.dart']),
+          outputs: {
+            '$_pkgName|lib/a.foo.g.part': decodedMatches(
+                contains(UnformattedCodeGenerator.formattedCode)),
+          });
+    });
 
-  test('SharedPartBuilder does not output files which contain `part of`',
-      () async {
-    await testBuilder(
-        new SharedPartBuilder(
-          [const UnformattedCodeGenerator()],
-          'foo',
-        ),
-        {'$_pkgName|lib/a.dart': 'library a; part "a.g.dart";'},
-        generateFor: new Set.from(['$_pkgName|lib/a.dart']),
-        outputs: {
-          '$_pkgName|lib/a.foo.g.part':
-              decodedMatches(isNot(contains('part of'))),
-        });
+    test('does not output files which contain `part of`', () async {
+      await testBuilder(
+          new SharedPartBuilder(
+            [const UnformattedCodeGenerator()],
+            'foo',
+          ),
+          {'$_pkgName|lib/a.dart': 'library a; part "a.g.dart";'},
+          generateFor: new Set.from(['$_pkgName|lib/a.dart']),
+          outputs: {
+            '$_pkgName|lib/a.foo.g.part':
+                decodedMatches(isNot(contains('part of'))),
+          });
+    });
   });
 
   test('CombiningBuilder includes a generated code header', () async {
@@ -252,7 +253,8 @@ void main() {
         'ends with `.`': 'foo.',
         'is empty': '',
         'contains whitespace': 'coo bob',
-        'contains symbols': '%oops'
+        'contains symbols': '%oops',
+        'contains . in the middle': 'cool.thing'
       }.entries) {
         test('throws if the partId ${entry.key}', () async {
           expect(
@@ -266,56 +268,74 @@ void main() {
     });
   });
 
-  test('CombiningBuilder outputs `.g.dart` files', () async {
-    await testBuilder(
-        new CombiningBuilder(),
-        {
-          '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
-          '$_pkgName|lib/a.foo.g.part': 'some generated content'
-        },
-        generateFor: new Set.from(['$_pkgName|lib/a.dart']),
-        outputs: {
-          '$_pkgName|lib/a.g.dart':
-              decodedMatches(contains('some generated content')),
-        });
-  });
+  group('CombiningBuilder', () {
+    test('outputs `.g.dart` files', () async {
+      await testBuilder(
+          new CombiningBuilder(),
+          {
+            '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
+            '$_pkgName|lib/a.foo.g.part': 'some generated content'
+          },
+          generateFor: new Set.from(['$_pkgName|lib/a.dart']),
+          outputs: {
+            '$_pkgName|lib/a.g.dart':
+                decodedMatches(contains('some generated content')),
+          });
+    });
 
-  test('CombiningBuilder outputs contain `part of`', () async {
-    await testBuilder(
-        new CombiningBuilder(),
-        {
-          '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
-          '$_pkgName|lib/a.foo.g.part': 'some generated content'
-        },
-        generateFor: new Set.from(['$_pkgName|lib/a.dart']),
-        outputs: {
-          '$_pkgName|lib/a.g.dart': decodedMatches(contains('part of')),
-        });
-  });
+    test('outputs contain `part of`', () async {
+      await testBuilder(
+          new CombiningBuilder(),
+          {
+            '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
+            '$_pkgName|lib/a.foo.g.part': 'some generated content'
+          },
+          generateFor: new Set.from(['$_pkgName|lib/a.dart']),
+          outputs: {
+            '$_pkgName|lib/a.g.dart': decodedMatches(contains('part of')),
+          });
+    });
 
-  test('CombiningBuilder joins part files', () async {
-    await testBuilder(
-        new CombiningBuilder(),
-        {
-          '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
-          '$_pkgName|lib/a.foo.g.part': 'some generated content',
-          '$_pkgName|lib/a.bar.g.part': 'more generated content',
-        },
-        generateFor: new Set.from(['$_pkgName|lib/a.dart']),
-        outputs: {
-          '$_pkgName|lib/a.g.dart': decodedMatches(
-              contains('some generated content\nmore generated content')),
-        });
-  });
+    test('joins part files', () async {
+      await testBuilder(
+          new CombiningBuilder(),
+          {
+            '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
+            '$_pkgName|lib/a.foo.g.part': 'some generated content',
+            '$_pkgName|lib/a.bar.g.part': 'more generated content',
+          },
+          generateFor: new Set.from(['$_pkgName|lib/a.dart']),
+          outputs: {
+            '$_pkgName|lib/a.g.dart': decodedMatches(
+                contains('some generated content\nmore generated content')),
+          });
+    });
 
-  test('CombiningBuilder outputs nothing if no part files are found', () async {
-    await testBuilder(
-        new CombiningBuilder(),
-        {
-          '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
-        },
-        generateFor: new Set.from(['$_pkgName|lib/a.dart']),
-        outputs: {});
+    test('joins only associated part files', () async {
+      await testBuilder(
+          new CombiningBuilder(),
+          {
+            '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
+            '$_pkgName|lib/a.foo.g.part': 'some generated content',
+            '$_pkgName|lib/a.bar.g.part': 'more generated content',
+            '$_pkgName|lib/a.bar.other.g.part': 'skipped generated content',
+          },
+          generateFor: new Set.from(['$_pkgName|lib/a.dart']),
+          outputs: {
+            '$_pkgName|lib/a.g.dart': decodedMatches(
+                contains('some generated content\nmore generated content')),
+          });
+    });
+
+    test('outputs nothing if no part files are found', () async {
+      await testBuilder(
+          new CombiningBuilder(),
+          {
+            '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
+          },
+          generateFor: new Set.from(['$_pkgName|lib/a.dart']),
+          outputs: {});
+    });
   });
 
   test('can skip formatting with a trivial lambda', () async {
