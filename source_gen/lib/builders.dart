@@ -22,14 +22,6 @@ class CombiningBuilder extends Builder {
     '.dart': const [_outputExtensions]
   };
 
-  final String _header;
-
-  /// [header] is used to specify the content at the top of each generated file.
-  /// If `null`, the content of [defaultFileHeader] is used.
-  /// If [header] is an empty `String` no header is added.
-  CombiningBuilder({String header})
-      : this._header = header ?? defaultFileHeader;
-
   @override
   Future build(BuildStep buildStep) async {
     var pattern = buildStep.inputId.changeExtension('.*$_partFiles').path;
@@ -39,9 +31,7 @@ class CombiningBuilder extends Builder {
         .join('\n');
     if (assets.isEmpty) return;
     var partOf = nameOfPartial(await buildStep.inputLibrary, buildStep.inputId);
-    var output = '';
-    if (_header.isNotEmpty) output += '$_header\n\n';
-    output += 'part of $partOf\n$assets';
+    var output = '$defaultFileHeader\n\npart of $partOf\n$assets';
     await buildStep.writeAsString(
         buildStep.inputId.changeExtension(_outputExtensions), output);
   }
