@@ -6,7 +6,7 @@
 import 'dart:async';
 
 import 'package:build_test/build_test.dart';
-import 'package:source_gen/builders.dart';
+import 'package:source_gen/builder.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
