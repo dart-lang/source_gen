@@ -173,9 +173,17 @@ class SharedPartBuilder extends _Builder {
       List<String> additionalOutputExtensions = const []})
       : super(generators,
             formatOutput: formatOutput,
-            generatedExtension: '$partId.g.part',
+            generatedExtension: '.$partId.g.part',
             additionalOutputExtensions: additionalOutputExtensions,
-            outputPartOf: false);
+            outputPartOf: false) {
+    if (!_partIdRegExp.hasMatch(partId)) {
+      throw new ArgumentError.value(
+          partId,
+          'partId',
+          '`partId` can only contain letters, numbers, `_` and `.`. '
+          'It cannot start or end with `.`.');
+    }
+  }
 }
 
 /// A [Builder] which generates `part of` files.
@@ -269,3 +277,7 @@ final _formatter = new DartFormatter();
 const defaultFileHeader = '// GENERATED CODE - DO NOT MODIFY BY HAND';
 
 final _headerLine = '// '.padRight(77, '*');
+
+const partIdRegExpLiteral = r'[A-Za-z_\d]+';
+
+final _partIdRegExp = new RegExp('^$partIdRegExpLiteral\$');
