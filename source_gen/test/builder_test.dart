@@ -206,7 +206,7 @@ void main() {
     await testBuilder(
         new SharedPartBuilder(
           [const UnformattedCodeGenerator()],
-          '.foo',
+          'foo',
         ),
         {'$_pkgName|lib/a.dart': 'library a; part "a.g.dart";'},
         generateFor: new Set.from(['$_pkgName|lib/a.dart']),
@@ -221,7 +221,7 @@ void main() {
     await testBuilder(
         new SharedPartBuilder(
           [const UnformattedCodeGenerator()],
-          '.foo',
+          'foo',
         ),
         {'$_pkgName|lib/a.dart': 'library a; part "a.g.dart";'},
         generateFor: new Set.from(['$_pkgName|lib/a.dart']),
@@ -229,20 +229,6 @@ void main() {
           '$_pkgName|lib/a.foo.g.part':
               decodedMatches(isNot(contains('part of'))),
         });
-  });
-
-  test('SharedPartBuilder throws if the partId does not start with .',
-      () async {
-    expect(
-        () => testBuilder(
-              new SharedPartBuilder(
-                [const UnformattedCodeGenerator()],
-                'foo',
-              ),
-              {'$_pkgName|lib/a.dart': 'library a; part "a.g.dart";'},
-              generateFor: new Set.from(['$_pkgName|lib/a.dart']),
-            ),
-        throwsArgumentError);
   });
 
   test('CombiningBuilder includes a generated code header', () async {
@@ -257,6 +243,27 @@ void main() {
           '$_pkgName|lib/a.g.dart': decodedMatches(
               startsWith('// GENERATED CODE - DO NOT MODIFY BY HAND')),
         });
+  });
+
+  group('ShardPartBilder', () {
+    group('constructor', () {
+      for (var entry in {
+        'starts with `.`': '.foo',
+        'ends with `.`': 'foo.',
+        'is empty': '',
+        'contains whitespace': 'coo bob',
+        'contains symbols': '%oops'
+      }.entries) {
+        test('throws if the partId ${entry.key}', () async {
+          expect(
+              () => new SharedPartBuilder(
+                    [const UnformattedCodeGenerator()],
+                    entry.value,
+                  ),
+              throwsArgumentError);
+        });
+      }
+    });
   });
 
   test('CombiningBuilder outputs `.g.dart` files', () async {
