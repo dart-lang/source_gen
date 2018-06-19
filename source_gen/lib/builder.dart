@@ -24,14 +24,19 @@ const _outputExtensions = '.g.dart';
 const _partFiles = '.g.part';
 
 Builder combiningBuilder([BuilderOptions options]) {
-  if (options != null && options.config.isNotEmpty) {
+  var optionsMap = new Map<String, dynamic>.from(options?.config ?? {});
+
+  var builder = new CombiningBuilder(
+      includePartName: optionsMap.remove('include_part_name') as bool);
+
+  if (optionsMap.isNotEmpty) {
     if (log == null) {
       throw new StateError('Upgrade `build_runner` to at least 0.8.2.');
     } else {
-      log.warning('These options were ignored: `${options.config}`.');
+      log.warning('These options were ignored: `$optionsMap`.');
     }
   }
-  return const CombiningBuilder();
+  return builder;
 }
 
 /// A [Builder] which combines part files generated from [SharedPartBuilder].
