@@ -38,12 +38,20 @@ Builder combiningBuilder([BuilderOptions options]) {
 ///
 /// This will glob all files of the form `.*.g.part`.
 class CombiningBuilder implements Builder {
+  final bool _includePartName;
+
   @override
   Map<String, List<String>> get buildExtensions => const {
         '.dart': const [_outputExtensions]
       };
 
-  const CombiningBuilder();
+  /// Returns a new [CombiningBuilder].
+  ///
+  /// If [includePartName] is `true`, the name of each source part file
+  /// is output as a comment before its content. This can be useful when
+  /// debugging build issues.
+  const CombiningBuilder({bool includePartName = false})
+      : _includePartName = includePartName ?? false;
 
   @override
   Future build(BuildStep buildStep) async {
@@ -78,8 +86,13 @@ class CombiningBuilder implements Builder {
     });
 
     var assets = await new Stream.fromIterable(assetIds)
-        .asyncMap(buildStep.readAsString)
-        .map((s) => s.trim())
+        .asyncMap((id) async {
+          var content = (await buildStep.readAsString(id)).trim();
+          if (_includePartName) {
+            content = '// Part: ${id.pathSegments.last}\n$content';
+          }
+          return content;
+        })
         .where((s) => s.isNotEmpty)
         .join('\n\n');
     if (assets.isEmpty) return;
