@@ -16,17 +16,26 @@ class GeneratedOutput {
 
   GeneratedOutput(this.generator, this.output)
       : error = null,
-        stackTrace = null;
+        stackTrace = null,
+        assert(output != null),
+        assert(output.isNotEmpty),
+        // assuming length check is cheaper than simple string equality
+        assert(output.length == output.trim().length);
 
-  GeneratedOutput.fromError(this.generator, this.error, [this.stackTrace])
+  GeneratedOutput.fromError(this.generator, this.error, this.stackTrace)
       : this.output = _outputFromError(error);
+
+  @override
+  String toString() {
+    var output = generator.toString();
+    if (output.endsWith('Generator')) {
+      return output;
+    }
+    return 'Generator: $output';
+  }
 }
 
 String _outputFromError(Object error) {
-  if (error == null) {
-    throw new ArgumentError.notNull('error');
-  }
-
   var buffer = new StringBuffer();
 
   _commentWithHeader(_errorHeader, error.toString(), buffer);

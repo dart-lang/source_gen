@@ -1,4 +1,54 @@
+## 0.9.0
+
+* Introduce `SharedPartBuilder` for creating part files that can be merged
+  with a new `CombiningBuilder`. Note that `CombiningBuilder` only outputs
+  `.g.dart` files.
+* `PartBuilder` now requires a `generatedExtensions` argument. The value should
+  not be `.g.dart`. To produce `.g.dart` files please use the
+  `SharedPartBuilder`.
+* `GeneratorForAnnotation`
+  * **BREAKING** `generateForAnnotatedElement` now takes two arguments instead
+    of three: `(AnnotatedElement annotatedElement, BuildStep buildStep)`.
+    `AnnotatedElement` contains the `element` and `annotation` values.
+
+## 0.8.3
+
+* `GeneratorForAnnotation`
+  * `generateForAnnotatedElement` now allow multiple return values when
+    implementations return an `Iterable` or `Stream`.
+  * Values from `generateForAnnotatedElement` have whitespace trimmed. `null`
+    and empty values are ignored.
+  * Duplicate values are collapsed into a single values. This allows emitting
+    shared, top-level members without naming collisions.
+
+## 0.8.2
+
+* Simplification to the output of generator names in header sections.
+
+* Update handling of whitespace in generator outputs.
+  * If the output from a generator has wrapping whitespace, it is trimmed.
+  * If the output from a generator is empty or whitespace-only, it is ignored.
+  * These changes will likely have no effect on output, unless you customize
+    the code formatter.
+
+## 0.8.1+3
+
+* More redundant new lines elimination.
+
+## 0.8.1+2
+
+* Eliminate redundant new lines in the core builder. These were almost removed
+  by running the default formatter. Now the unformatted code more closely
+  matches the default output. 
+
+## 0.8.1+1
+
+* Support `package:analyzer` `0.32.0`.
+
 ## 0.8.1
+
+* Cleanup logging output that duplicates headers provided by 
+  `package:build_runner`.
 
 * `InvalidGenerationSourceError` added an optional `element`
   parameter to support more helpful error messages.

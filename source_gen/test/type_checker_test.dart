@@ -8,6 +8,7 @@ import 'dart:collection';
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
@@ -38,8 +39,8 @@ void main() {
     ''', (resolver) async {
       core = await resolver.findLibraryByName('dart.core');
       collection = await resolver.findLibraryByName('dart.collection');
-      sourceGen =
-          new LibraryReader(await resolver.findLibraryByName('source_gen'));
+      sourceGen = new LibraryReader(await resolver.libraryFor(
+          new AssetId.resolve('asset:source_gen/lib/source_gen.dart')));
     });
 
     var staticIterable = core.getType('Iterable').type;
@@ -196,15 +197,12 @@ void main() {
     final $deprecated = const TypeChecker.fromRuntime(Deprecated);
 
     expect(
-      () => $deprecated.annotationsOf(classX),
-      throwsA(allOf(
-          const isInstanceOf<UnresolvedAnnotationException>(),
-          predicate((e) => e
-              .toString()
-              .contains('Could not resolve annotation for class X')),
-          predicate((e) => e.toString().contains('@depracated')))),
-      reason: 'deprecated was spelled wrong; no annotation can be resolved',
-    );
+        () => $deprecated.annotationsOf(classX),
+        throwsA(const TypeMatcher<UnresolvedAnnotationException>().having(
+            (e) => e.toString(),
+            'toString',
+            allOf(contains('Could not resolve annotation for class X'),
+                contains('@depracated')))));
   });
 
   test('should check multiple checkers', () {
@@ -356,4 +354,4 @@ void main() {
 }
 
 final throwsUnresolvedAnnotationException =
-    throwsA(const isInstanceOf<UnresolvedAnnotationException>());
+    throwsA(const TypeMatcher<UnresolvedAnnotationException>());
