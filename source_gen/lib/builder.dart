@@ -40,7 +40,7 @@ Builder combiningBuilder([BuilderOptions options]) {
 }
 
 PostProcessBuilder partCleanup(BuilderOptions options) =>
-    const FileDeletingBuilder(const ['.g.dart']);
+    const FileDeletingBuilder(const ['.g.part']);
 
 /// A [Builder] which combines part files generated from [SharedPartBuilder].
 ///
