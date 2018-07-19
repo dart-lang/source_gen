@@ -6,7 +6,7 @@ builders:
     build_extensions: {".dart": [".g.dart"]}
     auto_apply: none
     build_to: source
-    required_inputs: ['.g.part']
+    required_inputs: [".g.part"]
     applies_builders: ["source_gen|part_cleanup"]
 post_process_builders:
   part_cleanup:
