@@ -12,6 +12,3 @@ post_process_builders:
   part_cleanup:
     import: "package:source_gen/builder.dart"
     builder_factory: "partCleanup"
-    defaults:
-      options:
-        enabled: true
