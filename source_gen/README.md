@@ -114,7 +114,7 @@ wraps a single Generator to make a `Builder` which creates Dart library files.
 [angular2]: https://pub.dartlang.org/packages/angular2
 [bazel_codegen]: https://pub.dartlang.org/packages/_bazel_codegen
 [build]: https://pub.dartlang.org/packages/build
-[build_runner]: https://pub.dartlang.org/packages/build_config
+[build_config]: https://pub.dartlang.org/packages/build_config
 [build_runner]: https://pub.dartlang.org/packages/build_runner
 
 <!-- Dartdoc -->
