@@ -4,7 +4,7 @@
   access to a private class, constructor, or function _instead_ of `null` where
   possible. This allows generators that use `part` files to still use this
   functionality _and_ allows generators that use separate libraries to emit more
-  actionable error messages (i.e. "cannot use private class _X").
+  actionable error messages (i.e. `"cannot use private class _X"`).
 
 * `Revivable.isPrivate` now returns `true` when the underyling class was public
   but the constructor was private, or the `Revivable` was pointing to a
