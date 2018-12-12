@@ -167,6 +167,6 @@ class LibraryReader {
   @Deprecated('Use classes instead')
   Iterable<ClassElement> get classElements => classes;
 
-  /// All of the elemetns representing enums in this library.
+  /// All of the elements representing enums in this library.
   Iterable<ClassElement> get enums => element.units.expand((cu) => cu.enums);
 }

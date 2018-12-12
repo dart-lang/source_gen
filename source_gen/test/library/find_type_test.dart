@@ -41,7 +41,7 @@ void main() {
   test('class count', () {
     expect(library.classes.map((c) => c.name), ['Example', 'PartClass']);
     // ignore: deprecated_member_use
-    expect(library.classElements, hasLength(2));
+    expect(library.classElements, orderedEquals(library.classes));
   });
 
   test('enum count', () {

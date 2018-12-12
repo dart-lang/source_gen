@@ -1,6 +1,6 @@
 ## 0.9.3
 
-* Rename `LibraryReader.classElemetns` to `LibraryReader.classes` to better
+* Rename `LibraryReader.classElements` to `LibraryReader.classes` to better
   reflect the behavior. Deprecate the old name.
 * Add `LibraryReader.enums`.
 
