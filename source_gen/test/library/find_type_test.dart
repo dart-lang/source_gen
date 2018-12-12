@@ -15,14 +15,17 @@ final _source = r'''
   import 'dart:async' show Stream;
 
   part 'part.dart';
-  
+
   class Example {}
+  enum Enum{A,B}
 ''';
 
 final _partSource = r'''
 part of 'source.dart';
 
 class PartClass {}
+
+enum PartEnum{A,B}
 ''';
 
 void main() {
@@ -36,7 +39,12 @@ void main() {
   });
 
   test('class count', () {
+    expect(library.classes.map((c) => c.name), ['Example', 'PartClass']);
     expect(library.classElements, hasLength(2));
+  });
+
+  test('enum count', () {
+    expect(library.enums.map((e) => e.name), ['Enum', 'PartEnum']);
   });
 
   test('should return a type not exported', () {
