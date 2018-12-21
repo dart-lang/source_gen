@@ -18,16 +18,6 @@ jobs:
       script: ./tool/travis.sh dartfmt dartanalyzer
       env: PKG="example"
       dart: stable
-    - stage: unit_test
-      name: "SDK: dev - DIR: example - TASKS: pub run build_runner test -- -j 1"
-      script: ./tool/travis.sh command
-      env: PKG="example"
-      dart: dev
-    - stage: unit_test
-      name: "SDK: stable - DIR: example - TASKS: pub run build_runner test -- -j 1"
-      script: ./tool/travis.sh command
-      env: PKG="example"
-      dart: stable
     - stage: analyze_format
       name: "SDK: dev - DIR: example_usage - TASKS: [dartfmt -n --set-exit-if-changed ., dartanalyzer --fatal-infos --fatal-warnings .]"
       script: ./tool/travis.sh dartfmt dartanalyzer
