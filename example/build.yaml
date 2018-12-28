@@ -18,7 +18,7 @@ builders:
   # `build_extensions` set to a `NAME.g.part` file.
   #    NAME corresponds to the second argument to the SharedPartBuilder ctor.
   #    `.g.part` is the extension expected of SharedPartBuilder.
-  # `build_to: cache` - the output is not pub directly into the project
+  # `build_to: cache` - the output is not put directly into the project
   # `applies_builders` - uses the `combining_builder` from `source_gen` to
   #   combine the parts from each builder into one part file.
 
