@@ -195,7 +195,7 @@ class SharedPartBuilder extends _Builder {
 
 /// A [Builder] which generates `part of` files.
 ///
-/// Each output should correspond to a `part` direvtive in the primary input,
+/// Each output should correspond to a `part` directive in the primary input,
 /// this will be validated.
 ///
 /// Content output by each generator is concatenated and written to the output.
