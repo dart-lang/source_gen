@@ -151,12 +151,12 @@ class _Builder extends Builder {
   }
 }
 
-/// A [Builder] which generates content intended for a `part of` files.
+/// A [Builder] which generates content intended for `part of` files.
 ///
 /// Generated files will be prefixed with a `partId` to ensure multiple
 /// [SharedPartBuilder]s can produce non conflicting `part of` files. When the
 /// `source_gen|combining_builder` is applied to the primary input these
-/// snippets will be conacatenated into the final output.
+/// snippets will be conacatenated into the final `.g.dart` output.
 ///
 /// This builder can be used when multiple generators may need to output to the
 /// same part file but [PartBuilder] can't be used because the generators are
@@ -194,6 +194,10 @@ class SharedPartBuilder extends _Builder {
 }
 
 /// A [Builder] which generates `part of` files.
+///
+/// This builder should be avoided - prefer using [SharedPartBuilder] and
+/// generating content that can be merged with output from other builders into a
+/// common `.g.dart` part file.
 ///
 /// Each output should correspond to a `part` directive in the primary input,
 /// this will be validated.
