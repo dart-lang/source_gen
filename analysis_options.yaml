@@ -57,7 +57,8 @@ linter:
     - package_names
     - package_prefixed_library_names
     - prefer_adjacent_string_concatenation
-    - prefer_collection_literals
+    # TODO: reenable this once we want to pin the SDK to >=2.2.0
+    # - prefer_collection_literals
     - prefer_conditional_assignment
     - prefer_const_constructors
     - prefer_contains
