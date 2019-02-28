@@ -34,6 +34,10 @@ import 'type_checker.dart';
 ///   }
 /// }
 /// ```
+///
+/// Note: this class should only be extended, not implemented. Subclasses should
+/// provide an implementation for [generateForAnnotatedElement] and avoid
+/// overriding the other members.
 abstract class GeneratorForAnnotation<T> extends Generator {
   const GeneratorForAnnotation();
 
@@ -44,9 +48,8 @@ abstract class GeneratorForAnnotation<T> extends Generator {
     final values = Set<String>();
 
     for (var annotatedElement in library.annotatedWith(typeChecker)) {
-      final generatedValue = generateForAnnotatedElement(
-          annotatedElement.element, annotatedElement.annotation, buildStep);
-      await for (var value in normalizeGeneratorOutput(generatedValue)) {
+      await for (var value in generateForAnnotatedElementStream(
+          annotatedElement.element, annotatedElement.annotation, buildStep)) {
         assert(value == null || (value.length == value.trim().length));
         values.add(value);
       }
@@ -54,6 +57,14 @@ abstract class GeneratorForAnnotation<T> extends Generator {
 
     return values.join('\n\n');
   }
+
+  /// Normalizes the value returned by [generateForAnnotatedElement].
+  ///
+  /// See [generateForAnnotatedElement] for details on the parameters.
+  Stream<String> generateForAnnotatedElementStream(
+          Element element, ConstantReader annotation, BuildStep buildStep) =>
+      normalizeGeneratorOutput(
+          generateForAnnotatedElement(element, annotation, buildStep));
 
   /// Implement to return source code to generate for [element].
   ///

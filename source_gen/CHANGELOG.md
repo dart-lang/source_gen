@@ -1,3 +1,9 @@
+## 0.9.5
+
+* Added `GeneratorForAnnotation.generateForAnnotatedElementStream`. Since
+  `GeneratorForAnnotation` is designed to be extended – not implemented – this
+  change is not considered breaking.
+
 ## 0.9.4+1
 
 * Support the latest `pkg:analyzer`.
