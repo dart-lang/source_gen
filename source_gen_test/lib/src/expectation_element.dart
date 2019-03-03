@@ -10,49 +10,57 @@ import 'package:source_gen_test/source_gen_test.dart';
 import 'annotations.dart';
 
 List<_ExpectationElement> genAnnotatedElements(
-        LibraryReader libraryReader, Set<String> configDefaults) =>
-    libraryReader.allElements.expand((element) {
-      // NOTE: toList is intentional here. Ensures the items are enumerated
-      // only once
-      final initialValues = _expectationElements(element).toList();
+    LibraryReader libraryReader, Set<String> configDefaults) {
+  final allElements = libraryReader.allElements.toList(growable: false)
+    ..sort((a, b) => a.name.compareTo(b.name));
 
-      final explicitConfigSet = Set<String>();
+  return allElements.expand((element) {
+    final initialValues = _expectationElements(element).toList();
 
-      for (var initialValue
-          in initialValues.where((te) => te.configurations != null)) {
-        if (initialValue.configurations.isEmpty) {
-          throw InvalidGenerationSourceError(
-            '`configuration` cannot be empty.',
-            todo: 'Leave it `null`.',
-            element: element,
-          );
-        }
-        for (var config in initialValue.configurations) {
-          if (!explicitConfigSet.add(config)) {
-            throw InvalidGenerationSourceError(
-              'There are multiple annotations configured for "$config" for '
-                  'element `${element.name}`.',
-              todo: 'Ensure each configuration is only represented once '
-                  'per member.',
-              element: element,
-            );
-          }
+    final explicitConfigSet = Set<String>();
+
+    final duplicateConfigs = Set<String>();
+
+    for (var initialValue
+        in initialValues.where((te) => te.configurations != null)) {
+      if (initialValue.configurations.isEmpty) {
+        throw InvalidGenerationSourceError(
+          '`configuration` cannot be empty.',
+          todo: 'Leave it `null`.',
+          element: element,
+        );
+      }
+      for (var config in initialValue.configurations) {
+        if (!explicitConfigSet.add(config)) {
+          duplicateConfigs.add(config);
         }
       }
+    }
 
-      return initialValues.map((te) {
-        if (te.configurations == null) {
-          final newConfigSet = configDefaults.difference(explicitConfigSet);
-          // TODO: need testing and a "real" error here!
-          assert(newConfigSet.isNotEmpty,
-              '$element $configDefaults $explicitConfigSet');
-          te = te.replaceConfiguration(newConfigSet);
-        }
-        assert(te.configurations.isNotEmpty);
+    if (duplicateConfigs.isNotEmpty) {
+      final list = duplicateConfigs.toList()..sort();
+      throw InvalidGenerationSourceError(
+        'There are multiple annotations for these configurations: '
+            '${list.map((e) => '"$e"').join(', ')}.',
+        todo: 'Ensure each configuration is only represented once per member.',
+        element: element,
+      );
+    }
 
-        return _ExpectationElement._(te, element.name);
-      });
-    }).toList();
+    return initialValues.map((te) {
+      if (te.configurations == null) {
+        final newConfigSet = configDefaults.difference(explicitConfigSet);
+        // TODO: need testing and a "real" error here!
+        assert(newConfigSet.isNotEmpty,
+            '$element $configDefaults $explicitConfigSet');
+        te = te.replaceConfiguration(newConfigSet);
+      }
+      assert(te.configurations.isNotEmpty);
+
+      return _ExpectationElement._(te, element.name);
+    });
+  }).toList();
+}
 
 const _mappers = {
   TypeChecker.fromRuntime(ShouldGenerate): _shouldGenerate,

@@ -34,8 +34,7 @@ class TestClass() {}
       expect(
         () => testAnnotatedElements(badReader, const TestGenerator()),
         throwsInvalidGenerationSourceError(
-          'There are multiple annotations configured for "c" for '
-              'element `TestClass`.',
+          'There are multiple annotations for these configurations: "c".',
           todoMatcher:
               'Ensure each configuration is only represented once per member.',
         ),
@@ -256,38 +255,43 @@ const TestClass2NameLowerCase = testclass2;
     group('additionalGenerators', () {
       test('unused generator fails', () {
         expect(
-            () => testAnnotatedElements(
-                  reader,
-                  const TestGenerator(),
-                  additionalGenerators: {'extra': const TestGenerator()}
-                    ..addAll(validAdditionalGenerators),
-                  expectedAnnotatedTests: [
-                    'TestClass1',
-                    'TestClass2',
-                    'BadTestClass',
-                    'BadTestClass',
-                    'badTestFunc',
-                    'badTestFunc',
-                  ],
-                  // 'vague' is excluded here!
-                  defaultConfiguration: ['default', 'no-prefix-required'],
-                ),
-            _throwsArgumentError(r'''
-Some of the specified generators were not used for their corresponding configurations: "extra".
-Remove the entry from `additinalGenerators` or update `defaultConfiguration`.'''));
+          () => testAnnotatedElements(
+                reader,
+                const TestGenerator(),
+                additionalGenerators: {'extra': const TestGenerator()}
+                  ..addAll(validAdditionalGenerators),
+                expectedAnnotatedTests: [
+                  'TestClass1',
+                  'TestClass2',
+                  'BadTestClass',
+                  'BadTestClass',
+                  'badTestFunc',
+                  'badTestFunc',
+                ],
+                // 'vague' is excluded here!
+                defaultConfiguration: ['default', 'no-prefix-required'],
+              ),
+          _throwsArgumentError(
+              'Some of the specified generators were not used for their '
+              'corresponding configurations: "extra".\n'
+              'Remove the entry from `additinalGenerators` or update '
+              '`defaultConfiguration`.'),
+        );
       });
 
       test('missing a specified generator fails', () {
         expect(
-          () => testAnnotatedElements(
-                reader,
-                const TestGenerator(),
-              ),
-          _throwsArgumentError(
-              'The "vague" configuration was specified for the '
-              '`badTestFunc` element, but no there is no associated generator.',
-              'additionalGenerators'),
-        );
+            () => testAnnotatedElements(
+                  reader,
+                  const TestGenerator(),
+                ),
+            _throwsArgumentError(
+                'There are elements defined with configurations with no '
+                'associated generator provided.\n'
+                '`BadTestClass`: "no-prefix-required", "vague"; '
+                '`TestClass1`: "no-prefix-required", "vague"; '
+                '`TestClass2`: "vague"; '
+                '`badTestFunc`: "vague"'));
       });
 
       test('key "default" not allowed', () {

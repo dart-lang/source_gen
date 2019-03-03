@@ -142,18 +142,18 @@ List<_AnnotatedTest> getAnnotatedClasses(
 
   final result = <_AnnotatedTest>[];
 
+  // element name -> missing configs
+  final mapMissingConfigs = <String, Set<String>>{};
+
   for (final entry in annotatedElements) {
     for (var configuration in entry.expectation.configurations) {
       final generator = generators[configuration];
 
       if (generator == null) {
-        throw ArgumentError.value(
-          additionalGenerators,
-          'additionalGenerators',
-          'The "$configuration" configuration was specified for the '
-              '`${entry.elementName}` element, but no there is no associated '
-              'generator.',
-        );
+        mapMissingConfigs
+            .putIfAbsent(entry.elementName, () => Set<String>())
+            .add(configuration);
+        continue;
       }
 
       result.add(_AnnotatedTest._(
@@ -165,6 +165,23 @@ List<_AnnotatedTest> getAnnotatedClasses(
       ));
     }
   }
+
+  if (mapMissingConfigs.isNotEmpty) {
+    final elements = mapMissingConfigs.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+
+    final message = elements.map((e) {
+      final sortedConfigs =
+          (e.value.toList()..sort()).map((v) => '"$v"').join(', ');
+      return '`${e.key}`: $sortedConfigs';
+    }).join('; ');
+
+    throw ArgumentError(
+      'There are elements defined with configurations with no associated '
+          'generator provided.\n$message',
+    );
+  }
+
   return result;
 }
 
