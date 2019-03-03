@@ -22,7 +22,7 @@ List<_ExpectationElement> genAnnotatedElements(
           in initialValues.where((te) => te.configurations != null)) {
         if (initialValue.configurations.isEmpty) {
           throw InvalidGenerationSourceError(
-            '`configuration`cannot be empty!',
+            '`configuration` cannot be empty.',
             todo: 'Leave it `null`.',
             element: element,
           );
@@ -31,7 +31,7 @@ List<_ExpectationElement> genAnnotatedElements(
           if (!explicitConfigSet.add(config)) {
             throw InvalidGenerationSourceError(
               'There are multiple annotations configured for "$config" for '
-                  'element `${element.name}`!',
+                  'element `${element.name}`.',
               todo: 'Ensure each configuration is only represented once '
                   'per member.',
               element: element,

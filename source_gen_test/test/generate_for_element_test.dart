@@ -56,7 +56,7 @@ class EmptyConfig() {}
       expect(
         () => testAnnotatedElements(badReader, const TestGenerator()),
         throwsInvalidGenerationSourceError(
-          '`configuration`cannot be empty.',
+          '`configuration` cannot be empty.',
           'Leave it `null`.',
         ),
       );
@@ -210,7 +210,7 @@ const TestClass2NameLowerCase = testclass2;
                   'no-prefix-required':
                       TestGenerator(requireTestClassPrefix: false),
                 },
-                shouldThrowDefaults: [],
+                defaultConfiguration: [],
               ),
           _throwsArgumentError(
             'Cannot be empty.',
@@ -228,7 +228,7 @@ const TestClass2NameLowerCase = testclass2;
                   'no-prefix-required':
                       TestGenerator(requireTestClassPrefix: false),
                 },
-                shouldThrowDefaults: ['unknown'],
+                defaultConfiguration: ['unknown'],
               ),
           _throwsArgumentError(
             'Contains values not associated with provided generators: '

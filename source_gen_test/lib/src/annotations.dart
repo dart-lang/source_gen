@@ -2,6 +2,12 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+// ignore_for_file: comment_references
+// Note: Should be importing the below libs instead, but we are avoiding imports
+// in this file to speed up analyzer parsing!
+// import 'package:source_gen/source_gen.dart';
+// import 'test_annotated_classes.dart';
+
 /// Non-public, implementation base class of  [ShouldGenerate] and
 /// [ShouldThrow].
 abstract class TestExpectation {
@@ -14,8 +20,9 @@ abstract class TestExpectation {
   TestExpectation replaceConfiguration(Iterable<String> newConfiguration);
 }
 
-const defaultConfigurationName = 'default';
-
+/// Specifies the expected output for code generation on the annotated member.
+///
+/// Must be used with [testAnnotatedElements].
 class ShouldGenerate extends TestExpectation {
   final String expectedOutput;
   final bool contains;
@@ -39,6 +46,10 @@ class ShouldGenerate extends TestExpectation {
   }
 }
 
+/// Specifies that an [InvalidGenerationSourceError] is expected to be thrown
+/// when running generation for the annotated member.
+///
+/// Must be used with [testAnnotatedElements].
 class ShouldThrow extends TestExpectation {
   final String errorMessage;
   final String todo;

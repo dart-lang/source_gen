@@ -14,7 +14,9 @@ import 'build_log_tracking.dart';
 import 'expectation_element.dart';
 import 'generate_for_element.dart';
 
-/// If [shouldThrowDefaults] is not provided or `null`, "default" and the keys
+const _defaultConfigurationName = 'default';
+
+/// If [defaultConfiguration] is not provided or `null`, "default" and the keys
 /// from [additionalGenerators] (if provided) are used.
 ///
 /// Tests registered by this function assume [initializeBuildLogTracking] has
@@ -29,29 +31,22 @@ void testAnnotatedElements(
   GeneratorForAnnotation defaultGenerator, {
   Map<String, GeneratorForAnnotation> additionalGenerators,
   Iterable<String> expectedAnnotatedTests,
-  Iterable<String> shouldThrowDefaults,
+  Iterable<String> defaultConfiguration,
 }) {
   for (var entry in getAnnotatedClasses(
     libraryReader,
     defaultGenerator,
     additionalGenerators: additionalGenerators,
     expectedAnnotatedTests: expectedAnnotatedTests,
-    defaultConfiguration: shouldThrowDefaults,
+    defaultConfiguration: defaultConfiguration,
   ).toList()) {
     entry._registerTest();
   }
 }
 
-/// If [defaultConfiguration] is not provided or `null`, "default" and the keys
-/// from [additionalGenerators] (if provided) are used.
-///
-/// Tests registered by this function assume [initializeBuildLogTracking] has
-/// been called.
-///
-/// If [expectedAnnotatedTests] is provided, it should contain the names of the
-/// members in [libraryReader] that are annotated for testing. If the same
-/// element is annotated for multiple tests, it should appear in the list
-/// the same number of times.
+/// An implementation member only exposed to make it easier to test
+/// [testAnnotatedElements] without registering any tests.
+@visibleForTesting
 Iterable<_AnnotatedTest> getAnnotatedClasses(
   LibraryReader libraryReader,
   GeneratorForAnnotation defaultGenerator, {
@@ -59,11 +54,9 @@ Iterable<_AnnotatedTest> getAnnotatedClasses(
   @required Iterable<String> expectedAnnotatedTests,
   @required Iterable<String> defaultConfiguration,
 }) sync* {
-  // TODO: test shouldThrowDefaults contains values != generators (should throw)
-
-  final generators = {defaultConfigurationName: defaultGenerator};
+  final generators = {_defaultConfigurationName: defaultGenerator};
   if (additionalGenerators != null) {
-    for (var invalidKey in const [defaultConfigurationName, '']) {
+    for (var invalidKey in const [_defaultConfigurationName, '']) {
       if (additionalGenerators.containsKey(invalidKey)) {
         throw ArgumentError.value(additionalGenerators, 'additionalGenerators',
             'Contained an unsupported key "$invalidKey".');
@@ -162,7 +155,7 @@ class _AnnotatedTest {
 
   String get _testName {
     var value = _elementName;
-    if (configuration != defaultConfigurationName) {
+    if (configuration != _defaultConfigurationName) {
       value += ' with configuration "$configuration"';
     }
     return value;
