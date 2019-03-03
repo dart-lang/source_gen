@@ -29,7 +29,19 @@ class TestGenerator extends GeneratorForAnnotation<TestAnnotation> {
       log.info('This member might be not good.');
     }
 
-    if (element is! ClassElement) {
+    if (element is ClassElement) {
+      final unsupportedFunc = element.methods.firstWhere(
+          (me) => me.name.contains('unsupported'),
+          orElse: () => null);
+
+      if (unsupportedFunc != null) {
+        throw InvalidGenerationSourceError(
+          'Cannot generate for classes with members that include '
+              '`unsupported` in their name.',
+          element: unsupportedFunc,
+        );
+      }
+    } else {
       throw InvalidGenerationSourceError(
         'Only supports annotated classes.',
         todo: 'Remove `TestAnnotation` from the associated element.',

@@ -249,15 +249,25 @@ class _AnnotatedTest {
   Future<Null> _shouldThrowTest() async {
     final exp = expectation as ShouldThrow;
 
+    String expectedElementName;
+
+    if (exp.element != false) {
+      if (exp.element == null || exp.element == true) {
+        expectedElementName = _elementName;
+      } else {
+        expectedElementName = exp.element as String;
+      }
+    }
+
     await expectLater(
       _generate,
       throwsInvalidGenerationSourceError(
         exp.errorMessage,
         todoMatcher: exp.todo,
-        elementMatcher: exp.elementShouldMatchAnnotated
-            ? const TypeMatcher<Element>()
-                .having((e) => e.name, 'name', _elementName)
-            : null,
+        elementMatcher: expectedElementName == null
+            ? null
+            : const TypeMatcher<Element>()
+                .having((e) => e.name, 'name', expectedElementName),
       ),
     );
 

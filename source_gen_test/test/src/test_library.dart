@@ -19,7 +19,7 @@ const TestClass1NameLowerCase = testclass1;
 @ShouldThrow(
   'Uh...',
   configurations: ['vague'],
-  elementShouldMatchAnnotated: false,
+  element: false,
 )
 @TestAnnotation()
 class TestClass1 {}
@@ -42,10 +42,22 @@ const BadTestClassNameLowerCase = badtestclass;
 @ShouldThrow(
   'Uh...',
   configurations: ['vague'],
-  elementShouldMatchAnnotated: false,
+  element: false,
 )
 @TestAnnotation()
 class BadTestClass {}
+
+@ShouldThrow(
+  'Cannot generate for classes with members that include `unsupported` in '
+      'their name.',
+  element: 'unsupportedFunc',
+  configurations: ['default'],
+  expectedLogItems: ['This member might be not good.'],
+)
+@TestAnnotation()
+class TestClassWithBadMember {
+  void unsupportedFunc() {}
+}
 
 @ShouldThrow(
   'Only supports annotated classes.',
@@ -54,7 +66,7 @@ class BadTestClass {}
 @ShouldThrow(
   'Uh...',
   configurations: ['vague'],
-  elementShouldMatchAnnotated: false,
+  element: false,
 )
 @TestAnnotation()
 int badTestFunc() => 42;

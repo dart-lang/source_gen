@@ -18,10 +18,11 @@ void main() {
       expect(
         reader.allElements.map((e) => e.name),
         unorderedMatches([
-          'TestClass1',
-          'TestClass2',
           'BadTestClass',
           'badTestFunc',
+          'TestClass1',
+          'TestClass2',
+          'TestClassWithBadMember',
         ]),
       );
     });

@@ -54,16 +54,23 @@ class ShouldThrow extends TestExpectation {
   final String errorMessage;
   final String todo;
 
-  /// Defaults to `true`.
-  final bool elementShouldMatchAnnotated;
+  /// If `true` (the default) or `null`, expects
+  /// [InvalidGenerationSourceError.element] to match the element annotated with
+  /// [ShouldThrow].
+  ///
+  /// If a [String], expects [InvalidGenerationSourceError.element] to match an
+  /// element with the corresponding name.
+  ///
+  /// If `false`, [InvalidGenerationSourceError.element] is not checked.
+  final dynamic element;
 
   const ShouldThrow(
     this.errorMessage, {
     this.todo,
-    bool elementShouldMatchAnnotated = true,
+    element = true,
     Iterable<String> configurations,
     List<String> expectedLogItems,
-  })  : elementShouldMatchAnnotated = elementShouldMatchAnnotated ?? true,
+  })  : element = element ?? true,
         super._(configurations, expectedLogItems);
 
   @override

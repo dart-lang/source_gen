@@ -117,6 +117,7 @@ const TestClass2NameLowerCase = testclass2;
       'TestClass1',
       'TestClass2',
       'TestClass2',
+      'TestClassWithBadMember',
     ];
 
     group('[integration tests]', () {
@@ -139,7 +140,7 @@ const TestClass2NameLowerCase = testclass2;
           defaultConfiguration: null,
         );
 
-        expect(list, hasLength(12));
+        expect(list, hasLength(13));
       });
 
       test('valid configuration', () {
@@ -151,7 +152,7 @@ const TestClass2NameLowerCase = testclass2;
           defaultConfiguration: ['default', 'no-prefix-required', 'vague'],
         );
 
-        expect(list, hasLength(12));
+        expect(list, hasLength(13));
       });
 
       test('different defaultConfiguration', () {
@@ -163,7 +164,7 @@ const TestClass2NameLowerCase = testclass2;
           defaultConfiguration: ['default'],
         );
 
-        expect(list, hasLength(10));
+        expect(list, hasLength(11));
       });
 
       test('different defaultConfiguration', () {
@@ -175,7 +176,7 @@ const TestClass2NameLowerCase = testclass2;
           defaultConfiguration: ['no-prefix-required'],
         );
 
-        expect(list, hasLength(10));
+        expect(list, hasLength(11));
       });
     });
     group('defaultConfiguration', () {
