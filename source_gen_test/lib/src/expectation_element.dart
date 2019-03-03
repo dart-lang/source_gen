@@ -42,8 +42,11 @@ List<_ExpectationElement> genAnnotatedElements(
 
       return initialValues.map((te) {
         if (te.configurations == null) {
-          te = te.replaceConfiguration(
-              configDefaults.difference(explicitConfigSet));
+          final newConfigSet = configDefaults.difference(explicitConfigSet);
+          // TODO: need testing and a "real" error here!
+          assert(newConfigSet.isNotEmpty,
+              '$element $configDefaults $explicitConfigSet');
+          te = te.replaceConfiguration(newConfigSet);
         }
         assert(te.configurations.isNotEmpty);
 

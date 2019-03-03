@@ -9,5 +9,9 @@ const TestClass2NameLength = 10;
 
 const TestClass2NameLowerCase = testclass2;
 ''')
+@ShouldThrow(
+  'Uh...',
+  configurations: ['vague'],
+)
 @TestAnnotation()
 class TestClass2 {}

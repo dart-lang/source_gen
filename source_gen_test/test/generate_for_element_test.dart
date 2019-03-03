@@ -100,105 +100,81 @@ const TestClass2NameLowerCase = testclass2;
     );
   });
 
-  group('testAnnotatedClasses integration test', () {
-    initializeBuildLogTracking();
-    testAnnotatedElements(
-      reader,
-      const TestGenerator(),
-      additionalGenerators: const {
-        'no-prefix-required': TestGenerator(requireTestClassPrefix: false),
-        'vague': TestGenerator(alwaysThrowVagueError: true),
-      },
-      expectedAnnotatedTests: [
-        'TestClass1',
-        'TestClass2',
-        'BadTestClass',
-        'BadTestClass',
-        'badTestFunc',
-      ],
-    );
-  });
-
   group('testAnnotatedElements', () {
+    final validAdditionalGenerators = const {
+      'no-prefix-required': TestGenerator(requireTestClassPrefix: false),
+      'vague': TestGenerator(alwaysThrowVagueError: true),
+    };
+
+    final validExpectedAnnotatedTests = const [
+      'BadTestClass',
+      'BadTestClass',
+      'BadTestClass',
+      'badTestFunc',
+      'badTestFunc',
+      'TestClass1',
+      'TestClass1',
+      'TestClass2',
+      'TestClass2',
+    ];
+
+    group('[integration tests]', () {
+      initializeBuildLogTracking();
+      testAnnotatedElements(
+        reader,
+        const TestGenerator(),
+        additionalGenerators: validAdditionalGenerators,
+        expectedAnnotatedTests: validExpectedAnnotatedTests,
+      );
+    });
+
     group('test counts', () {
-      test('valid configuration', () {
+      test('nul defaultConfiguration', () {
         final list = getAnnotatedClasses(
           reader,
           const TestGenerator(),
-          additionalGenerators: const {
-            'no-prefix-required': TestGenerator(requireTestClassPrefix: false),
-          },
-          expectedAnnotatedTests: [
-            'TestClass1',
-            'TestClass2',
-            'BadTestClass',
-            'BadTestClass',
-            'badTestFunc',
-          ],
-          defaultConfiguration: ['default', 'no-prefix-required'],
-        );
-
-        expect(list, hasLength(8));
-      });
-
-      test('valid configuration', () {
-        final list = getAnnotatedClasses(
-          reader,
-          const TestGenerator(),
-          additionalGenerators: const {
-            'no-prefix-required': TestGenerator(requireTestClassPrefix: false),
-          },
-          expectedAnnotatedTests: [
-            'TestClass1',
-            'TestClass2',
-            'BadTestClass',
-            'BadTestClass',
-            'badTestFunc',
-          ],
+          additionalGenerators: validAdditionalGenerators,
+          expectedAnnotatedTests: validExpectedAnnotatedTests,
           defaultConfiguration: null,
         );
 
-        expect(list, hasLength(8));
+        expect(list, hasLength(12));
       });
 
       test('valid configuration', () {
         final list = getAnnotatedClasses(
           reader,
           const TestGenerator(),
-          additionalGenerators: const {
-            'no-prefix-required': TestGenerator(requireTestClassPrefix: false),
-          },
-          expectedAnnotatedTests: [
-            'TestClass1',
-            'TestClass2',
-            'BadTestClass',
-            'BadTestClass',
-            'badTestFunc',
-          ],
+          additionalGenerators: validAdditionalGenerators,
+          expectedAnnotatedTests: validExpectedAnnotatedTests,
+          defaultConfiguration: ['default', 'no-prefix-required', 'vague'],
+        );
+
+        expect(list, hasLength(12));
+      });
+
+      test('different defaultConfiguration', () {
+        final list = getAnnotatedClasses(
+          reader,
+          const TestGenerator(),
+          additionalGenerators: validAdditionalGenerators,
+          expectedAnnotatedTests: validExpectedAnnotatedTests,
           defaultConfiguration: ['default'],
         );
 
-        expect(list, hasLength(6));
+        expect(list, hasLength(10));
       });
 
-      test('valid configuration', () {
+      test('different defaultConfiguration', () {
         final list = getAnnotatedClasses(
           reader,
           const TestGenerator(),
-          additionalGenerators: const {
-            'no-prefix-required': TestGenerator(requireTestClassPrefix: false),
-          },
-          expectedAnnotatedTests: [
-            'TestClass1',
-            'TestClass2',
-            'BadTestClass',
-            'BadTestClass',
-            'badTestFunc',
-          ],
+          additionalGenerators: validAdditionalGenerators,
+          expectedAnnotatedTests: validExpectedAnnotatedTests,
           defaultConfiguration: ['no-prefix-required'],
         );
 
-        expect(list, hasLength(6));
+        expect(list, hasLength(10));
       });
     });
     group('defaultConfiguration', () {
@@ -207,10 +183,7 @@ const TestClass2NameLowerCase = testclass2;
           () => testAnnotatedElements(
                 reader,
                 const TestGenerator(),
-                additionalGenerators: const {
-                  'no-prefix-required':
-                      TestGenerator(requireTestClassPrefix: false),
-                },
+                additionalGenerators: validAdditionalGenerators,
                 defaultConfiguration: [],
               ),
           _throwsArgumentError(
@@ -254,7 +227,7 @@ const TestClass2NameLowerCase = testclass2;
                 ],
               ),
           _throwsArgumentError(
-            'There are unexpected items.',
+            'There are unexpected items',
             'expectedAnnotatedTests',
           ),
         );
@@ -271,7 +244,7 @@ const TestClass2NameLowerCase = testclass2;
                 ],
               ),
           _throwsArgumentError(
-            'There are items missing.',
+            'There are items missing',
             'expectedAnnotatedTests',
           ),
         );
@@ -284,25 +257,24 @@ const TestClass2NameLowerCase = testclass2;
             () => testAnnotatedElements(
                   reader,
                   const TestGenerator(),
-                  additionalGenerators: const {
-                    'no-prefix-required':
-                        TestGenerator(requireTestClassPrefix: false),
-                    'vague': TestGenerator(alwaysThrowVagueError: true),
-                  },
+                  additionalGenerators: {'extra': const TestGenerator()}
+                    ..addAll(validAdditionalGenerators),
                   expectedAnnotatedTests: [
                     'TestClass1',
                     'TestClass2',
                     'BadTestClass',
                     'BadTestClass',
                     'badTestFunc',
+                    'badTestFunc',
                   ],
                   // 'vague' is excluded here!
                   defaultConfiguration: ['default', 'no-prefix-required'],
                 ),
             _throwsArgumentError(r'''
-Some of the specified generators were not used for their corresponding configurations: "vague".
+Some of the specified generators were not used for their corresponding configurations: "extra".
 Remove the entry from `additinalGenerators` or update `defaultConfiguration`.'''));
       });
+
       test('missing a specified generator fails', () {
         expect(
           () => testAnnotatedElements(
@@ -310,8 +282,8 @@ Remove the entry from `additinalGenerators` or update `defaultConfiguration`.'''
                 const TestGenerator(),
               ),
           _throwsArgumentError(
-              'The "no-prefix-required" configuration was specified for the '
-              '`TestClass1` element, but no there is no associated generator.',
+              'The "vague" configuration was specified for the '
+              '`badTestFunc` element, but no there is no associated generator.',
               'additionalGenerators'),
         );
       });

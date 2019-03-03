@@ -39,7 +39,7 @@ void testAnnotatedElements(
     additionalGenerators: additionalGenerators,
     expectedAnnotatedTests: expectedAnnotatedTests,
     defaultConfiguration: defaultConfiguration,
-  ).toList()) {
+  )) {
     entry._registerTest();
   }
 }
@@ -47,13 +47,13 @@ void testAnnotatedElements(
 /// An implementation member only exposed to make it easier to test
 /// [testAnnotatedElements] without registering any tests.
 @visibleForTesting
-Iterable<_AnnotatedTest> getAnnotatedClasses(
+List<_AnnotatedTest> getAnnotatedClasses(
   LibraryReader libraryReader,
   GeneratorForAnnotation defaultGenerator, {
   @required Map<String, GeneratorForAnnotation> additionalGenerators,
   @required Iterable<String> expectedAnnotatedTests,
   @required Iterable<String> defaultConfiguration,
-}) sync* {
+}) {
   final generators = {_defaultConfigurationName: defaultGenerator};
   if (additionalGenerators != null) {
     for (var invalidKey in const [_defaultConfigurationName, '']) {
@@ -124,16 +124,22 @@ Iterable<_AnnotatedTest> getAnnotatedClasses(
     }
 
     if (expectedList.isNotEmpty) {
-      print('Extra items:\n${expectedList.map((s) => '  $s').join('\n')}');
-      throw ArgumentError.value(expectedAnnotatedTests,
-          'expectedAnnotatedTests', 'There are unexpected items.');
+      throw ArgumentError.value(
+        expectedList.map((e) => "'$e'").join(', '),
+        'expectedAnnotatedTests',
+        'There are unexpected items',
+      );
     }
     if (missing.isNotEmpty) {
-      print('Missing items:\n${missing.map((s) => '  $s').join('\n')}');
       throw ArgumentError.value(
-          missing, 'expectedAnnotatedTests', 'There are items missing.');
+        missing.map((e) => "'$e'").join(', '),
+        'expectedAnnotatedTests',
+        'There are items missing',
+      );
     }
   }
+
+  final result = <_AnnotatedTest>[];
 
   for (final entry in annotatedElements) {
     for (var configuration in entry.expectation.configurations) {
@@ -149,15 +155,16 @@ Iterable<_AnnotatedTest> getAnnotatedClasses(
         );
       }
 
-      yield _AnnotatedTest._(
+      result.add(_AnnotatedTest._(
         libraryReader,
         generator,
         configuration,
         entry.elementName,
         entry.expectation,
-      );
+      ));
     }
   }
+  return result;
 }
 
 class _AnnotatedTest {

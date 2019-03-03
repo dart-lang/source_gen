@@ -22,7 +22,7 @@ class TestGenerator extends GeneratorForAnnotation<TestAnnotation> {
   Iterable<String> generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) sync* {
     if (alwaysThrowVagueError) {
-      throw InvalidGenerationSourceError('Uh...');
+      throw InvalidGenerationSourceError('Uh...', element: element);
     }
 
     if (element.name.contains('Bad')) {
