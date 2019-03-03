@@ -54,12 +54,17 @@ class ShouldThrow extends TestExpectation {
   final String errorMessage;
   final String todo;
 
+  /// Defaults to `true`.
+  final bool elementShouldMatchAnnotated;
+
   const ShouldThrow(
     this.errorMessage, {
     this.todo,
+    bool elementShouldMatchAnnotated = true,
     Iterable<String> configurations,
     List<String> expectedLogItems,
-  }) : super._(configurations, expectedLogItems);
+  })  : elementShouldMatchAnnotated = elementShouldMatchAnnotated ?? true,
+        super._(configurations, expectedLogItems);
 
   @override
   TestExpectation replaceConfiguration(Iterable<String> newConfiguration) {

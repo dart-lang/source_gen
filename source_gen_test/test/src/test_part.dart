@@ -12,6 +12,7 @@ const TestClass2NameLowerCase = testclass2;
 @ShouldThrow(
   'Uh...',
   configurations: ['vague'],
+  elementShouldMatchAnnotated: false,
 )
 @TestAnnotation()
 class TestClass2 {}

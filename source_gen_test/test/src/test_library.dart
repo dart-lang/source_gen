@@ -16,7 +16,11 @@ const TestClass1NameLowerCase = testclass1;
 ''',
   configurations: ['default', 'no-prefix-required'],
 )
-@ShouldThrow('Uh...', configurations: ['vague'])
+@ShouldThrow(
+  'Uh...',
+  configurations: ['vague'],
+  elementShouldMatchAnnotated: false,
+)
 @TestAnnotation()
 class TestClass1 {}
 
@@ -35,7 +39,11 @@ const BadTestClassNameLowerCase = badtestclass;
   configurations: ['no-prefix-required'],
   expectedLogItems: ['This member might be not good.'],
 )
-@ShouldThrow('Uh...', configurations: ['vague'])
+@ShouldThrow(
+  'Uh...',
+  configurations: ['vague'],
+  elementShouldMatchAnnotated: false,
+)
 @TestAnnotation()
 class BadTestClass {}
 
@@ -43,7 +51,11 @@ class BadTestClass {}
   'Only supports annotated classes.',
   todo: 'Remove `TestAnnotation` from the associated element.',
 )
-@ShouldThrow('Uh...', configurations: ['vague'])
+@ShouldThrow(
+  'Uh...',
+  configurations: ['vague'],
+  elementShouldMatchAnnotated: false,
+)
 @TestAnnotation()
 int badTestFunc() => 42;
 

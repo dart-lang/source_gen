@@ -36,7 +36,8 @@ class TestClass() {}
         throwsInvalidGenerationSourceError(
           'There are multiple annotations configured for "c" for '
               'element `TestClass`.',
-          'Ensure each configuration is only represented once per member.',
+          todoMatcher:
+              'Ensure each configuration is only represented once per member.',
         ),
       );
     });
@@ -57,7 +58,7 @@ class EmptyConfig() {}
         () => testAnnotatedElements(badReader, const TestGenerator()),
         throwsInvalidGenerationSourceError(
           '`configuration` cannot be empty.',
-          'Leave it `null`.',
+          todoMatcher: 'Leave it `null`.',
         ),
       );
     });
@@ -95,7 +96,8 @@ const TestClass2NameLowerCase = testclass2;
       () => generateForElement(const TestGenerator(), reader, 'BadTestClass'),
       throwsInvalidGenerationSourceError(
         'All classes must start with `TestClass`.',
-        'Rename the type or remove the `TestAnnotation` from class.',
+        todoMatcher:
+            'Rename the type or remove the `TestAnnotation` from class.',
       ),
     );
   });

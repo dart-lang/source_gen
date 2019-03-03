@@ -9,10 +9,21 @@ import 'package:test/test.dart';
 /// with [InvalidGenerationSourceError.message] that matches [messageMatcher],
 /// and [InvalidGenerationSourceError.todo] that matches [todoMatcher] and
 /// [InvalidGenerationSourceError.element] that [isNotNull].
-Matcher throwsInvalidGenerationSourceError(messageMatcher, todoMatcher) =>
-    throwsA(
-      const TypeMatcher<InvalidGenerationSourceError>()
-          .having((e) => e.message, 'message', messageMatcher)
-          .having((e) => e.todo, 'todo', todoMatcher)
-          .having((e) => e.element, 'element', isNotNull),
-    );
+Matcher throwsInvalidGenerationSourceError(
+  messageMatcher, {
+  todoMatcher,
+  elementMatcher,
+}) {
+  var matcher = const TypeMatcher<InvalidGenerationSourceError>()
+      .having((e) => e.message, 'message', messageMatcher);
+
+  if (elementMatcher != null) {
+    matcher = matcher.having(
+        (e) => e.element, 'element', elementMatcher ?? isNotNull);
+  }
+  if (todoMatcher != null) {
+    matcher = matcher.having((e) => e.todo, 'todo', todoMatcher);
+  }
+
+  return throwsA(matcher);
+}

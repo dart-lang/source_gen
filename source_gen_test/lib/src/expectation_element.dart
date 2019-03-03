@@ -91,6 +91,8 @@ ShouldThrow _shouldThrow(DartObject obj) {
   return ShouldThrow(
     reader.read('errorMessage').stringValue,
     todo: reader.read('todo').literalValue as String,
+    elementShouldMatchAnnotated:
+        reader.read('elementShouldMatchAnnotated').literalValue as bool,
     expectedLogItems: _expectedLogItems(reader),
     configurations: _configurations(reader),
   );

@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:analyzer/dart/element/element.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:source_gen_test/source_gen_test.dart';
@@ -230,11 +231,18 @@ class _AnnotatedTest {
 
   Future<Null> _shouldThrowTest() async {
     final exp = expectation as ShouldThrow;
-    final messageMatcher = exp.errorMessage;
-    final todoMatcher = exp.todo ?? isEmpty;
 
-    await expectLater(_generate,
-        throwsInvalidGenerationSourceError(messageMatcher, todoMatcher));
+    await expectLater(
+      _generate,
+      throwsInvalidGenerationSourceError(
+        exp.errorMessage,
+        todoMatcher: exp.todo,
+        elementMatcher: exp.elementShouldMatchAnnotated
+            ? const TypeMatcher<Element>()
+                .having((e) => e.name, 'name', _elementName)
+            : null,
+      ),
+    );
 
     expect(
       buildLogItems,
