@@ -98,6 +98,20 @@ Iterable<_AnnotatedTest> getAnnotatedClasses(
   final annotatedElements =
       genAnnotatedElements(libraryReader, defaultConfigSet);
 
+  final unusedConfigurations = generators.keys.toSet();
+  for (var annotatedElement in annotatedElements) {
+    unusedConfigurations.removeAll(annotatedElement.expectation.configurations);
+  }
+  if (unusedConfigurations.isNotEmpty) {
+    throw ArgumentError(
+      'Some of the specified generators were not used for their corresponding '
+          'configurations: '
+          '${unusedConfigurations.map((c) => '"$c"').join(', ')}.\n'
+          'Remove the entry from `additinalGenerators` or update '
+          '`defaultConfiguration`.',
+    );
+  }
+
   if (expectedAnnotatedTests != null) {
     final expectedList = expectedAnnotatedTests.toList();
 

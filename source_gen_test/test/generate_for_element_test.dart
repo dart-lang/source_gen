@@ -17,8 +17,8 @@ class TestAnnotation {
 }''';
 
 void main() async {
-  group('bad code', () {
-    test('thing', () async {
+  group('Bad annotations', () {
+    test('duplicate configurations for the same member', () async {
       final badReader = await initializeLibraryReader({
         'bad_lib.dart': r"""
 import 'package:source_gen_test/annotations.dart';
@@ -41,7 +41,7 @@ class TestClass() {}
       );
     });
 
-    test('thing', () async {
+    test('annotation with no configuration', () async {
       final badReader = await initializeLibraryReader({
         'bad_lib.dart': r"""
 import 'package:source_gen_test/annotations.dart';
@@ -107,6 +107,7 @@ const TestClass2NameLowerCase = testclass2;
       const TestGenerator(),
       additionalGenerators: const {
         'no-prefix-required': TestGenerator(requireTestClassPrefix: false),
+        'vague': TestGenerator(alwaysThrowVagueError: true),
       },
       expectedAnnotatedTests: [
         'TestClass1',
@@ -278,6 +279,30 @@ const TestClass2NameLowerCase = testclass2;
     });
 
     group('additionalGenerators', () {
+      test('unused generator fails', () {
+        expect(
+            () => testAnnotatedElements(
+                  reader,
+                  const TestGenerator(),
+                  additionalGenerators: const {
+                    'no-prefix-required':
+                        TestGenerator(requireTestClassPrefix: false),
+                    'vague': TestGenerator(alwaysThrowVagueError: true),
+                  },
+                  expectedAnnotatedTests: [
+                    'TestClass1',
+                    'TestClass2',
+                    'BadTestClass',
+                    'BadTestClass',
+                    'badTestFunc',
+                  ],
+                  // 'vague' is excluded here!
+                  defaultConfiguration: ['default', 'no-prefix-required'],
+                ),
+            _throwsArgumentError(r'''
+Some of the specified generators were not used for their corresponding configurations: "vague".
+Remove the entry from `additinalGenerators` or update `defaultConfiguration`.'''));
+      });
       test('missing a specified generator fails', () {
         expect(
           () => testAnnotatedElements(
@@ -342,7 +367,7 @@ const TestClass2NameLowerCase = testclass2;
   });
 }
 
-Matcher _throwsArgumentError(matcher, String name) => throwsA(
+Matcher _throwsArgumentError(matcher, [String name]) => throwsA(
       isArgumentError
           .having((e) => e.message, 'message', matcher)
           .having((ae) => ae.name, 'name', name),

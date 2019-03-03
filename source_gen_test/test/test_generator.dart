@@ -10,13 +10,21 @@ import 'src/test_annotation.dart';
 
 class TestGenerator extends GeneratorForAnnotation<TestAnnotation> {
   final bool requireTestClassPrefix;
+  final bool alwaysThrowVagueError;
 
-  const TestGenerator({bool requireTestClassPrefix = true})
-      : requireTestClassPrefix = requireTestClassPrefix ?? true;
+  const TestGenerator({
+    bool requireTestClassPrefix = true,
+    bool alwaysThrowVagueError = false,
+  })  : alwaysThrowVagueError = alwaysThrowVagueError ?? false,
+        requireTestClassPrefix = requireTestClassPrefix ?? true;
 
   @override
   Iterable<String> generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) sync* {
+    if (alwaysThrowVagueError) {
+      throw InvalidGenerationSourceError('Uh...');
+    }
+
     if (element.name.contains('Bad')) {
       log.info('This member might be not good.');
     }
