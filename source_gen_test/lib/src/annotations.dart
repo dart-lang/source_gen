@@ -78,9 +78,10 @@ class ShouldThrow extends TestExpectation {
     assert(newConfiguration != null);
     return ShouldThrow(
       errorMessage,
-      todo: todo,
       configurations: newConfiguration,
+      element: element,
       expectedLogItems: expectedLogItems,
+      todo: todo,
     );
   }
 }
