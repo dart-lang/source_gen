@@ -249,14 +249,22 @@ class _AnnotatedTest {
   Future<Null> _shouldThrowTest() async {
     final exp = expectation as ShouldThrow;
 
-    String expectedElementName;
+    Matcher elementMatcher;
 
-    if (exp.element != false) {
-      if (exp.element == null || exp.element == true) {
+    if (exp.element == null || exp.element is String) {
+      String expectedElementName;
+      if (exp.element == null) {
         expectedElementName = _elementName;
       } else {
+        assert(exp.element is String);
         expectedElementName = exp.element as String;
       }
+      elementMatcher = const TypeMatcher<Element>()
+          .having((e) => e.name, 'name', expectedElementName);
+    } else if (exp.element == true) {
+      elementMatcher = isNotNull;
+    } else {
+      assert(exp.element == false);
     }
 
     await expectLater(
@@ -264,10 +272,7 @@ class _AnnotatedTest {
       throwsInvalidGenerationSourceError(
         exp.errorMessage,
         todoMatcher: exp.todo,
-        elementMatcher: expectedElementName == null
-            ? null
-            : const TypeMatcher<Element>()
-                .having((e) => e.name, 'name', expectedElementName),
+        elementMatcher: elementMatcher,
       ),
     );
 

@@ -54,12 +54,14 @@ class ShouldThrow extends TestExpectation {
   final String errorMessage;
   final String todo;
 
-  /// If `true` (the default) or `null`, expects
-  /// [InvalidGenerationSourceError.element] to match the element annotated with
-  /// [ShouldThrow].
+  /// If `null`, expects [InvalidGenerationSourceError.element] to match the
+  /// element annotated with [ShouldThrow].
   ///
   /// If a [String], expects [InvalidGenerationSourceError.element] to match an
   /// element with the corresponding name.
+  ///
+  /// If `true`, [InvalidGenerationSourceError.element] is expected to be
+  /// non-null.
   ///
   /// If `false`, [InvalidGenerationSourceError.element] is not checked.
   final dynamic element;
