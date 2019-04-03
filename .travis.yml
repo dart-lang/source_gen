@@ -24,13 +24,8 @@ jobs:
       env: PKGS="source_gen"
       script: ./tool/travis.sh dartfmt dartanalyzer
     - stage: analyze_format
-      name: "SDK: stable; PKG: example; TASKS: [`dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-infos --fatal-warnings .`]"
-      dart: stable
-      env: PKGS="example"
-      script: ./tool/travis.sh dartfmt dartanalyzer
-    - stage: analyze_format
-      name: "SDK: 2.0.0; PKG: example; TASKS: [`dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-infos --fatal-warnings .`]"
-      dart: "2.0.0"
+      name: "SDK: 2.1.0; PKG: example; TASKS: [`dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-infos --fatal-warnings .`]"
+      dart: "2.1.0"
       env: PKGS="example"
       script: ./tool/travis.sh dartfmt dartanalyzer
     - stage: analyze_format
