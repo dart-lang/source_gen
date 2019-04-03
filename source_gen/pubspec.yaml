@@ -5,7 +5,7 @@ description: Automated source code generation for Dart.
 homepage: https://github.com/dart-lang/source_gen
 
 environment:
-  sdk: ">=2.0.0 <3.0.0"
+  sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
   analyzer: ^0.35.0
