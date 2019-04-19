@@ -4,10 +4,10 @@ See also the `example` directory containing the builders used in this package.
 
 ## How to run
 
-In this folder, execute:
+In this directory, run:
 
-`pub get`
-
-Then:
-
-`pub run build_runner build`
+```console
+$ pub get
+...
+$ pub run build_runner build
+```
