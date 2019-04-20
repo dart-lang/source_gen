@@ -50,6 +50,10 @@ tagged with the annotation you are interested in.
 
 * [Trivial example][]
 
+### How to consume source_gen-based builders
+
+* [example_usage][]
+
 ### Configuring and Running generators
 
 `source_gen` is based on the [build][] package and exposes options for using
@@ -121,3 +125,5 @@ wraps a single Generator to make a `Builder` which creates Dart library files.
 [api:LibraryBuilder]: https://pub.dartlang.org/documentation/source_gen/latest/source_gen/LibraryBuilder-class.html
 
 [Trivial example]: https://github.com/dart-lang/source_gen/blob/master/source_gen/test/src/comment_generator.dart
+
+[example_usage]: https://github.com/dart-lang/source_gen/tree/master/example_usage
