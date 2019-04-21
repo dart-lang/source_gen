@@ -49,11 +49,7 @@ call your generator for a Dart library or for each element within a library
 tagged with the annotation you are interested in.
 
 * [Trivial example][]
-* [example][]
-
-### How to consume source_gen-based builders
-
-* [example_usage][]
+* [Full example package][] with [example usage][].
 
 ### Configuring and Running generators
 
@@ -126,7 +122,5 @@ wraps a single Generator to make a `Builder` which creates Dart library files.
 [api:LibraryBuilder]: https://pub.dartlang.org/documentation/source_gen/latest/source_gen/LibraryBuilder-class.html
 
 [Trivial example]: https://github.com/dart-lang/source_gen/blob/master/source_gen/test/src/comment_generator.dart
-
-[example]: https://github.com/dart-lang/source_gen/tree/master/example
-
-[example_usage]: https://github.com/dart-lang/source_gen/tree/master/example_usage
+[Full example package]: https://github.com/dart-lang/source_gen/tree/master/example
+[example usage]: https://github.com/dart-lang/source_gen/tree/master/example_usage
