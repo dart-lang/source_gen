@@ -10,7 +10,4 @@ import 'package:source_gen/source_gen.dart';
 Iterable<TopLevelVariableElement> topLevelNumVariables(LibraryReader reader) =>
     reader.allElements
         .whereType<TopLevelVariableElement>()
-        .where((element) => element.type
-            // TODO: migrate to supported API when min pkg:analyzer is bumped
-            // ignore: deprecated_member_use
-            .isAssignableTo(reader.element.context.typeProvider.numType));
+        .where((element) => element.type.isDartCoreNum);
