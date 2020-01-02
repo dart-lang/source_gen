@@ -51,11 +51,18 @@ class InvalidGenerationSourceError extends Error {
     final buffer = StringBuffer(message);
 
     if (element != null) {
-      final span = spanForElement(element);
-      buffer
-        ..writeln()
-        ..writeln(span.start.toolString)
-        ..write(span.highlight());
+      try {
+        final span = spanForElement(element);
+        buffer
+          ..writeln()
+          ..writeln(span.start.toolString)
+          ..write(span.highlight());
+      } catch (_) {
+        buffer
+          ..writeln()
+          ..writeln('While logging this error: '
+              'tried to log source from "$element" but couldn\'t find it.');
+      }
     }
 
     return buffer.toString();
