@@ -58,10 +58,9 @@ class InvalidGenerationSourceError extends Error {
           ..writeln(span.start.toolString)
           ..write(span.highlight());
       } catch (_) {
-        buffer
-          ..writeln()
-          ..writeln('While logging this error: '
-              'tried to log source from "$element" but couldn\'t find it.');
+        // Source for `element` wasn't found, it must be in a summary with no
+        // associated source. We can still give the name.
+        buffer..writeln()..writeln('Cause: $element');
       }
     }
 
