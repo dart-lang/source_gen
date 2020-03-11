@@ -2,28 +2,31 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:convert';
-
 import 'generator.dart';
 
 class GeneratedOutput {
   final String output;
   final Generator generator;
+
+  @Deprecated('Always null. Will be removed in the next release.')
   final dynamic error;
+
+  @Deprecated('Always null. Will be removed in the next release.')
   final StackTrace stackTrace;
 
+  @Deprecated('Always false. Will be removed in the next release.')
   bool get isError => error != null;
 
   GeneratedOutput(this.generator, this.output)
-      : error = null,
+      :
+        // ignore: deprecated_member_use_from_same_package
+        error = null,
+        // ignore: deprecated_member_use_from_same_package
         stackTrace = null,
         assert(output != null),
         assert(output.isNotEmpty),
         // assuming length check is cheaper than simple string equality
         assert(output.length == output.trim().length);
-
-  GeneratedOutput.fromError(this.generator, this.error, this.stackTrace)
-      : output = _outputFromError(error);
 
   @override
   String toString() {
@@ -34,34 +37,3 @@ class GeneratedOutput {
     return 'Generator: $output';
   }
 }
-
-String _outputFromError(Object error) {
-  final buffer = StringBuffer();
-
-  _commentWithHeader(_errorHeader, error.toString(), buffer);
-
-  if (error is InvalidGenerationSourceError && error.todo.isNotEmpty) {
-    _commentWithHeader(_todoHeader, error.todo, buffer);
-  }
-
-  return buffer.toString();
-}
-
-void _commentWithHeader(String header, String content, StringSink buffer) {
-  final lines = const LineSplitter().convert(content);
-
-  buffer
-    ..writeAll([_commentPrefix, header, lines.first])
-    ..writeln();
-
-  final blankPrefix = ''.padLeft(header.length, ' ');
-  for (var i = 1; i < lines.length; i++) {
-    buffer
-      ..writeAll([_commentPrefix, blankPrefix, lines[i]])
-      ..writeln();
-  }
-}
-
-const _commentPrefix = '// ';
-const _errorHeader = 'Error: ';
-const _todoHeader = 'TODO: ';

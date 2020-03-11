@@ -1,3 +1,9 @@
+## 0.9.6
+
+* Streamlined error handling in all builders. There should be no user-visible
+  behavior change.
+* `GeneratedOutput`: deprecated `error`, `stackTrace`, and `isError`.
+
 ## 0.9.5
 
 * Add support for an `ignore_for_file` option to `combining_builder`.
