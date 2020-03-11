@@ -2,7 +2,6 @@
 
 * Streamlined error handling in all builders. There should be no user-visible
   behavior change.
-* `GeneratedOutput`: deprecated `error`, `stackTrace`, and `isError`.
 
 ## 0.9.5
 
