@@ -6,16 +6,16 @@ import 'generator.dart';
 
 class GeneratedOutput {
   final String output;
-  final Generator generator;
+  final String generatorDescription;
 
-  GeneratedOutput(this.generator, this.output)
+  GeneratedOutput(Generator generator, this.output)
       : assert(output != null),
         assert(output.isNotEmpty),
         // assuming length check is cheaper than simple string equality
-        assert(output.length == output.trim().length);
+        assert(output.length == output.trim().length),
+        generatorDescription = _toString(generator);
 
-  @override
-  String toString() {
+  static String _toString(Generator generator) {
     final output = generator.toString();
     if (output.endsWith('Generator')) {
       return output;
