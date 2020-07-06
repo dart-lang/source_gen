@@ -111,19 +111,14 @@ class CombiningBuilder implements Builder {
         .where((s) => s.isNotEmpty)
         .join('\n\n');
     if (assets.isEmpty) return;
-
     final inputLibrary = await buildStep.inputLibrary;
-
     final partOf = nameOfPartial(inputLibrary, buildStep.inputId);
-
-    final override = _languageOverrideForLibrary(inputLibrary);
 
     final ignoreForFile = _ignoreForFile.isEmpty
         ? ''
         : '\n// ignore_for_file: ${_ignoreForFile.join(', ')}\n';
-
     final output = '''
-$defaultFileHeader$override
+$defaultFileHeader${_languageOverrideForLibrary(inputLibrary)}
 $ignoreForFile
 part of $partOf;
 
@@ -136,9 +131,7 @@ $assets
 
 String _languageOverrideForLibrary(LibraryElement library) {
   final override = library.languageVersion.override;
-  if (library.languageVersion.override == null) {
-    return '';
-  }
-
-  return '\n// @dart=${override.major}.${override.minor}';
+  return override == null
+      ? ''
+      : '\n// @dart=${override.major}.${override.minor}';
 }
