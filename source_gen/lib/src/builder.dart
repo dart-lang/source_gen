@@ -139,7 +139,7 @@ class _Builder extends Builder {
     try {
       genPartContent = formatOutput(genPartContent);
     } catch (e, stack) {
-      log.warning(
+      log.severe(
         '''
 An error `${e.runtimeType}` occurred while formatting the generated source for
   `${library.identifier}`
