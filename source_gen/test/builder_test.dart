@@ -638,9 +638,7 @@ class Customer { }
 ''';
 
 const _testLibContentSyntaxError = r'''
-library test_lib;
 final int foo = 42
-class Person { }
 ''';
 
 const _testGenPartContent = r'''// GENERATED CODE - DO NOT MODIFY BY HAND

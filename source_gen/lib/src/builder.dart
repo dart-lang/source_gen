@@ -44,7 +44,7 @@ class _Builder extends Builder {
     String generatedExtension = '.g.dart',
     List<String> additionalOutputExtensions = const [],
     String header,
-    this.allowSyntaxErrors = false
+    this.allowSyntaxErrors = false,
   })  : _generatedExtension = generatedExtension,
         buildExtensions = {
           '.dart': [
@@ -199,7 +199,7 @@ class SharedPartBuilder extends _Builder {
     String partId, {
     String Function(String code) formatOutput,
     List<String> additionalOutputExtensions = const [],
-    bool allowSyntaxErrors = false
+    bool allowSyntaxErrors = false,
   }) : super(
           generators,
           formatOutput: formatOutput,
@@ -255,7 +255,7 @@ class PartBuilder extends _Builder {
     String Function(String code) formatOutput,
     List<String> additionalOutputExtensions = const [],
     String header,
-    bool allowSyntaxErrors = false
+    bool allowSyntaxErrors = false,
   }) : super(
           generators,
           formatOutput: formatOutput,
@@ -296,7 +296,7 @@ class LibraryBuilder extends _Builder {
     String generatedExtension = '.g.dart',
     List<String> additionalOutputExtensions = const [],
     String header,
-    bool allowSyntaxErrors = false
+    bool allowSyntaxErrors = false,
   }) : super(
           [generator],
           formatOutput: formatOutput,
