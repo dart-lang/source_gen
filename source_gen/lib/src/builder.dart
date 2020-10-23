@@ -191,8 +191,8 @@ class SharedPartBuilder extends _Builder {
   ///
   /// [formatOutput] is called to format the generated code. Defaults to
   /// [DartFormatter.format].
-  /// 
-  /// [allowSyntaxErrors] indicates whether to allow syntax errors in input 
+  ///
+  /// [allowSyntaxErrors] indicates whether to allow syntax errors in input
   /// libraries.
   SharedPartBuilder(
     List<Generator> generators,
@@ -246,8 +246,8 @@ class PartBuilder extends _Builder {
   /// [header] is used to specify the content at the top of each generated file.
   /// If `null`, the content of [defaultFileHeader] is used.
   /// If [header] is an empty `String` no header is added.
-  /// 
-  /// [allowSyntaxErrors] indicates whether to allow syntax errors in input 
+  ///
+  /// [allowSyntaxErrors] indicates whether to allow syntax errors in input
   /// libraries.
   PartBuilder(
     List<Generator> generators,
@@ -287,8 +287,8 @@ class LibraryBuilder extends _Builder {
   /// [header] is used to specify the content at the top of each generated file.
   /// If `null`, the content of [defaultFileHeader] is used.
   /// If [header] is an empty `String` no header is added.
-  /// 
-  /// [allowSyntaxErrors] indicates whether to allow syntax errors in input 
+  ///
+  /// [allowSyntaxErrors] indicates whether to allow syntax errors in input
   /// libraries.
   LibraryBuilder(
     Generator generator, {

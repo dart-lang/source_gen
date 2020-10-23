@@ -136,9 +136,9 @@ void main() {
     );
   });
 
-  test('throws when input library has syntax errors and allowSyntaxErrors '
-       'flag is not set', 
-      () async {
+  test(
+      'throws when input library has syntax errors and allowSyntaxErrors '
+      'flag is not set', () async {
     final srcs = _createPackageStub(testLibContent: _testLibContentSyntaxError);
     final builder = LibraryBuilder(const CommentGenerator());
 
@@ -148,20 +148,18 @@ void main() {
         srcs,
         generateFor: {'$_pkgName|lib/test_lib.dart'},
       ),
-      throwsA(
-        isA<SyntaxErrorInAssetException>()
-      ),
+      throwsA(isA<SyntaxErrorInAssetException>()),
     );
   });
 
-  test('does not throw when input library has syntax errors and '
-       'allowSyntaxErrors flag is set', () async {
+  test(
+      'does not throw when input library has syntax errors and '
+      'allowSyntaxErrors flag is set', () async {
     final srcs = _createPackageStub(testLibContent: _testLibContentSyntaxError);
-    final builder = 
+    final builder =
         LibraryBuilder(const CommentGenerator(), allowSyntaxErrors: true);
-    await testBuilder(builder, srcs, generateFor: {
-      '$_pkgName|lib/test_lib.dart'
-    });
+    await testBuilder(builder, srcs,
+        generateFor: {'$_pkgName|lib/test_lib.dart'});
   });
 
   test('warns when a non-standalone builder does not see "part"', () async {
