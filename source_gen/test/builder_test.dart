@@ -136,7 +136,8 @@ void main() {
     );
   });
 
-  test('throws when input library has syntax errors and allowSyntaxErrors flag is not set', 
+  test('throws when input library has syntax errors and allowSyntaxErrors '
+       'flag is not set', 
       () async {
     final srcs = _createPackageStub(testLibContent: _testLibContentSyntaxError);
     final builder = LibraryBuilder(const CommentGenerator());
@@ -153,7 +154,8 @@ void main() {
     );
   });
 
-  test('does not throw when input library has syntax errors and allowSyntaxErrors flag is set', () async {
+  test('does not throw when input library has syntax errors and '
+       'allowSyntaxErrors flag is set', () async {
     final srcs = _createPackageStub(testLibContent: _testLibContentSyntaxError);
     final builder = 
         LibraryBuilder(const CommentGenerator(), allowSyntaxErrors: true);
