@@ -1,3 +1,6 @@
+## 0.9.8
+* Add support for `allowSyntaxErrors` flag introduced in `package:build` version `1.4.0`.
+
 ## 0.9.7+1
 
 * Allow `package:analyzer` version `0.40.x`.
