@@ -5,7 +5,7 @@ description: >-
 homepage: https://github.com/dart-lang/source_gen
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.10.0 <3.0.0"
 
 dependencies:
   analyzer: '>=0.39.11 <0.41.0'
