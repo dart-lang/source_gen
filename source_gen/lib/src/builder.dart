@@ -8,6 +8,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:pedantic/pedantic.dart';
+import 'package:source_gen/source_gen.dart';
 
 import 'generated_output.dart';
 import 'generator.dart';
@@ -69,7 +70,14 @@ class _Builder extends Builder {
   @override
   Future build(BuildStep buildStep) async {
     final resolver = buildStep.resolver;
+
     if (!await resolver.isLibrary(buildStep.inputId)) return;
+
+    if (_generators.every((g) => g is GeneratorForAnnotation) &&
+        !await _hasAnyTopLevelAnnotations(buildStep.inputId, resolver)) {
+      return;
+    }
+
     final lib = await buildStep.resolver
         .libraryFor(buildStep.inputId, allowSyntaxErrors: allowSyntaxErrors);
     await _generateForLibrary(lib, buildStep);
@@ -332,6 +340,19 @@ Stream<GeneratedOutput> _generate(
 
     yield GeneratedOutput(gen, createdUnit);
   }
+}
+
+Future<bool> _hasAnyTopLevelAnnotations(
+    AssetId input, Resolver resolver) async {
+  final parsed = await resolver.compilationUnitFor(input);
+  final annotatableObjects = [
+    ...parsed.directives,
+    ...parsed.declarations,
+  ];
+  for (var object in annotatableObjects) {
+    if (object.metadata.isNotEmpty) return true;
+  }
+  return false;
 }
 
 final _formatter = DartFormatter();
