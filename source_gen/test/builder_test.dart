@@ -4,10 +4,10 @@
 
 import 'dart:convert';
 
+@TestOn('vm')
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
-@TestOn('vm')
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/builder.dart';

@@ -8,10 +8,10 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:pedantic/pedantic.dart';
-import 'package:source_gen/source_gen.dart';
 
 import 'generated_output.dart';
 import 'generator.dart';
+import 'generator_for_annotation.dart';
 import 'library.dart';
 import 'utils.dart';
 
