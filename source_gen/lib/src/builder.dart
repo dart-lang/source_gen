@@ -74,7 +74,7 @@ class _Builder extends Builder {
     if (!await resolver.isLibrary(buildStep.inputId)) return;
 
     if (_generators.every((g) => g is GeneratorForAnnotation) &&
-        !await _hasAnyTopLevelAnnotations(buildStep.inputId, resolver)) {
+        !(await _hasAnyTopLevelAnnotations(buildStep.inputId, resolver))) {
       return;
     }
 
@@ -345,12 +345,11 @@ Stream<GeneratedOutput> _generate(
 Future<bool> _hasAnyTopLevelAnnotations(
     AssetId input, Resolver resolver) async {
   final parsed = await resolver.compilationUnitFor(input);
-  final annotatableObjects = [
-    ...parsed.directives,
-    ...parsed.declarations,
-  ];
-  for (var object in annotatableObjects) {
-    if (object.metadata.isNotEmpty) return true;
+  for (var directive in parsed.directives) {
+    if (directive.metadata.isNotEmpty) return true;
+  }
+  for (var declaration in parsed.declarations) {
+    if (declaration.metadata.isNotEmpty) return true;
   }
   return false;
 }

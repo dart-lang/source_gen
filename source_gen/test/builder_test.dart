@@ -546,7 +546,8 @@ foo generated content
         'Generating .foo.dart: _LiteralGenerator, _LiteralGenerator');
   });
 
-  test('Does not resolve the library if it doesn\'t need to', () async {
+  test('Does not resolve the library if there are no top level annotations',
+      () async {
     final builder = LibraryBuilder(const _DeprecatedGenerator());
     final input = AssetId('a', 'lib/a.dart');
     final buildStep = _TestingBuildStep(input, {
