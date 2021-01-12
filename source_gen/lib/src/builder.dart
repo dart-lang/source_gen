@@ -38,6 +38,8 @@ class _Builder extends Builder {
   @override
   final Map<String, List<String>> buildExtensions;
 
+  static const dartExtension = '.dart';
+
   /// Wrap [_generators] to form a [Builder]-compatible API.
   _Builder(
     this._generators, {
@@ -48,7 +50,7 @@ class _Builder extends Builder {
     this.allowSyntaxErrors = false,
   })  : _generatedExtension = generatedExtension,
         buildExtensions = {
-          '.dart': [
+          dartExtension: [
             generatedExtension,
             ...additionalOutputExtensions,
           ]
@@ -72,7 +74,8 @@ class _Builder extends Builder {
   Future build(BuildStep buildStep) async {
     final resolver = buildStep.resolver;
 
-    if (!await resolver.isLibrary(buildStep.inputId)) return;
+    if (!await resolver.isLibrary(buildStep.inputId) &&
+        buildExtensions.containsKey(dartExtension)) return;
 
     if (_generators.every((g) => g is GeneratorForAnnotation) &&
         !(await _hasAnyTopLevelAnnotations(
