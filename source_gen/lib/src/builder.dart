@@ -73,9 +73,10 @@ class _Builder extends Builder {
   @override
   Future build(BuildStep buildStep) async {
     final resolver = buildStep.resolver;
+    final isLibrary = await resolver.isLibrary(buildStep.inputId);
+    final hasDartExtension = buildExtensions.containsKey(dartExtension);
 
-    if (!await resolver.isLibrary(buildStep.inputId) &&
-        buildExtensions.containsKey(dartExtension)) return;
+    if (!isLibrary && hasDartExtension) return;
 
     if (_generators.every((g) => g is GeneratorForAnnotation) &&
         !(await _hasAnyTopLevelAnnotations(
@@ -83,8 +84,10 @@ class _Builder extends Builder {
       return;
     }
 
-    final lib = await buildStep.resolver
-        .libraryFor(buildStep.inputId, allowSyntaxErrors: allowSyntaxErrors);
+    final lib = hasDartExtension
+        ? await buildStep.resolver
+            .libraryFor(buildStep.inputId, allowSyntaxErrors: allowSyntaxErrors)
+        : null;
     await _generateForLibrary(lib, buildStep);
   }
 
