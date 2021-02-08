@@ -31,6 +31,14 @@ String typeNameOf(DartType type) {
   if (type is TypeParameterType) {
     return type.element.name;
   }
+  if (type is FunctionType) {
+    final element = type.element;
+    if (element is GenericFunctionTypeElement) {
+      return element.enclosingElement.name;
+    } else {
+      return element.name;
+    }
+  }
   throw UnimplementedError('(${type.runtimeType}) $type');
 }
 
