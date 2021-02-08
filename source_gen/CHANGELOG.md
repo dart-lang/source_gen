@@ -1,3 +1,7 @@
+## 0.9.11-dev
+
+* Handle alias types with `DartType.aliasElement`.
+
 ## 0.9.10+1
 
 * Fix a bug in the early bailout optimization where it wouldn't check for
