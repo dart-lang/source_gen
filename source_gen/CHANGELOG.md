@@ -1,6 +1,10 @@
-## 0.9.11-dev
+## 0.9.11
 
 * Handle alias types with `DartType.aliasElement`.
+
+## 0.9.10+3
+
+* Allow the latest version of `package:analyzer`.
 
 ## 0.9.10+2
 
