@@ -16,7 +16,7 @@ class CommentGenerator extends Generator {
     final output = <String>[];
     if (forLibrary) {
       var name = library.element.name;
-      if (name.isEmpty) {
+      if (name == null || name.isEmpty) {
         name = library.element.source.uri.pathSegments.last;
       }
       output.add('// Code for "$name"');

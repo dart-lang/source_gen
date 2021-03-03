@@ -1,7 +1,7 @@
 name: source_gen_example
 
 environment:
-  sdk: ">=2.10.0 <3.0.0"
+  sdk: ">=2.12.0-0 <3.0.0"
 
 dependencies:
   analyzer: '>=0.42.0-nullsafety <2.0.0'
@@ -9,5 +9,9 @@ dependencies:
   source_gen: any
 
 dependency_overrides:
+  # todo: Remove dart_style override before merging
+  dart_style:
+    git:
+      url: git@github.com:dart-lang/dart_style.git
   source_gen:
     path: ../source_gen

@@ -19,14 +19,14 @@ import '../utils.dart';
 /// **NOTE**: Some returned [Revivable] instances are not representable as valid
 /// Dart source code (such as referencing private constructors). It is up to the
 /// build tool(s) using this library to surface error messages to the user.
-Revivable reviveInstance(DartObject object, [LibraryElement origin]) {
+Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
   final objectType = object.type;
-  Element element = object.type.aliasElement;
+  Element? element = objectType?.aliasElement;
   if (element == null) {
     if (objectType is InterfaceType) {
       element = objectType.element;
     } else {
-      element = object.toFunctionValue();
+      element = object.toFunctionValue()!;
     }
   }
   origin ??= element.library;
@@ -64,7 +64,7 @@ Revivable reviveInstance(DartObject object, [LibraryElement origin]) {
     return !result.isPrivate;
   }
 
-  for (final e in origin.definingCompilationUnit.types
+  for (final e in origin!.definingCompilationUnit.types
       .expand((t) => t.fields)
       .where((f) => f.isConst && f.computeConstantValue() == object)) {
     final result = Revivable._(
@@ -88,19 +88,19 @@ Revivable reviveInstance(DartObject object, [LibraryElement origin]) {
       return result;
     }
   }
-  if (origin != null) {
-    for (final e in origin.definingCompilationUnit.topLevelVariables.where(
-      (f) => f.isConst && f.computeConstantValue() == object,
-    )) {
-      final result = Revivable._(
-        source: Uri.parse(urlOfElement(origin)).replace(fragment: ''),
-        accessor: e.name,
-      );
-      if (tryResult(result)) {
-        return result;
-      }
+
+  for (final e in origin.definingCompilationUnit.topLevelVariables.where(
+    (f) => f.isConst && f.computeConstantValue() == object,
+  )) {
+    final result = Revivable._(
+      source: Uri.parse(urlOfElement(origin)).replace(fragment: ''),
+      accessor: e.name,
+    );
+    if (tryResult(result)) {
+      return result;
     }
   }
+
   // We could try and return the "best" result more intelligently.
   return allResults.first;
 }
@@ -128,7 +128,7 @@ class Revivable {
   final Map<String, DartObject> namedArguments;
 
   const Revivable._({
-    this.source,
+    required this.source,
     this.accessor = '',
     this.positionalArguments = const [],
     this.namedArguments = const {},

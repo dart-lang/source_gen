@@ -9,7 +9,7 @@ import 'package:test/test.dart';
 
 void main() {
   group('Constant', () {
-    List<ConstantReader> constants;
+    late List<ConstantReader> constants;
 
     setUpAll(() async {
       final library = await resolveSource(r'''
@@ -58,8 +58,8 @@ void main() {
           const Super() : super(aString: 'Super Hello');
         }
       ''', (resolver) => resolver.findLibraryByName('test_lib'));
-      constants = library
-          .getType('Example')
+      constants = library!
+          .getType('Example')!
           .metadata
           .map((e) => ConstantReader(e.computeConstantValue()))
           .toList();
@@ -146,7 +146,7 @@ void main() {
 
     test('should read a Type', () {
       expect(constants[11].isType, isTrue);
-      expect(constants[11].typeValue.element.name, 'DateTime');
+      expect(constants[11].typeValue.element!.name, 'DateTime');
       expect(constants[11].isLiteral, isFalse);
       expect(() => constants[11].literalValue, throwsFormatException);
     });
@@ -196,7 +196,7 @@ void main() {
   });
 
   group('Reviable', () {
-    List<ConstantReader> constants;
+    late List<ConstantReader> constants;
 
     setUpAll(() async {
       final library = await resolveSource(r'''
@@ -277,8 +277,8 @@ void main() {
 
         void _privateFunction() {}
       ''', (resolver) => resolver.findLibraryByName('test_lib'));
-      constants = library
-          .getType('Example')
+      constants = library!
+          .getType('Example')!
           .metadata
           .map((e) => ConstantReader(e.computeConstantValue()))
           .toList();

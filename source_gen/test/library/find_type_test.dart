@@ -29,12 +29,12 @@ enum PartEnum{A,B}
 ''';
 
 void main() {
-  LibraryReader library;
+  late LibraryReader library;
 
   setUpAll(() async {
     library = await resolveSources(
       {'a|source.dart': _source, 'a|part.dart': _partSource},
-      (r) async => LibraryReader(await r.findLibraryByName('test_lib')),
+      (r) async => LibraryReader((await r.findLibraryByName('test_lib'))!),
     );
   });
 

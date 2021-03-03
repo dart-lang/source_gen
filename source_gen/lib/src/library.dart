@@ -28,7 +28,7 @@ class LibraryReader {
   ///
   /// Unlike [LibraryElement.getType], this also correctly traverses identifiers
   /// that are accessible via one or more `export` directives.
-  ClassElement findType(String name) {
+  ClassElement? findType(String name) {
     final type = element.exportNamespace.get(name);
     return type is ClassElement ? type : null;
   }
@@ -49,7 +49,7 @@ class LibraryReader {
 
   /// All of the declarations in this library annotated with [checker].
   Iterable<AnnotatedElement> annotatedWith(TypeChecker checker,
-      {bool throwOnUnresolved}) sync* {
+      {bool? throwOnUnresolved}) sync* {
     for (final element in allElements) {
       final annotation = checker.firstAnnotationOf(element,
           throwOnUnresolved: throwOnUnresolved);
@@ -61,7 +61,7 @@ class LibraryReader {
 
   /// All of the declarations in this library annotated with exactly [checker].
   Iterable<AnnotatedElement> annotatedWithExact(TypeChecker checker,
-      {bool throwOnUnresolved}) sync* {
+      {bool? throwOnUnresolved}) sync* {
     for (final element in allElements) {
       final annotation = checker.firstAnnotationOfExact(element,
           throwOnUnresolved: throwOnUnresolved);
@@ -81,7 +81,13 @@ class LibraryReader {
   ///
   /// This is a typed convenience function for using [pathToUrl], and the same
   /// API restrictions hold around supported schemes and relative paths.
-  Uri pathToElement(Element element) => pathToUrl(element.source.uri);
+  Uri pathToElement(Element element) {
+    final source = element.source;
+    if (source == null) {
+      throw ArgumentError.value(element, 'element', 'Does not have a source');
+    }
+    return pathToUrl(source.uri);
+  }
 
   /// Returns a [Uri] from the current library to the one provided.
   ///
@@ -120,9 +126,6 @@ class LibraryReader {
         return assetToPackageUrl(to);
       }
       var from = element.source.uri;
-      if (from == null) {
-        throw StateError('Current library has no source URL');
-      }
       // Normalize (convert to an asset: URL).
       from = normalizeUrl(from);
       if (_isRelative(from, to)) {
