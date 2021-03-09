@@ -13,3 +13,7 @@ dev_dependencies:
 dependency_overrides:
   source_gen:
     path: ../source_gen
+  build:
+    git:
+      url: git://github.com/dart-lang/build.git
+      path: build
