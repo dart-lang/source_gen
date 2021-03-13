@@ -27,4 +27,4 @@ dev_dependencies:
 dependency_overrides:
   dart_style:
     git:
-      url: git@github.com:dart-lang/dart_style.git
+      url: https://github.com/dart-lang/dart_style.git
