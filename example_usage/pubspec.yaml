@@ -11,9 +11,7 @@ dev_dependencies:
   test: ^1.16.0
 
 dependency_overrides:
-  # todo: Remove before merging
-  dart_style:
-    git:
-      url: https://github.com/dart-lang/dart_style.git
+  # Temporarily necessary until build_runner supports the latest version
+  dart_style: ^2.0.0
   source_gen:
     path: ../source_gen
