@@ -11,8 +11,5 @@ dev_dependencies:
   test: ^1.5.1
 
 dependency_overrides:
-  # waiting on build_runner to update
-  dart_style: ^2.0.0
-
   source_gen:
     path: ../source_gen
