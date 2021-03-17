@@ -22,8 +22,8 @@ import 'src/utils.dart';
 const _outputExtensions = '.g.dart';
 const _partFiles = '.g.part';
 
-Builder combiningBuilder([BuilderOptions? options]) {
-  final optionsMap = Map<String, dynamic>.from(options?.config ?? {});
+Builder combiningBuilder([BuilderOptions options = BuilderOptions.empty]) {
+  final optionsMap = Map<String, dynamic>.from(options.config);
 
   final includePartName = optionsMap.remove('include_part_name') as bool?;
   final ignoreForFile = Set<String>.from(
