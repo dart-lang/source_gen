@@ -176,7 +176,7 @@ void main() {
         logs.add(log.message);
       },
     );
-    expect(logs, ['Missing "part \'test_lib.foo.dart\';".']);
+    expect(logs, ['The include statement "part \'$part\';" was not found.']);
   });
 
   test('generator with an empty result creates no outputs', () async {
