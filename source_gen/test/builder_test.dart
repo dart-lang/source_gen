@@ -289,7 +289,10 @@ part "a.foo.dart";'''
           logs.add(log.message);
         },
       );
-      expect(logs, ['Missing "part \'test_lib.g.dart\';".']);
+      expect(
+        logs,
+        ['The include statement "part \'test_lib.g.dart\';" was not found.'],
+      );
     });
 
     test('outputs <partId>.g.part files', () async {
