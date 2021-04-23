@@ -176,10 +176,10 @@ void main() {
         logs.add(log.message);
       },
     );
-    expect(
-      logs,
-      ['The include statement "part \'test_lib.foo.dart\';" was not found.'],
-    );
+    expect(logs, [
+      'test_lib.foo.dart must be included as a part directive in the input '
+          'library with:\n    part \'test_lib.foo.dart\';'
+    ]);
   });
 
   test('generator with an empty result creates no outputs', () async {
@@ -289,10 +289,10 @@ part "a.foo.dart";'''
           logs.add(log.message);
         },
       );
-      expect(
-        logs,
-        ['The include statement "part \'test_lib.g.dart\';" was not found.'],
-      );
+      expect(logs, [
+        'test_lib.g.dart must be included as a part directive in the input '
+            'library with:\n    part \'test_lib.g.dart\';'
+      ]);
     });
 
     test('outputs <partId>.g.part files', () async {
