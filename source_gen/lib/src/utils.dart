@@ -149,5 +149,5 @@ final String rootPackageName = () {
         'Your pubspec.yaml file is missing a `name` field or it isn\'t '
         'a String.');
   }
-  return name as String;
+  return name;
 }();
