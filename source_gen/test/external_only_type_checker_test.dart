@@ -24,8 +24,8 @@ void main() {
     await resolveSource(r'''
       export 'type_checker_test.dart' show NonPublic;
     ''', (resolver) async {
-      thisTest = LibraryReader(await resolver
-          .libraryFor(AssetId('source_gen', 'test/type_checker_test.dart')));
+      thisTest = LibraryReader(await resolver.libraryFor(
+          AssetId('source_gen', 'test/external_only_type_checker_test.dart')));
     }, inputId: AssetId('source_gen', 'test/example.dart'));
 
     staticNonPublic = thisTest.findType('NonPublic')!.instantiate(
@@ -66,7 +66,7 @@ void main() {
   group('TypeChecker.fromUrl', () {
     commonTests(
       checkNonPublic: () => const TypeChecker.fromUrl(
-          'asset:source_gen/test/type_checker_test.dart#NonPublic'),
+          'asset:source_gen/test/external_only_type_checker_test.dart#NonPublic'),
     );
   });
 }
