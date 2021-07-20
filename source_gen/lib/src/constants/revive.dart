@@ -65,17 +65,19 @@ Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
   }
 
   // ignore: deprecated_member_use
-  for (final e in origin!.definingCompilationUnit.types
-      .expand((t) => t.fields)
-      .where((f) => f.isConst && f.computeConstantValue() == object)) {
-    final result = Revivable._(
-      source: url.removeFragment(),
-      accessor: '${clazz.name}.${e.name}',
-    );
-    if (tryResult(result)) {
-      return result;
+  for (final type in origin!.definingCompilationUnit.types) {
+    for (final e in type.fields
+        .where((f) => f.isConst && f.computeConstantValue() == object)) {
+      final result = Revivable._(
+        source: url.removeFragment(),
+        accessor: '${type.name}.${e.name}',
+      );
+      if (tryResult(result)) {
+        return result;
+      }
     }
   }
+  
   final i = (object as DartObjectImpl).getInvocation();
   if (i != null) {
     url = Uri.parse(urlOfElement(i.constructor.enclosingElement));
