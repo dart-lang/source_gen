@@ -3,8 +3,6 @@
 // BSD-style license that can be found in the LICENSE file.
 
 @TestOn('vm')
-import 'dart:convert';
-
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
