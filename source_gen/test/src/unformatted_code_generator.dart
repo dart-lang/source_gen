@@ -13,9 +13,13 @@ class UnformattedCodeGenerator extends Generator {
 
   static const formattedCode = '''
 void hello() => print('hello');
+
+final obj = Object();
 ''';
 
   static const unformattedCode = '''
 void hello ()=>  print('hello');
+
+final obj = new Object();
 ''';
 }
