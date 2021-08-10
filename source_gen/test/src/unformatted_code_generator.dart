@@ -14,12 +14,16 @@ class UnformattedCodeGenerator extends Generator {
   static const formattedCode = '''
 void hello() => print('hello');
 
-final obj = Object();
+void x() {
+  <String>[].add('y');
+}
 ''';
 
   static const unformattedCode = '''
 void hello ()=>  print('hello');
 
-final obj = new Object();
+void x() {
+  <String>[]..add('y');
+}
 ''';
 }
