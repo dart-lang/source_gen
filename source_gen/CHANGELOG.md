@@ -1,3 +1,8 @@
+## 1.1.0-dev
+
+* Add the `build_extensions` option to `combining_builder`, allowing output
+  files to be generated into a different directory.
+
 ## 1.0.5
 
 * Fix a bug with reviving constant expressions which are fields defined on a
