@@ -1,4 +1,4 @@
-## 1.1.0-dev
+## 1.1.0
 
 * Add the `build_extensions` option to `combining_builder`, allowing output
   files to be generated into a different directory.
