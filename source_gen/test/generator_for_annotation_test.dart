@@ -101,8 +101,7 @@ void main() {
 
   test('applies to annotated libraries', () async {
     final builder = LibraryBuilder(_StubGenerator<Deprecated>(
-        'Deprecated',
-        (element) => '// ${element.displayName}'));
+        'Deprecated', (element) => '// ${element.displayName}'));
     await testBuilder(builder, {
       'a|lib/file.dart': '''
       @deprecated
