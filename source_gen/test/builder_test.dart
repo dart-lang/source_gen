@@ -344,6 +344,31 @@ part "a.foo.dart";'''
     });
   });
 
+  group('LibraryBuilder', () {
+    group('with build_extensions', () {
+      test('generates relative `path of` for output in different directory',
+          () async {
+        await testBuilder(
+            LibraryBuilder(
+              const CommentGenerator(),
+              options: const BuilderOptions({
+                'build_extensions': {
+                  '^lib/{{}}.dart': 'lib/generated/{{}}.g.dart'
+                }
+              }),
+            ),
+            _createPackageStub(),
+            generateFor: {
+              '$_pkgName|lib/test_lib.dart'
+            },
+            outputs: {
+              '$_pkgName|lib/generated/test_lib.g.dart':
+                  _testGenStandaloneContent,
+            });
+      });
+    });
+  });
+
   group('SharedPartBuilder', () {
     test('outputs <partId>.g.part files', () async {
       await testBuilder(

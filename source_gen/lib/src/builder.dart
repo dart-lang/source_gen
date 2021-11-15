@@ -307,6 +307,7 @@ class LibraryBuilder extends _Builder {
     List<String> additionalOutputExtensions = const [],
     String? header,
     bool allowSyntaxErrors = false,
+    BuilderOptions options = BuilderOptions.empty,
   }) : super(
           [generator],
           formatOutput: formatOutput,
@@ -314,6 +315,7 @@ class LibraryBuilder extends _Builder {
           additionalOutputExtensions: additionalOutputExtensions,
           header: header,
           allowSyntaxErrors: allowSyntaxErrors,
+          options: options,
         );
 }
 
