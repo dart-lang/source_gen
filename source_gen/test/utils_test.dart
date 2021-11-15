@@ -6,7 +6,6 @@
 @Timeout.factor(2.0)
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build_test/build_test.dart';
-import 'package:source_gen/source_gen.dart';
 import 'package:source_gen/src/utils.dart';
 import 'package:test/test.dart';
 

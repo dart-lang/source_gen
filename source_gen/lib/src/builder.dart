@@ -256,7 +256,7 @@ class PartBuilder extends _Builder {
   /// libraries.
   ///
   /// If available, the `build_extensions` option will be extracted from
-  /// [options] to allow output files to be generated into a different directory.
+  /// [options] to allow output files to be generated into a different directory
   PartBuilder(
     List<Generator> generators,
     String generatedExtension, {
