@@ -229,7 +229,7 @@ void main() {
   });
 
   group('PartBuilder', () {
-    test('PartBuilder uses a custom header when provided', () async {
+    test('uses a custom header when provided', () async {
       await testBuilder(
           PartBuilder([const UnformattedCodeGenerator()], '.foo.dart',
               header: _customHeader),
@@ -245,7 +245,7 @@ void main() {
           });
     });
 
-    test('PartBuilder includes no header when `header` is empty', () async {
+    test('includes no header when `header` is empty', () async {
       await testBuilder(
           PartBuilder([const UnformattedCodeGenerator()], '.foo.dart',
               header: ''),
@@ -260,7 +260,7 @@ void main() {
           });
     });
 
-    test('PartBuilder includes matching language version in all parts', () async {
+    test('includes matching language version in all parts', () async {
       await testBuilder(
           PartBuilder([const UnformattedCodeGenerator()], '.foo.dart',
               header: ''),
@@ -277,7 +277,7 @@ part "a.foo.dart";'''
           });
     });
 
-    test('PartBuilder warns about missing part', () async {
+    test('warns about missing part', () async {
       final srcs = _createPackageStub(testLibContent: _testLibContentNoPart);
       final builder = PartBuilder([const CommentGenerator()], '.foo.dart');
       final logs = <String>[];
@@ -294,8 +294,8 @@ part "a.foo.dart";'''
       ]);
     });
 
-    group('PartBuilder with build_extensions', () {
-      test('PartBuilder (BE) warns about missing part', () async {
+    group('with build_extensions', () {
+      test('warns about missing part', () async {
         final srcs = _createPackageStub(testLibContent: _testLibContentNoPart);
         final builder = PartBuilder([const CommentGenerator()], '.foo.dart',
             options: const BuilderOptions({
@@ -317,7 +317,7 @@ part "a.foo.dart";'''
         ]);
       });
 
-      test('PartBuilder (BE) generates relative `path of` for output in different directory',
+      test('generates relative `path of` for output in different directory',
           () async {
         await testBuilder(
             PartBuilder(
