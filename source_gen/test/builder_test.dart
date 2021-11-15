@@ -346,7 +346,7 @@ part "a.foo.dart";'''
 
   group('LibraryBuilder', () {
     group('with build_extensions', () {
-      test('generates relative `path of` for output in different directory',
+      test('outputs to the correct location',
           () async {
         await testBuilder(
             LibraryBuilder(
