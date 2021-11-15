@@ -35,7 +35,7 @@ class _Builder extends Builder {
   final bool allowSyntaxErrors;
 
   @override
-  late final Map<String, List<String>> buildExtensions;
+  final Map<String, List<String>> buildExtensions;
 
   /// Wrap [_generators] to form a [Builder]-compatible API.
   ///
@@ -50,6 +50,12 @@ class _Builder extends Builder {
     this.allowSyntaxErrors = false,
     BuilderOptions options = BuilderOptions.empty,
   })  : _generatedExtension = generatedExtension,
+        buildExtensions = validatedBuildExtensionsFrom(Map.of(options.config), {
+          '.dart': [
+            generatedExtension,
+            ...additionalOutputExtensions,
+          ]
+        }),
         formatOutput = formatOutput ?? _formatter.format,
         _header = (header ?? defaultFileHeader).trim() {
     if (_generatedExtension.isEmpty || !_generatedExtension.startsWith('.')) {
@@ -60,16 +66,6 @@ class _Builder extends Builder {
       throw ArgumentError(
           'A standalone file can only be generated from a single Generator.');
     }
-    
-    final optionsMap = Map<String, dynamic>.from(options.config);
-    final defaultBuildExtensions = {
-      '.dart': [
-        generatedExtension,
-        ...additionalOutputExtensions,
-      ]
-    };
-    buildExtensions =
-        validatedBuildExtensionsFrom(optionsMap, defaultBuildExtensions);
   }
 
   @override
