@@ -161,6 +161,9 @@ final String rootPackageName = () {
 
 /// Returns a valid buildExtensions map created from [optionsMap] or
 /// returns [defaultExtensions] if no 'build_extensions' key exists.
+///
+/// Modifies [optionsMap] by removing the `build_extensions` key from it, if
+/// present.
 Map<String, List<String>> validatedBuildExtensionsFrom(
     Map<String, dynamic> optionsMap,
     Map<String, List<String>> defaultExtensions) {
