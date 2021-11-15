@@ -35,9 +35,12 @@ class _Builder extends Builder {
   final bool allowSyntaxErrors;
 
   @override
-  final Map<String, List<String>> buildExtensions;
+  late final Map<String, List<String>> buildExtensions;
 
   /// Wrap [_generators] to form a [Builder]-compatible API.
+  ///
+  /// If available, the `build_extensions` option will be extracted from
+  /// [options] to allow output files to be generated into a different directory.
   _Builder(
     this._generators, {
     String Function(String code)? formatOutput,
@@ -45,13 +48,8 @@ class _Builder extends Builder {
     List<String> additionalOutputExtensions = const [],
     String? header,
     this.allowSyntaxErrors = false,
+    BuilderOptions options = BuilderOptions.empty,
   })  : _generatedExtension = generatedExtension,
-        buildExtensions = {
-          '.dart': [
-            generatedExtension,
-            ...additionalOutputExtensions,
-          ]
-        },
         formatOutput = formatOutput ?? _formatter.format,
         _header = (header ?? defaultFileHeader).trim() {
     if (_generatedExtension.isEmpty || !_generatedExtension.startsWith('.')) {
@@ -62,6 +60,16 @@ class _Builder extends Builder {
       throw ArgumentError(
           'A standalone file can only be generated from a single Generator.');
     }
+    
+    final optionsMap = Map<String, dynamic>.from(options.config);
+    final defaultBuildExtensions = {
+      '.dart': [
+        generatedExtension,
+        ...additionalOutputExtensions,
+      ]
+    };
+    buildExtensions =
+        validatedBuildExtensionsFrom(optionsMap, defaultBuildExtensions);
   }
 
   @override
@@ -94,8 +102,7 @@ class _Builder extends Builder {
     // library/part definitions because users expect some files to be skipped
     // therefore they do not have "library".
     if (generatedOutputs.isEmpty) return;
-    final outputId = buildStep.inputId.changeExtension(_generatedExtension);
-
+    final outputId = buildStep.allowedOutputs.single;
     final contentBuffer = StringBuffer();
 
     if (_header.isNotEmpty) {
@@ -251,6 +258,9 @@ class PartBuilder extends _Builder {
   ///
   /// [allowSyntaxErrors] indicates whether to allow syntax errors in input
   /// libraries.
+  ///
+  /// If available, the `build_extensions` option will be extracted from
+  /// [options] to allow output files to be generated into a different directory.
   PartBuilder(
     List<Generator> generators,
     String generatedExtension, {
@@ -258,6 +268,7 @@ class PartBuilder extends _Builder {
     List<String> additionalOutputExtensions = const [],
     String? header,
     bool allowSyntaxErrors = false,
+    BuilderOptions options = BuilderOptions.empty,
   }) : super(
           generators,
           formatOutput: formatOutput,
@@ -265,6 +276,7 @@ class PartBuilder extends _Builder {
           additionalOutputExtensions: additionalOutputExtensions,
           header: header,
           allowSyntaxErrors: allowSyntaxErrors,
+          options: options,
         );
 }
 
