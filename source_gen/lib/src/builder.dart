@@ -102,7 +102,7 @@ class _Builder extends Builder {
     // library/part definitions because users expect some files to be skipped
     // therefore they do not have "library".
     if (generatedOutputs.isEmpty) return;
-    final outputId = buildStep.allowedOutputs.single;
+    final outputId = buildStep.allowedOutputs.first;
     final contentBuffer = StringBuffer();
 
     if (_header.isNotEmpty) {
