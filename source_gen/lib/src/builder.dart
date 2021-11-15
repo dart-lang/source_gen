@@ -66,6 +66,12 @@ class _Builder extends Builder {
       throw ArgumentError(
           'A standalone file can only be generated from a single Generator.');
     }
+    if (options != BuilderOptions.empty &&
+        additionalOutputExtensions.isNotEmpty) {
+      throw ArgumentError(
+          'Either `options` or `additionalOutputExtensions` parameter '
+          'can be given. Not both.');
+    }
   }
 
   @override

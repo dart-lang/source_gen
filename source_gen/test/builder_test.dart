@@ -341,6 +341,27 @@ part "a.foo.dart";'''
                   decodedMatches(startsWith("part of '../a.dart';")),
             });
       });
+
+      test(
+          'throws if `options` and `additionalOutputExtensions` are both given',
+          () async {
+        await expectLater(
+          () => testBuilder(
+            PartBuilder(
+              [const UnformattedCodeGenerator()],
+              '.foo.dart',
+              additionalOutputExtensions: ['.bar.dart'],
+              options: const BuilderOptions({
+                'build_extensions': {
+                  '^lib/{{}}.dart': 'lib/generated/{{}}.foo.dart'
+                }
+              }),
+            ),
+            {'$_pkgName|lib/a.dart': 'part "generated/a.foo.dart";'},
+          ),
+          throwsArgumentError,
+        );
+      });
     });
   });
 
@@ -365,6 +386,26 @@ part "a.foo.dart";'''
               '$_pkgName|lib/generated/test_lib.g.dart':
                   _testGenStandaloneContent,
             });
+      });
+
+      test(
+          'throws if `options` and `additionalOutputExtensions` are both given',
+          () async {
+        await expectLater(
+          () => testBuilder(
+            LibraryBuilder(
+              const CommentGenerator(),
+              additionalOutputExtensions: ['.foo.dart'],
+              options: const BuilderOptions({
+                'build_extensions': {
+                  '^lib/{{}}.dart': 'lib/generated/{{}}.foo.dart'
+                }
+              }),
+            ),
+            {'$_pkgName|lib/a.dart': 'part "generated/a.foo.dart";'},
+          ),
+          throwsArgumentError,
+        );
       });
     });
   });
