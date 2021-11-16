@@ -121,8 +121,8 @@ you should document this feature for your users.
 
 The output location for an input file can be changed:
 - when using `PartBuilder` or `LibraryBuilder`.
-- when using `SharedPartBuilder` which apply the `combining_builder` as part of
-the build,
+- when using `SharedPartBuilder` which apply the `combining_builder` as
+part of the build.
 
 By default, a `.g.dart` or `.some_name.dart` file is generated next to the input.
 To change this, set the `build_extensions` option on the corresponding builder. In
