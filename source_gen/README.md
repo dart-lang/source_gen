@@ -120,7 +120,7 @@ you should document this feature for your users.
 ### Generating files in different directories
 
 The output location for an input file can be changed:
-- when using `PartBuilder`,
+- when using `PartBuilder` or `LibraryBuilder`.
 - when using `SharedPartBuilder` which apply the `combining_builder` as part of
 the build,
 
