@@ -137,11 +137,13 @@ with the following build configuration:
 targets:
   $default:
     builders:
+      # A SharedPartBuilder which uses the combining builder
       source_gen|combining_builder:
         options:
           build_extensions:
             '^lib/{{}}.dart': 'lib/generated/{{}}.g.dart'
 
+      # A PartBuilder or LibraryBuilder
       some_cool_builder:
         options:
           build_extensions:
