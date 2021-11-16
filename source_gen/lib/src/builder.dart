@@ -40,7 +40,7 @@ class _Builder extends Builder {
   /// Wrap [_generators] to form a [Builder]-compatible API.
   ///
   /// If available, the `build_extensions` option will be extracted from
-  /// [options] to allow output files to be generated into a different directory.
+  /// [options] to allow output files to be generated into a different directory
   _Builder(
     this._generators, {
     String Function(String code)? formatOutput,
