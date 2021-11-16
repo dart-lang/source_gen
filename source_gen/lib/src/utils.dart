@@ -165,9 +165,9 @@ final String rootPackageName = () {
 /// Modifies [optionsMap] by removing the `build_extensions` key from it, if
 /// present.
 Map<String, List<String>> validatedBuildExtensionsFrom(
-    Map<String, dynamic> optionsMap,
+    Map<String, dynamic>? optionsMap,
     Map<String, List<String>> defaultExtensions) {
-  final extensionsOption = optionsMap.remove('build_extensions');
+  final extensionsOption = optionsMap?.remove('build_extensions');
   if (extensionsOption == null) return defaultExtensions;
 
   if (extensionsOption is! Map) {

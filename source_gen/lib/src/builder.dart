@@ -48,9 +48,10 @@ class _Builder extends Builder {
     List<String> additionalOutputExtensions = const [],
     String? header,
     this.allowSyntaxErrors = false,
-    BuilderOptions options = BuilderOptions.empty,
+    BuilderOptions? options,
   })  : _generatedExtension = generatedExtension,
-        buildExtensions = validatedBuildExtensionsFrom(Map.of(options.config), {
+        buildExtensions = validatedBuildExtensionsFrom(
+            options != null ? Map.of(options.config) : null, {
           '.dart': [
             generatedExtension,
             ...additionalOutputExtensions,
@@ -66,8 +67,7 @@ class _Builder extends Builder {
       throw ArgumentError(
           'A standalone file can only be generated from a single Generator.');
     }
-    if (options != BuilderOptions.empty &&
-        additionalOutputExtensions.isNotEmpty) {
+    if (options != null && additionalOutputExtensions.isNotEmpty) {
       throw ArgumentError(
           'Either `options` or `additionalOutputExtensions` parameter '
           'can be given. Not both.');
@@ -270,7 +270,7 @@ class PartBuilder extends _Builder {
     List<String> additionalOutputExtensions = const [],
     String? header,
     bool allowSyntaxErrors = false,
-    BuilderOptions options = BuilderOptions.empty,
+    BuilderOptions? options,
   }) : super(
           generators,
           formatOutput: formatOutput,
@@ -313,7 +313,7 @@ class LibraryBuilder extends _Builder {
     List<String> additionalOutputExtensions = const [],
     String? header,
     bool allowSyntaxErrors = false,
-    BuilderOptions options = BuilderOptions.empty,
+    BuilderOptions? options,
   }) : super(
           [generator],
           formatOutput: formatOutput,
