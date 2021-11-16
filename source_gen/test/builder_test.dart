@@ -367,8 +367,7 @@ part "a.foo.dart";'''
 
   group('LibraryBuilder', () {
     group('with build_extensions', () {
-      test('outputs to the correct location',
-          () async {
+      test('outputs to the correct location', () async {
         await testBuilder(
             LibraryBuilder(
               const CommentGenerator(),
