@@ -8,7 +8,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
-import 'package:path/path.dart' as p show url;
+import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 
 /// Returns a non-null name for the provided [type].
@@ -106,10 +106,9 @@ Uri normalizeDartUrl(Uri url) => url.pathSegments.isNotEmpty
     : url;
 
 Uri fileToAssetUrl(Uri url) {
-  if (!p.url.isWithin(p.url.current, url.path)) return url;
+  if (!p.isWithin(p.url.current, url.path)) return url;
   return Uri(
-      scheme: 'asset',
-      path: p.url.join(rootPackageName, p.url.relative(url.path)));
+      scheme: 'asset', path: p.join(rootPackageName, p.relative(url.path)));
 }
 
 /// Returns a `package:` URL converted to a `asset:` URL.
