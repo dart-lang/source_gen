@@ -61,6 +61,8 @@ void main() {
     commonTests(
       checkNonPublic: () => staticNonPublicChecker,
     );
+  }, onPlatform: const {
+    'windows': Skip('https://github.com/dart-lang/source_gen/issues/573')
   });
 
   group('TypeChecker.fromUrl', () {
