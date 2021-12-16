@@ -1,3 +1,7 @@
+## 1.2.1
+
+* Allow the latest version of `package:analyzer`.
+
 ## 1.2.0
 
 - Include the `LibraryElement` in `LibraryReader.allElements`,
