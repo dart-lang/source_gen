@@ -1,3 +1,7 @@
+## 1.2.2-dev
+
+- Stop using deprecated `package:analyzer` API to access classes.
+
 ## 1.2.1
 
 - Allow reviving constants which are static fields defined on the class which
