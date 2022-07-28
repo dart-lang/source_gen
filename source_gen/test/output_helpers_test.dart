@@ -49,7 +49,7 @@ void main() {
 
     _testFunction(
       'new Future.error',
-      () => Future<void>.error(ArgumentError('Error message')),
+      () => Future<Never>.error(ArgumentError('Error message')),
       throwsArgumentError,
     );
 
