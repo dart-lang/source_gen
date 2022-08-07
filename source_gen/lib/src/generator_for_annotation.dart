@@ -41,15 +41,17 @@ import 'type_checker.dart';
 /// [T] and use the [Element] to iterate over fields. The [TypeChecker] utility
 /// may be helpful to check which elements have a given annotation.
 abstract class GeneratorForAnnotation<T> extends Generator {
-  const GeneratorForAnnotation();
+  GeneratorForAnnotation();
+  Iterable<AnnotatedElement>? annotatedElements;
 
   TypeChecker get typeChecker => TypeChecker.fromRuntime(T);
 
   @override
   FutureOr<String> generate(LibraryReader library, BuildStep buildStep) async {
     final values = <String>{};
+    annotatedElements = library.annotatedWith(typeChecker);
 
-    for (var annotatedElement in library.annotatedWith(typeChecker)) {
+    for (var annotatedElement in annotatedElements!) {
       final generatedValue = generateForAnnotatedElement(
         annotatedElement.element,
         annotatedElement.annotation,

@@ -142,7 +142,7 @@ class _StubGenerator<T> extends GeneratorForAnnotation<T> {
   final String _name;
   final Object? Function(Element) _behavior;
 
-  const _StubGenerator(this._name, this._behavior);
+  _StubGenerator(this._name, this._behavior);
 
   @override
   Object? generateForAnnotatedElement(
