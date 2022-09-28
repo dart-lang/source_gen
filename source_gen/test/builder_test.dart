@@ -681,13 +681,10 @@ foo generated content
     test('includes preamble if enabled', () async {
       await testBuilder(
         const CombiningBuilder(
-          preamble: [
-            '// coverage:ignore-file',
-            '',
-            '// ignore_for_file: type=lint',
-            '',
-            '// Foo bar',
-          ],
+          preamble: '''
+foo
+
+bar''',
         ),
         {
           '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
@@ -700,11 +697,9 @@ foo generated content
           '$_pkgName|lib/a.g.dart': decodedMatches(
             endsWith(
               r'''
-// coverage:ignore-file
+foo
 
-// ignore_for_file: type=lint
-
-// Foo bar
+bar
 
 part of a;
 
