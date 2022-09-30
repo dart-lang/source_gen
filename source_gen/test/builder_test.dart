@@ -682,9 +682,9 @@ foo generated content
       await testBuilder(
         const CombiningBuilder(
           preamble: '''
-foo
+// foo
 
-bar''',
+// bar''',
         ),
         {
           '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
