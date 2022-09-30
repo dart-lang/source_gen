@@ -697,9 +697,9 @@ foo generated content
           '$_pkgName|lib/a.g.dart': decodedMatches(
             endsWith(
               r'''
-foo
+// foo
 
-bar
+// bar
 
 part of a;
 
