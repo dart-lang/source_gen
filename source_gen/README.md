@@ -138,8 +138,11 @@ targets:
                 // Bar
 ```
 
+Hint: When both `ignore_for_file` and `preamble` are used the generated libraries will contain the lints of
+`ignore_for_file` on top of the `preamble`.
+
 If you provide a builder that uses `SharedPartBuilder` and `combining_builder`,
-you should document this feature for your users.
+you should document these features for your users.
 
 ### Generating files in different directories
 
