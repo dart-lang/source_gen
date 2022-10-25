@@ -1,3 +1,7 @@
+## 1.2.7-dev
+
+* Update the value of the pubspec `repository` field.
+
 ## 1.2.6
 
 * Add support for a `preamble` option to `combining_builder`.
