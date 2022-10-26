@@ -78,7 +78,7 @@ Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
   }
   final i = (object as DartObjectImpl).getInvocation();
   if (i != null) {
-    url = Uri.parse(urlOfElement(i.constructor.enclosingElement3));
+    url = Uri.parse(urlOfElement(i.constructor.enclosingElement));
     final result = Revivable._(
       source: url,
       accessor: i.constructor.name,
