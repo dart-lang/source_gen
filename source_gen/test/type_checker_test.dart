@@ -12,16 +12,19 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/source_gen.dart';
+import 'package:source_gen/src/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
   // Resolved top-level types from dart:core and dart:collection.
   late InterfaceType staticUri;
   late InterfaceType staticMap;
+  late InterfaceType staticMapMixin;
   late InterfaceType staticHashMap;
   late InterfaceType staticUnmodifiableListView;
   late TypeChecker staticIterableChecker;
   late TypeChecker staticMapChecker;
+  late TypeChecker staticMapMixinChecker;
   late TypeChecker staticHashMapChecker;
 
   // Resolved top-level types from package:source_gen.
@@ -34,6 +37,7 @@ void main() {
     late LibraryElement core;
     late LibraryElement collection;
     late LibraryReader sourceGen;
+    late LibraryElement testSource;
     await resolveSource(
       r'''
       export 'package:source_gen/source_gen.dart';
@@ -46,6 +50,8 @@ void main() {
           await resolver
               .libraryFor(AssetId('source_gen', 'lib/source_gen.dart')),
         );
+        testSource = await resolver
+            .libraryFor(AssetId('source_gen', 'test/type_checker_test.dart'));
       },
       inputId: AssetId('source_gen', 'test/example.dart'),
     );
@@ -67,6 +73,14 @@ void main() {
       nullabilitySuffix: NullabilitySuffix.none,
     );
     staticMapChecker = TypeChecker.fromStatic(staticMap);
+
+    staticMapMixin =
+        (testSource.exportNamespace.get('MyMapMixin')! as InterfaceElement)
+            .instantiate(
+      typeArguments: [],
+      nullabilitySuffix: NullabilitySuffix.none,
+    );
+    staticMapMixinChecker = TypeChecker.fromStatic(staticMapMixin);
 
     staticHashMap = collection.getClass('HashMap')!.instantiate(
       typeArguments: [
@@ -100,6 +114,7 @@ void main() {
   void commonTests({
     required TypeChecker Function() checkIterable,
     required TypeChecker Function() checkMap,
+    required TypeChecker Function() checkMapMixin,
     required TypeChecker Function() checkHashMap,
     required TypeChecker Function() checkGenerator,
     required TypeChecker Function() checkGeneratorForAnnotation,
@@ -111,6 +126,13 @@ void main() {
           checkIterable().isAssignableFromType(staticUnmodifiableListView),
           true,
         );
+      });
+    });
+
+    group('(MapMixin', () {
+      test('should equal dart:collection#MapMixin', () {
+        expect(checkMapMixin().isExactlyType(staticMapMixin), isTrue);
+        expect(checkMapMixin().isExactly(staticMapMixin.element), isTrue);
       });
     });
 
@@ -141,6 +163,10 @@ void main() {
 
       test('should be assignable from dart:collection#HashMap', () {
         expect(checkMap().isAssignableFromType(staticHashMap), isTrue);
+      });
+
+      test('should be assignable from dart:collection#MapMixin', () {
+        expect(checkMap().isAssignableFromType(staticMapMixin), isTrue);
       });
 
       // Ensure we're consistent WRT generic types
@@ -214,6 +240,7 @@ void main() {
     commonTests(
       checkIterable: () => const TypeChecker.fromRuntime(Iterable),
       checkMap: () => const TypeChecker.fromRuntime(Map),
+      checkMapMixin: () => const TypeChecker.fromRuntime(MyMapMixin),
       checkHashMap: () => const TypeChecker.fromRuntime(HashMap),
       checkGenerator: () => const TypeChecker.fromRuntime(Generator),
       checkGeneratorForAnnotation: () =>
@@ -225,6 +252,7 @@ void main() {
     commonTests(
       checkIterable: () => staticIterableChecker,
       checkMap: () => staticMapChecker,
+      checkMapMixin: () => staticMapMixinChecker,
       checkHashMap: () => staticHashMapChecker,
       checkGenerator: () => staticGeneratorChecker,
       checkGeneratorForAnnotation: () => staticGeneratorForAnnotationChecker,
@@ -235,6 +263,8 @@ void main() {
     commonTests(
       checkIterable: () => const TypeChecker.fromUrl('dart:core#Iterable'),
       checkMap: () => const TypeChecker.fromUrl('dart:core#Map'),
+      checkMapMixin: () => const TypeChecker.fromUrl(
+          'asset:source_gen/test/type_checker_test.dart#MyMapMixin'),
       checkHashMap: () => const TypeChecker.fromUrl('dart:collection#HashMap'),
       checkGenerator: () => const TypeChecker.fromUrl(
         'package:source_gen/src/generator.dart#Generator',
@@ -493,3 +523,7 @@ final throwsUnresolvedAnnotationException = throwsA(
   const TypeMatcher<UnresolvedAnnotationException>()
       .having((e) => e.annotationSource, 'annotationSource', isNotNull),
 );
+
+// Not using `dart.collection#MapMixin` because we want to test elements
+// actually declared as a `mixin`.
+mixin MyMapMixin on Map<dynamic, dynamic> {}
