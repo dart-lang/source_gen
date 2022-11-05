@@ -150,14 +150,18 @@ void main() {
       });
     });
 
-    group('(MapMixin', () {
-      test('should equal MapMixin class', () {
-        expect(checkMapMixin().isExactlyType(staticMapMixin), isTrue);
-        expect(checkMapMixin().isExactly(staticMapMixin.element), isTrue);
-      });
-    }, onPlatform: const {
-      'windows': Skip('https://github.com/dart-lang/source_gen/issues/573'),
-    });
+    group(
+      '(MapMixin',
+      () {
+        test('should equal MapMixin class', () {
+          expect(checkMapMixin().isExactlyType(staticMapMixin), isTrue);
+          expect(checkMapMixin().isExactly(staticMapMixin.element), isTrue);
+        });
+      },
+      onPlatform: const {
+        'windows': Skip('https://github.com/dart-lang/source_gen/issues/573'),
+      },
+    );
 
     group('(Map)', () {
       test('should equal dart:core#Map', () {
