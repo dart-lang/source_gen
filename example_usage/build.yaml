@@ -18,6 +18,7 @@ targets:
       # may configure the builder to ignore specific lints for their project
       source_gen|combining_builder:
         options:
+          coverage_ignore_file: true
           ignore_for_file:
           - lint_a
           - lint_b

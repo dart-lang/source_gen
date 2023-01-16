@@ -114,6 +114,22 @@ targets:
           - lint_beta
 ```
 
+#### `coverage_ignore_file`
+
+Sometimes when we run tests using `dart test --coverage` or `flutter test --coverage` we want to exclude the generated code from code coverage. When using a `Builder` based on `package:source_gen` which applies
+`combining_builder`, set the `coverage_ignore_file` option to a boolean, if the value is `true`,  all generated libraries will be excluded from the generated LCOV file.
+
+_Example `build.yaml` configuration:_
+
+```yaml
+targets:
+  $default:
+    builders:
+      source_gen:combining_builder:
+        options:
+          coverage_ignore_file: true
+```
+
 #### `preamble`
 
 When using a `Builder` based on `package:source_gen` which applies

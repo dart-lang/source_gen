@@ -35,12 +35,14 @@ Builder combiningBuilder([BuilderOptions options = BuilderOptions.empty]) {
   final preamble = optionsMap.remove('preamble') as String? ?? '';
   final buildExtensions =
       validatedBuildExtensionsFrom(optionsMap, _defaultExtensions);
+  final coverageIgnoreFile = optionsMap.remove('coverage_ignore_file') as bool?;
 
   final builder = CombiningBuilder(
     includePartName: includePartName,
     ignoreForFile: ignoreForFile,
     preamble: preamble,
     buildExtensions: buildExtensions,
+    coverageIgnoreFile: coverageIgnoreFile,
   );
 
   if (optionsMap.isNotEmpty) {
@@ -58,6 +60,8 @@ PostProcessBuilder partCleanup(BuilderOptions options) =>
 class CombiningBuilder implements Builder {
   final bool _includePartName;
 
+  final bool _coverageIgnoreFile;
+
   final Set<String> _ignoreForFile;
 
   final String _preamble;
@@ -72,10 +76,12 @@ class CombiningBuilder implements Builder {
   /// debugging build issues.
   const CombiningBuilder({
     bool? includePartName,
+    bool? coverageIgnoreFile,
     Set<String>? ignoreForFile,
     String? preamble,
     this.buildExtensions = _defaultExtensions,
   })  : _includePartName = includePartName ?? false,
+        _coverageIgnoreFile = coverageIgnoreFile ?? false,
         _ignoreForFile = ignoreForFile ?? const <String>{},
         _preamble = preamble ?? '';
 
@@ -140,7 +146,9 @@ class CombiningBuilder implements Builder {
 
     final preamble = _preamble.isEmpty ? '' : '\n$_preamble\n';
 
-    final output = '''
+    var output = _coverageIgnoreFile ? '// coverage:ignore-file\n' : '';
+
+    output += '''
 $defaultFileHeader
 ${languageOverrideForLibrary(inputLibrary)}$ignoreForFile$preamble
 part of $partOf;

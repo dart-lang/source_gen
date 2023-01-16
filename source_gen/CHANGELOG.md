@@ -1,3 +1,8 @@
+## 1.2.8
+
+* Add the `coverage_ignore_file` option to `combining_builder`, allowing output
+  files to be ignored from code coverage.
+
 ## 1.2.7
 
 * Update the value of the pubspec `repository` field.
