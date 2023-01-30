@@ -12,6 +12,7 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/source_gen.dart';
+import 'package:source_gen/src/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -168,6 +169,11 @@ void main() {
 
       test('with mixins should be assignable to mixin class', () {
         printOnFailure(checkEnumMixin().toString());
+        printOnFailure(
+          normalizeUrl(staticMyEnumWithMixin.element.librarySource!.uri)
+              .replace(fragment: staticMyEnumWithMixin.element.name)
+              .toString(),
+        );
         expect(
           checkEnumMixin().isAssignableFromType(staticMyEnumWithMixin),
           isTrue,
