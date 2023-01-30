@@ -167,6 +167,7 @@ void main() {
       });
 
       test('with mixins should be assignable to mixin class', () {
+        printOnFailure(checkEnumMixin().toString());
         expect(
           checkEnumMixin().isAssignableFromType(staticMyEnumWithMixin),
           isTrue,
