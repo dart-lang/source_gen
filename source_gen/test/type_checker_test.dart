@@ -22,6 +22,7 @@ void main() {
   late InterfaceType staticUnmodifiableListView;
   late InterfaceType staticEnum;
   late TypeChecker staticIterableChecker;
+  late TypeChecker staticEnumMixinChecker;
   late TypeChecker staticMapChecker;
   late TypeChecker staticMapMixinChecker;
   late TypeChecker staticHashMapChecker;
@@ -34,8 +35,10 @@ void main() {
   late TypeChecker staticGeneratorForAnnotationChecker;
 
   // Resolved top-level types from this file
+  late InterfaceType staticEnumMixin;
   late InterfaceType staticMapMixin;
   late InterfaceType staticMyEnum;
+  late InterfaceType staticMyEnumWithMixin;
 
   setUpAll(() async {
     late LibraryElement core;
@@ -82,6 +85,13 @@ void main() {
       nullabilitySuffix: NullabilitySuffix.none,
     );
     staticEnumChecker = TypeChecker.fromStatic(staticEnum);
+    staticEnumMixin =
+        (testSource.exportNamespace.get('MyEnumMixin')! as InterfaceElement)
+            .instantiate(
+      typeArguments: [],
+      nullabilitySuffix: NullabilitySuffix.none,
+    );
+    staticEnumMixinChecker = TypeChecker.fromStatic(staticEnumMixin);
     staticMapMixin =
         (testSource.exportNamespace.get('MyMapMixin')! as InterfaceElement)
             .instantiate(
@@ -91,6 +101,12 @@ void main() {
     staticMapMixinChecker = TypeChecker.fromStatic(staticMapMixin);
     staticMyEnum =
         (testSource.exportNamespace.get('MyEnum')! as InterfaceElement)
+            .instantiate(
+      typeArguments: [],
+      nullabilitySuffix: NullabilitySuffix.none,
+    );
+    staticMyEnumWithMixin =
+        (testSource.exportNamespace.get('MyEnumWithMixin')! as InterfaceElement)
             .instantiate(
       typeArguments: [],
       nullabilitySuffix: NullabilitySuffix.none,
@@ -130,6 +146,7 @@ void main() {
     required TypeChecker Function() checkEnum,
     required TypeChecker Function() checkMap,
     required TypeChecker Function() checkMapMixin,
+    required TypeChecker Function() checkEnumMixin,
     required TypeChecker Function() checkHashMap,
     required TypeChecker Function() checkGenerator,
     required TypeChecker Function() checkGeneratorForAnnotation,
@@ -147,6 +164,13 @@ void main() {
     group('(Enum)', () {
       test('should be supertype of enum classes', () {
         expect(checkEnum().isSuperTypeOf(staticMyEnum), isTrue);
+      });
+
+      test('with mixins should be assignable to mixin class', () {
+        expect(
+          checkEnumMixin().isAssignableFromType(staticMyEnumWithMixin),
+          isTrue,
+        );
       });
     });
 
@@ -267,6 +291,7 @@ void main() {
     commonTests(
       checkIterable: () => const TypeChecker.fromRuntime(Iterable),
       checkEnum: () => const TypeChecker.fromRuntime(Enum),
+      checkEnumMixin: () => const TypeChecker.fromRuntime(MyEnumMixin),
       checkMap: () => const TypeChecker.fromRuntime(Map),
       checkMapMixin: () => const TypeChecker.fromRuntime(MyMapMixin),
       checkHashMap: () => const TypeChecker.fromRuntime(HashMap),
@@ -280,6 +305,7 @@ void main() {
     commonTests(
       checkIterable: () => staticIterableChecker,
       checkEnum: () => staticEnumChecker,
+      checkEnumMixin: () => staticEnumMixinChecker,
       checkMap: () => staticMapChecker,
       checkMapMixin: () => staticMapMixinChecker,
       checkHashMap: () => staticHashMapChecker,
@@ -292,6 +318,9 @@ void main() {
     commonTests(
       checkIterable: () => const TypeChecker.fromUrl('dart:core#Iterable'),
       checkEnum: () => const TypeChecker.fromUrl('dart:core#Enum'),
+      checkEnumMixin: () => const TypeChecker.fromUrl(
+        'asset:source_gen/test/type_checker_test.dart#MyEnumMixin',
+      ),
       checkMap: () => const TypeChecker.fromUrl('dart:core#Map'),
       checkMapMixin: () => const TypeChecker.fromUrl(
         'asset:source_gen/test/type_checker_test.dart#MyMapMixin',
@@ -560,3 +589,9 @@ final throwsUnresolvedAnnotationException = throwsA(
 mixin MyMapMixin on Map<dynamic, dynamic> {}
 
 enum MyEnum { foo, bar }
+
+mixin MyEnumMixin on Enum {
+  int get value => 1;
+}
+
+enum MyEnumWithMixin with MyEnumMixin { foo, bar }
