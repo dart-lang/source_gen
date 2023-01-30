@@ -167,18 +167,18 @@ void main() {
         expect(checkEnum().isSuperTypeOf(staticMyEnum), isTrue);
       });
 
-      test('with mixins should be assignable to mixin class', () {
-        printOnFailure(checkEnumMixin().toString());
-        printOnFailure(
-          normalizeUrl(staticMyEnumWithMixin.element.librarySource.uri)
-              .replace(fragment: staticMyEnumWithMixin.element.name)
-              .toString(),
-        );
-        expect(
-          checkEnumMixin().isAssignableFromType(staticMyEnumWithMixin),
-          isTrue,
-        );
-      });
+      test(
+        'with mixins should be assignable to mixin class',
+        () {
+          expect(
+            checkEnumMixin().isAssignableFromType(staticMyEnumWithMixin),
+            isTrue,
+          );
+        },
+        onPlatform: const {
+          'windows': Skip('https://github.com/dart-lang/source_gen/issues/573'),
+        },
+      );
     });
 
     group(
