@@ -219,7 +219,7 @@ class _LibraryTypeChecker extends TypeChecker {
 
 // Checks a runtime type against a static type.
 class _MirrorTypeChecker extends TypeChecker {
-  static Uri _uriOf(ClassMirror mirror) {}
+  static Uri _uriOf(ClassMirror mirror) =>
       normalizeUrl((mirror.owner as LibraryMirror).uri)
           .replace(fragment: MirrorSystem.getName(mirror.simpleName));
 

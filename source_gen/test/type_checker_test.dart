@@ -170,7 +170,7 @@ void main() {
       test('with mixins should be assignable to mixin class', () {
         printOnFailure(checkEnumMixin().toString());
         printOnFailure(
-          normalizeUrl(staticMyEnumWithMixin.element.librarySource!.uri)
+          normalizeUrl(staticMyEnumWithMixin.element.librarySource.uri)
               .replace(fragment: staticMyEnumWithMixin.element.name)
               .toString(),
         );
