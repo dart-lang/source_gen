@@ -176,7 +176,12 @@ Map<String, List<String>> validatedBuildExtensionsFrom(
   Map<String, List<String>> defaultExtensions,
 ) {
   final extensionsOption = optionsMap?.remove('build_extensions');
-  if (extensionsOption == null) return defaultExtensions;
+  if (extensionsOption == null) {
+    // NOTE: defaultExtensions is not validated
+    // Maybe it would make sense to validate it as well instead of returning
+    // it directly. But this would possibly be a breaking change?
+    return defaultExtensions;
+  }
 
   if (extensionsOption is! Map) {
     throw ArgumentError(
@@ -195,15 +200,19 @@ Map<String, List<String>> validatedBuildExtensionsFrom(
       );
     }
 
-    final output = entry.value;
-    if (output is! String || !output.endsWith('.dart')) {
-      throw ArgumentError(
-        'Invalid output extension `$output`. It should be a '
-        'string ending with `.dart`',
-      );
+    final output =
+        (entry.value is Iterable) ? entry.value as Iterable : [entry.value];
+
+    for (var o in output) {
+      if (o is! String || !o.endsWith('.dart')) {
+        throw ArgumentError(
+          'Invalid output extension `${entry.value}`. It should be a string '
+          'or a list of strings ending with `.dart`',
+        );
+      }
     }
 
-    result[input] = [output];
+    result[input] = output.cast<String>().toList();
   }
 
   if (result.isEmpty) {

@@ -46,11 +46,25 @@ void main() {
 
   group('validatedBuildExtensionsFrom', () {
     test('no option given -> return defaultBuildExtension ', () {
-      final buildEtension = validatedBuildExtensionsFrom({}, {
+      final buildExtension = validatedBuildExtensionsFrom({}, {
         '.dart': ['.foo.dart'],
       });
-      expect(buildEtension, {
+      expect(buildExtension, {
         '.dart': ['.foo.dart'],
+      });
+    });
+
+    test('allows multiple output extensions ', () {
+      final buildExtensions = validatedBuildExtensionsFrom(
+        {
+          'build_extensions': {
+            '.dart': ['.g.dart', '.h.dart']
+          }
+        },
+        {},
+      );
+      expect(buildExtensions, {
+        '.dart': ['.g.dart', '.h.dart'],
       });
     });
 
@@ -104,8 +118,27 @@ void main() {
           isArgumentError.having(
             (e) => e.message,
             'message',
-            'Invalid output extension `.out`. It should be a string ending '
-                'with `.dart`',
+            'Invalid output extension `.out`. It should be a string or a list '
+                'of strings ending with `.dart`',
+          ),
+        ),
+      );
+
+      expect(
+        () => validatedBuildExtensionsFrom(
+          {
+            'build_extensions': {
+              '.dart': ['.g.dart', '.out']
+            }
+          },
+          {},
+        ),
+        throwsA(
+          isArgumentError.having(
+            (e) => e.message,
+            'message',
+            'Invalid output extension `[.g.dart, .out]`. It should be a '
+                'string or a list of strings ending with `.dart`',
           ),
         ),
       );
