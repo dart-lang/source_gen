@@ -54,7 +54,7 @@ void main() {
       });
     });
 
-    test('allows multiple output extensions ', () {
+    test('allows multiple output extensions', () {
       final buildExtensions = validatedBuildExtensionsFrom(
         {
           'build_extensions': {
@@ -65,6 +65,20 @@ void main() {
       );
       expect(buildExtensions, {
         '.dart': ['.g.dart', '.h.dart'],
+      });
+    });
+
+    test('allows multiple output extensions of various types ', () {
+      final buildExtensions = validatedBuildExtensionsFrom(
+        {
+          'build_extensions': {
+            '.dart': ['.g.dart', '.swagger.json']
+          }
+        },
+        {},
+      );
+      expect(buildExtensions, {
+        '.dart': ['.g.dart', '.swagger.json'],
       });
     });
 
@@ -128,7 +142,7 @@ void main() {
         () => validatedBuildExtensionsFrom(
           {
             'build_extensions': {
-              '.dart': ['.g.dart', '.out']
+              '.dart': ['.out', '.g.dart']
             }
           },
           {},
@@ -137,7 +151,7 @@ void main() {
           isArgumentError.having(
             (e) => e.message,
             'message',
-            'Invalid output extension `[.g.dart, .out]`. It should be a '
+            'Invalid output extension `[.out, .g.dart]`. It should be a '
                 'string or a list of strings ending with `.dart`',
           ),
         ),

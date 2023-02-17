@@ -200,11 +200,11 @@ Map<String, List<String>> validatedBuildExtensionsFrom(
       );
     }
 
-    final output =
-        (entry.value is Iterable) ? entry.value as Iterable : [entry.value];
+    final output = (entry.value is List) ? entry.value as List : [entry.value];
 
-    for (var o in output) {
-      if (o is! String || !o.endsWith('.dart')) {
+    for (var i = 0; i < output.length; i++) {
+      final o = output[i];
+      if (o is! String || (i == 0 && !o.endsWith('.dart'))) {
         throw ArgumentError(
           'Invalid output extension `${entry.value}`. It should be a string '
           'or a list of strings ending with `.dart`',
