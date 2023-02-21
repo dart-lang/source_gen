@@ -1,4 +1,4 @@
-## 1.2.8
+## 1.3.0
 
 * Add support for `build_extensions` configuration of builders producing multiple files. Eg:
   `build_extensions: { '.dart': ['.stub.dart', '.web.dart', '.vm.dart'] }`
