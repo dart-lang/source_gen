@@ -114,7 +114,7 @@ void main() {
             (e) => e.message,
             'message',
             'Invalid key in build_extensions option: `.txt` should be a '
-                'string ending with `.dart`',
+                'string with the first ending with `.dart`',
           ),
         ),
       );
@@ -133,7 +133,7 @@ void main() {
             (e) => e.message,
             'message',
             'Invalid output extension `.out`. It should be a string or a list '
-                'of strings ending with `.dart`',
+                'of strings with the first ending with `.dart`',
           ),
         ),
       );
@@ -152,7 +152,8 @@ void main() {
             (e) => e.message,
             'message',
             'Invalid output extension `[.out, .g.dart]`. It should be a '
-                'string or a list of strings ending with `.dart`',
+                'string or a list of strings with the first ending with '
+                '`.dart`',
           ),
         ),
       );
