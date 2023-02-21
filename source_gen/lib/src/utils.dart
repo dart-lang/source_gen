@@ -177,9 +177,8 @@ Map<String, List<String>> validatedBuildExtensionsFrom(
 ) {
   final extensionsOption = optionsMap?.remove('build_extensions');
   if (extensionsOption == null) {
-    // NOTE: defaultExtensions is not validated
-    // Maybe it would make sense to validate it as well instead of returning
-    // it directly. But this would possibly be a breaking change?
+    // defaultExtensions are provided by the builder author, not the end user.
+    // It should be safe to skip validation.
     return defaultExtensions;
   }
 
