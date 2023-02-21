@@ -206,7 +206,7 @@ Map<String, List<String>> validatedBuildExtensionsFrom(
       if (o is! String || (i == 0 && !o.endsWith('.dart'))) {
         throw ArgumentError(
           'Invalid output extension `${entry.value}`. It should be a string '
-          'or a list of strings ending with `.dart`',
+          'or a list of strings with the first ending with `.dart`',
         );
       }
     }
