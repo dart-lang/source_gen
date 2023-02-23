@@ -114,7 +114,7 @@ void main() {
             (e) => e.message,
             'message',
             'Invalid key in build_extensions option: `.txt` should be a '
-                'string with the first ending with `.dart`',
+                'string ending with `.dart`',
           ),
         ),
       );
