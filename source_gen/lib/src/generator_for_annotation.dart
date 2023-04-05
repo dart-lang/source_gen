@@ -39,7 +39,14 @@ import 'type_checker.dart';
 /// extension, are not searched for annotations. To operate on, for instance,
 /// annotated fields of a class ensure that the class itself is annotated with
 /// [T] and use the [Element] to iterate over fields. The [TypeChecker] utility
-/// may be helpful to check which elements have a given annotation.
+/// may be helpful to check which elements have a given annotation if the
+/// generator should further filter it's target based on annotations.
+///
+/// If the annotation type cannot be imported on the Dart VM, for example if it
+/// imports `dart:html` or `dart:ui`, then the default behavior of using
+/// `TypeChecker.fromRuntime` is not feasible. In these cases extend
+/// `GeneratorForAnnotation<void>` and override the [typeChecker] member with a
+/// checker matching the annotation type.
 abstract class GeneratorForAnnotation<T> extends Generator {
   const GeneratorForAnnotation();
 

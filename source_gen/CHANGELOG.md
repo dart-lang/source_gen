@@ -1,7 +1,10 @@
+## 1.3.1-dev
+
 ## 1.3.0
 
-* Add support for `build_extensions` configuration of builders producing multiple files. Eg:
-  `build_extensions: { '.dart': ['.stub.dart', '.web.dart', '.vm.dart'] }`
+* Add support for `build_extensions` configuration of builders producing
+  multiple files. Eg: `build_extensions: { '.dart': ['.stub.dart', '.web.dart',
+  '.vm.dart'] }`
 
 ## 1.2.7
 
@@ -39,6 +42,7 @@
   represents their type. Previously we checked this pattern only for enums,
   however there are enum-like usages in classes which are not enums.
 - Allow the latest version of `package:analyzer`.
+>>>>>>> master
 
 ## 1.2.0
 
