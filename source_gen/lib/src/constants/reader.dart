@@ -5,7 +5,6 @@
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:meta/meta.dart';
 
 import '../type_checker.dart';
 import 'revive.dart';
@@ -115,10 +114,8 @@ abstract class ConstantReader {
 }
 
 class _NullConstant extends ConstantReader {
-  @alwaysThrows
-  static T _throw<T>(String expected) {
-    throw FormatException('Not an instance of $expected.');
-  }
+  static T _throw<T>(String expected) =>
+      throw FormatException('Not an instance of $expected.');
 
   const _NullConstant() : super._();
 
@@ -271,7 +268,7 @@ class _DartObjectConstant extends ConstantReader {
   ConstantReader read(String field) {
     final reader = peek(field);
     if (reader == null) {
-      assertHasField(objectValue.type?.element as ClassElement, field);
+      assertHasField(objectValue.type!.element as InterfaceElement, field);
       return const _NullConstant();
     }
     return reader;

@@ -6,7 +6,7 @@ import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 // ignore: implementation_imports
-import 'package:analyzer/src/dart/constant/value.dart';
+import 'package:analyzer/src/dart/constant/value.dart' show DartObjectImpl;
 
 import '../utils.dart';
 
@@ -43,14 +43,14 @@ Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
       accessor: '${element.enclosingElement.name}.${element.name}',
     );
   }
-  // Enums are not included in .definingCompilationUnit.types.
-  final clazz = element as ClassElement;
-  if (clazz.isEnum) {
-    for (final e in clazz.fields.where(
-        (f) => f.isPublic && f.isConst && f.computeConstantValue() == object)) {
+
+  if (element is InterfaceElement) {
+    for (final e in element.fields.where(
+      (f) => f.isPublic && f.isConst && f.computeConstantValue() == object,
+    )) {
       return Revivable._(
         source: url.removeFragment(),
-        accessor: '${clazz.name}.${e.name}',
+        accessor: '${element.name}.${e.name}',
       );
     }
   }
@@ -64,8 +64,7 @@ Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
     return !result.isPrivate;
   }
 
-  // ignore: deprecated_member_use
-  for (final type in origin!.definingCompilationUnit.types) {
+  for (final type in origin!.definingCompilationUnit.classes) {
     for (final e in type.fields
         .where((f) => f.isConst && f.computeConstantValue() == object)) {
       final result = Revivable._(

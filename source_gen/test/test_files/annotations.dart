@@ -17,7 +17,7 @@ const PublicAnnotationClass typedAnnotation = PublicAnnotationClass();
 class PublicAnnotationClass {
   final int anInt;
   final String aString;
-  final List aList;
+  final List<Object?> aList;
   final bool aBool;
   final PublicAnnotationClass? child1;
   final PublicAnnotationClass? child2;
@@ -38,9 +38,12 @@ class PublicAnnotationClass {
         child1 = null,
         child2 = null;
 
-  const PublicAnnotationClass.withPositionalArgs(int intArg, this.aString,
-      {bool boolArg = false, List listArg = const [2, 3, 4]})
-      : anInt = intArg,
+  const PublicAnnotationClass.withPositionalArgs(
+    int intArg,
+    this.aString, {
+    bool boolArg = false,
+    List<int> listArg = const [2, 3, 4],
+  })  : anInt = intArg,
         aList = listArg,
         aBool = boolArg,
         child1 = null,

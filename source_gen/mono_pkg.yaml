@@ -1,23 +1,23 @@
 # See https://github.com/google/mono_repo.dart for details
-dart:
-- 2.12.0
+sdk:
+- pubspec
 - dev
-
-os:
-- linux
-- windows
 
 stages:
 - analyze_format:
   - group:
     - format
     - analyze: --fatal-infos .
-    dart: dev
+    sdk: dev
   - group:
     - analyze
-    dart: 2.12.0
+    sdk: pubspec
 - unit_test:
-  - test
+  - group:
+      - test
+    os:
+    - linux
+    - windows
 
 cache:
   directories:

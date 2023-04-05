@@ -1,14 +1,10 @@
-<p align="center">
-  <a href="https://travis-ci.org/dart-lang/source_gen">
-    <img src="https://travis-ci.org/dart-lang/source_gen.svg?branch=master" alt="Build Status" />
-  </a>
-  <a href="https://pub.dev/packages/source_gen">
-    <img src="https://img.shields.io/pub/v/source_gen.svg" alt="Pub Package Version" />
-  </a>
-  <a href="https://gitter.im/dart-lang/build">
-    <img src="https://badges.gitter.im/dart-lang/build.svg" alt="Join the chat on Gitter" />
-  </a>
-</p>
+[![Dart CI](https://github.com/dart-lang/source_gen/actions/workflows/dart.yml/badge.svg)](https://github.com/dart-lang/source_gen/actions/workflows/dart.yml)
+<a href="https://pub.dev/packages/source_gen">
+  <img src="https://img.shields.io/pub/v/source_gen.svg" alt="Pub Package Version" />
+</a>
+<a href="https://gitter.im/dart-lang/build">
+  <img src="https://badges.gitter.im/dart-lang/build.svg" alt="Join the chat on Gitter" />
+</a>
 
 ## Overview
 
@@ -18,7 +14,7 @@
 * A **convention** for human and tool generated Dart code to coexist with clean
   separation, and for multiple code generators to integrate in the same project.
 
-It's main purpose is to expose a developer-friendly API on top of lower-level
+Its main purpose is to expose a developer-friendly API on top of lower-level
 packages like the [analyzer][] or [build][]. You don't _have_ to use
 `source_gen` in order to generate source code; we also expose a set of library
 APIs that might be useful in your generators.
@@ -65,7 +61,9 @@ generated code to end up:
   `part` in the original source file, use `PartBuilder`. You should choose an
   extension unique to your package. Multiple `Generator`s may output to this
   file, but they will all come from your package and you will set up the entire
-  list when constructing the builder.
+  list when constructing the builder. Using the extension `.g.dart` may cause
+  conflicts with other projects that use `SharedPartBuilder` since outputs must
+  be unique.
 - If you want to write standalone Dart library which can be `import`ed use
   `LibraryBuilder`. Only a single `Generator` may be used as a `LibraryBuilder`.
 
@@ -90,10 +88,12 @@ builders:
     auto_apply: dependents
     build_to: cache
     # To copy the `.g.part` content into `.g.dart` in the source tree
-    applies_builders: ["source_gen|combining_builder"]
+    applies_builders: ["source_gen:combining_builder"]
 ```
 
-### Configuring `combining_builder` `ignore_for_file`
+### Configuring `combining_builder` 
+
+#### `ignore_for_file`
 
 Sometimes generated code does not support all of the
 [lints](https://dart-lang.github.io/linter/) specified in the target package.
@@ -107,15 +107,38 @@ _Example `build.yaml` configuration:_
 targets:
   $default:
     builders:
-      source_gen|combining_builder:
+      source_gen:combining_builder:
         options:
           ignore_for_file:
           - lint_alpha
           - lint_beta
 ```
 
+#### `preamble`
+
+When using a `Builder` based on `package:source_gen` which applies
+`combining_builder`, set the `preamble` option to a string you
+wish to be prepended to all generated libraries.
+
+_Example `build.yaml` configuration:_
+
+```yaml
+targets:
+  $default:
+    builders:
+      source_gen:combining_builder:
+        options:
+          preamble: |
+                // Foo
+                
+                // Bar
+```
+
+Hint: When both `ignore_for_file` and `preamble` are used the generated libraries will contain the lints of
+`ignore_for_file` on top of the `preamble`.
+
 If you provide a builder that uses `SharedPartBuilder` and `combining_builder`,
-you should document this feature for your users.
+you should document these features for your users.
 
 ### Generating files in different directories
 
@@ -138,7 +161,7 @@ targets:
   $default:
     builders:
       # A SharedPartBuilder which uses the combining builder
-      source_gen|combining_builder:
+      source_gen:combining_builder:
         options:
           build_extensions:
             '^lib/{{}}.dart': 'lib/generated/{{}}.g.dart'
@@ -193,3 +216,8 @@ wraps a single Generator to make a `Builder` which creates Dart library files.
 [Full example package]: https://github.com/dart-lang/source_gen/tree/master/example
 [example usage]: https://github.com/dart-lang/source_gen/tree/master/example_usage
 [outputs]: https://github.com/dart-lang/build/blob/master/docs/writing_a_builder.md#configuring-outputs
+
+## Publishing automation
+
+For information about our publishing automation and release process, see
+https://github.com/dart-lang/ecosystem/wiki/Publishing-automation.

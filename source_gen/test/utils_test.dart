@@ -4,6 +4,8 @@
 
 // Increase timeouts on this test which resolves source code and can be slow.
 @Timeout.factor(2.0)
+library test;
+
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/src/utils.dart';
@@ -25,10 +27,11 @@ void main() {
       typedef FunctionType();
     ''';
     example = await resolveSource(
-        source,
-        (resolver) => resolver
-            .findLibraryByName('example')
-            .then((e) => e!.getType('Example')!));
+      source,
+      (resolver) => resolver
+          .findLibraryByName('example')
+          .then((e) => e!.getClass('Example')!),
+    );
   });
 
   test('should return the name of a class type', () {
@@ -43,11 +46,39 @@ void main() {
 
   group('validatedBuildExtensionsFrom', () {
     test('no option given -> return defaultBuildExtension ', () {
-      final buildEtension = validatedBuildExtensionsFrom({}, {
+      final buildExtension = validatedBuildExtensionsFrom({}, {
         '.dart': ['.foo.dart'],
       });
-      expect(buildEtension, {
+      expect(buildExtension, {
         '.dart': ['.foo.dart'],
+      });
+    });
+
+    test('allows multiple output extensions', () {
+      final buildExtensions = validatedBuildExtensionsFrom(
+        {
+          'build_extensions': {
+            '.dart': ['.g.dart', '.h.dart']
+          }
+        },
+        {},
+      );
+      expect(buildExtensions, {
+        '.dart': ['.g.dart', '.h.dart'],
+      });
+    });
+
+    test('allows multiple output extensions of various types ', () {
+      final buildExtensions = validatedBuildExtensionsFrom(
+        {
+          'build_extensions': {
+            '.dart': ['.g.dart', '.swagger.json']
+          }
+        },
+        {},
+      );
+      expect(buildExtensions, {
+        '.dart': ['.g.dart', '.swagger.json'],
       });
     });
 
@@ -60,18 +91,24 @@ void main() {
 
     test('disallows empty options', () {
       expect(
-        () => validatedBuildExtensionsFrom({'build_extensions': {}}, {}),
+        () => validatedBuildExtensionsFrom(
+          {'build_extensions': <String, Object?>{}},
+          {},
+        ),
         throwsArgumentError,
       );
     });
 
     test('disallows inputs not ending with .dart', () {
       expect(
-        () => validatedBuildExtensionsFrom({
-          'build_extensions': {
-            '.txt': ['.dart']
-          }
-        }, {}),
+        () => validatedBuildExtensionsFrom(
+          {
+            'build_extensions': {
+              '.txt': ['.dart']
+            }
+          },
+          {},
+        ),
         throwsA(
           isArgumentError.having(
             (e) => e.message,
@@ -85,15 +122,38 @@ void main() {
 
     test('disallows outputs not ending with .dart', () {
       expect(
-        () => validatedBuildExtensionsFrom({
-          'build_extensions': {'.dart': '.out'}
-        }, {}),
+        () => validatedBuildExtensionsFrom(
+          {
+            'build_extensions': {'.dart': '.out'}
+          },
+          {},
+        ),
         throwsA(
           isArgumentError.having(
             (e) => e.message,
             'message',
-            'Invalid output extension `.out`. It should be a string ending '
-                'with `.dart`',
+            'Invalid output extension `.out`. It should be a string or a list '
+                'of strings with the first ending with `.dart`',
+          ),
+        ),
+      );
+
+      expect(
+        () => validatedBuildExtensionsFrom(
+          {
+            'build_extensions': {
+              '.dart': ['.out', '.g.dart']
+            }
+          },
+          {},
+        ),
+        throwsA(
+          isArgumentError.having(
+            (e) => e.message,
+            'message',
+            'Invalid output extension `[.out, .g.dart]`. It should be a '
+                'string or a list of strings with the first ending with '
+                '`.dart`',
           ),
         ),
       );

@@ -164,7 +164,7 @@ abstract class TypeChecker {
   /// Returns `true` if the type of [element] can be assigned to this type.
   bool isAssignableFrom(Element element) =>
       isExactly(element) ||
-      (element is ClassElement && element.allSupertypes.any(isExactlyType));
+      (element is InterfaceElement && element.allSupertypes.any(isExactlyType));
 
   /// Returns `true` if [staticType] can be assigned to this type.
   bool isAssignableFromType(DartType staticType) =>
@@ -181,7 +181,7 @@ abstract class TypeChecker {
   /// This check only takes into account the *extends* hierarchy. If you wish
   /// to check mixins and interfaces, use [isAssignableFrom].
   bool isSuperOf(Element element) {
-    if (element is ClassElement) {
+    if (element is InterfaceElement) {
       var theSuper = element.supertype;
 
       do {
@@ -211,7 +211,7 @@ class _LibraryTypeChecker extends TypeChecker {
 
   @override
   bool isExactly(Element element) =>
-      element is ClassElement && element == _type.element;
+      element is InterfaceElement && element == _type.element;
 
   @override
   String toString() => urlOfElement(_type.element!);
@@ -316,7 +316,8 @@ class UnresolvedAnnotationException implements Exception {
         metadata = node.metadata;
       } else {
         throw StateError(
-            'Unhandled Annotated AST node type: ${node.runtimeType}');
+          'Unhandled Annotated AST node type: ${node.runtimeType}',
+        );
       }
       final annotation = metadata[annotationIndex];
       final start = annotation.offset;
@@ -331,7 +332,7 @@ class UnresolvedAnnotationException implements Exception {
       // Trying to get more information on https://github.com/dart-lang/sdk/issues/45127
       log.warning(
         '''
-An unexpected error was thrown trying to get location information on `$annotatedElement` (${annotatedElement.runtimeType}). 
+An unexpected error was thrown trying to get location information on `$annotatedElement` (${annotatedElement.runtimeType}).
 
 Please file an issue at https://github.com/dart-lang/source_gen/issues/new
 Include the contents of this warning and the stack trace along with

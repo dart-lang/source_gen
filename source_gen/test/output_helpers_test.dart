@@ -12,37 +12,56 @@ void main() {
     _testSimpleValue('empty List', [], []);
     _testSimpleValue('List', ['a', 'b', 'c'], ['a', 'b', 'c']);
     _testSimpleValue(
-        'Iterable', Iterable.generate(3, (i) => i.toString()), ['0', '1', '2']);
+      'Iterable',
+      Iterable.generate(3, (i) => i.toString()),
+      ['0', '1', '2'],
+    );
 
-    _testFunction('Future<Stream>',
-        Future.value(Stream.fromIterable(['value'])), ['value']);
+    _testFunction(
+      'Future<Stream>',
+      Future.value(Stream.fromIterable(['value'])),
+      ['value'],
+    );
   });
 
   group('invalid values', () {
     _testSimpleValue('number', 42, throwsArgumentError);
     _testSimpleValue(
-        'mixed good and bad', ['good', 42, 'also good'], throwsArgumentError);
+      'mixed good and bad',
+      ['good', 42, 'also good'],
+      throwsArgumentError,
+    );
 
     final badInstance = _ThrowOnToString();
     _testSimpleValue('really bad class', badInstance, throwsArgumentError);
 
     _testSimpleValue(
-        'iterable with errors', _throwingIterable(), throwsArgumentError);
-
-    _testFunction('sync throw', () => throw ArgumentError('Error message'),
-        throwsArgumentError);
+      'iterable with errors',
+      _throwingIterable(),
+      throwsArgumentError,
+    );
 
     _testFunction(
-        'new Future.error',
-        () => Future.error(ArgumentError('Error message')),
-        throwsArgumentError);
+      'sync throw',
+      () => throw ArgumentError('Error message'),
+      throwsArgumentError,
+    );
 
-    _testFunction('throw in async',
-        () async => throw ArgumentError('Error message'), throwsArgumentError);
+    _testFunction(
+      'new Future.error',
+      () => Future<Never>.error(ArgumentError('Error message')),
+      throwsArgumentError,
+    );
+
+    _testFunction(
+      'throw in async',
+      () async => throw ArgumentError('Error message'),
+      throwsArgumentError,
+    );
   });
 }
 
-void _testSimpleValue(String testName, Object? value, expected) {
+void _testSimpleValue(String testName, Object? value, Object? expected) {
   _testFunction(testName, value, expected);
 
   assert(value is! Future);
@@ -50,20 +69,26 @@ void _testSimpleValue(String testName, Object? value, expected) {
   _testFunction('Future<$testName>', Future.value(value), expected);
 
   if (value is Iterable) {
-    _testFunction('Stream with values from $testName',
-        Stream.fromIterable(value), expected);
+    _testFunction(
+      'Stream with values from $testName',
+      Stream.fromIterable(value),
+      expected,
+    );
   } else {
-    _testFunction('Stream single value $testName', Stream.fromIterable([value]),
-        expected);
+    _testFunction(
+      'Stream single value $testName',
+      Stream.fromIterable([value]),
+      expected,
+    );
   }
 }
 
-void _testFunction(String testName, value, expected) {
+void _testFunction(String testName, Object? value, Object? expected) {
   test(testName, () async {
     if (expected is List) {
       expect(await normalizeGeneratorOutput(value).toList(), expected);
     } else {
-      expect(() => normalizeGeneratorOutput(value).drain(), expected);
+      expect(() => normalizeGeneratorOutput(value).drain<void>(), expected);
     }
   });
 }

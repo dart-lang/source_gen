@@ -1,4 +1,48 @@
-## 1.2.1-dev
+## 1.3.1-dev
+
+## 1.3.0
+
+* Add support for `build_extensions` configuration of builders producing
+  multiple files. Eg: `build_extensions: { '.dart': ['.stub.dart', '.web.dart',
+  '.vm.dart'] }`
+
+## 1.2.7
+
+* Update the value of the pubspec `repository` field.
+* Require Dart SDK version `2.18`.
+* Fix type-checking mixin elements with `TypeChecker`.
+
+## 1.2.6
+
+* Add support for a `preamble` option to `combining_builder`.
+
+## 1.2.5
+
+* Fix another issue with overly specific types.
+
+## 1.2.4
+
+* Fix overly-specific cast.
+
+## 1.2.3
+
+* Require `analyzer: '>=4.6.0 <6.0.0'`
+* Require `sdk: '>=2.17.0 <3.0.0'`
+
+## 1.2.2
+
+* Enable the fix for single cascade statements when formatting Dart code.
+  * Individual builders can opt out of this by providing a custom `formatOutput`
+    function to the `PartBuilder` or `LibraryBuilder` constructors.
+* Allow analyzer version 4.x.
+
+## 1.2.1
+
+- Allow reviving constants which are static fields defined on the class which
+  represents their type. Previously we checked this pattern only for enums,
+  however there are enum-like usages in classes which are not enums.
+- Allow the latest version of `package:analyzer`.
+>>>>>>> master
 
 ## 1.2.0
 
@@ -51,6 +95,10 @@
   - `ConstantReader.isAny`.
   - `ConstantReader.anyValue`.
   - `LibraryReader.classElements`.
+
+## 0.9.10+5
+
+* Widen `dart_style` range to include v2.x.
 
 ## 0.9.10+4
 

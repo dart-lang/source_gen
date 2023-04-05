@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-library source_gen.test.annotation_test.classes;
-
 import 'package:_test_annotations/test_annotations.dart';
 
 import 'annotations.dart';
@@ -29,8 +27,12 @@ class NonDefaultCtorNoParams {}
 @PublicAnnotationClass.withPositionalArgs(42, 'custom value')
 class NonDefaultCtorWithPositionalParams {}
 
-@PublicAnnotationClass.withPositionalArgs(43, 'another value',
-    boolArg: true, listArg: [5, 6, 7])
+@PublicAnnotationClass.withPositionalArgs(
+  43,
+  'another value',
+  boolArg: true,
+  listArg: [5, 6, 7],
+)
 class NonDefaultCtorWithPositionalAndNamedParams {}
 
 @PublicAnnotationClass.withKids()

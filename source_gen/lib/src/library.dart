@@ -26,8 +26,8 @@ class LibraryReader {
 
   /// Returns a top-level [ClassElement] publicly visible in by [name].
   ///
-  /// Unlike [LibraryElement.getType], this also correctly traverses identifiers
-  /// that are accessible via one or more `export` directives.
+  /// Unlike [LibraryElement.getClass], this also correctly traverses
+  /// identifiers that are accessible via one or more `export` directives.
   ClassElement? findType(String name) {
     final type = element.exportNamespace.get(name);
     return type is ClassElement ? type : null;
@@ -37,8 +37,10 @@ class LibraryReader {
   Iterable<Element> get allElements => [element, ...element.topLevelElements];
 
   /// All of the declarations in this library annotated with [checker].
-  Iterable<AnnotatedElement> annotatedWith(TypeChecker checker,
-      {bool throwOnUnresolved = true}) sync* {
+  Iterable<AnnotatedElement> annotatedWith(
+    TypeChecker checker, {
+    bool throwOnUnresolved = true,
+  }) sync* {
     for (final element in allElements) {
       final annotation = checker.firstAnnotationOf(
         element,
@@ -51,11 +53,15 @@ class LibraryReader {
   }
 
   /// All of the declarations in this library annotated with exactly [checker].
-  Iterable<AnnotatedElement> annotatedWithExact(TypeChecker checker,
-      {bool throwOnUnresolved = true}) sync* {
+  Iterable<AnnotatedElement> annotatedWithExact(
+    TypeChecker checker, {
+    bool throwOnUnresolved = true,
+  }) sync* {
     for (final element in allElements) {
-      final annotation = checker.firstAnnotationOfExact(element,
-          throwOnUnresolved: throwOnUnresolved);
+      final annotation = checker.firstAnnotationOfExact(
+        element,
+        throwOnUnresolved: throwOnUnresolved,
+      );
       if (annotation != null) {
         yield AnnotatedElement(ConstantReader(annotation), element);
       }
@@ -119,10 +125,12 @@ class LibraryReader {
           // a valid import URL in Dart source code.
           return Uri(path: to.pathSegments.last);
         }
-        final relative = p.toUri(p.relative(
-          to.toString(),
-          from: from.toString(),
-        ));
+        final relative = p.toUri(
+          p.relative(
+            to.toString(),
+            from: from.toString(),
+          ),
+        );
         // We now have a URL like "../b.dart", but we just want "b.dart".
         return relative.replace(
           pathSegments: relative.pathSegments.skip(1),
@@ -151,9 +159,9 @@ class LibraryReader {
   }
 
   /// All of the elements representing classes in this library.
-  // ignore: deprecated_member_use
-  Iterable<ClassElement> get classes => element.units.expand((cu) => cu.types);
+  Iterable<ClassElement> get classes =>
+      element.units.expand((cu) => cu.classes);
 
   /// All of the elements representing enums in this library.
-  Iterable<ClassElement> get enums => element.units.expand((cu) => cu.enums);
+  Iterable<EnumElement> get enums => element.units.expand((cu) => cu.enums);
 }
