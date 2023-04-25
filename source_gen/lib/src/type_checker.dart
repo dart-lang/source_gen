@@ -178,7 +178,7 @@ abstract class TypeChecker {
   /// This will always return false for types without a backingclass such as
   /// `void` or function types.
   bool isExactlyType(DartType staticType) {
-    var element = staticType.element;
+    final element = staticType.element;
     if (element != null) {
       return isExactly(element);
     } else {

@@ -32,6 +32,7 @@ void main() {
   late TypeChecker staticHashMapChecker;
   late TypeChecker staticEnumChecker;
   late LibraryElement core;
+  late LibraryElement core;
 
   // Resolved top-level types from package:source_gen.
   late InterfaceType staticGenerator;
@@ -188,7 +189,7 @@ void main() {
       'isExactlyType',
       () {
         test('should not crash with null element', () {
-          var voidType = core.typeProvider.voidType;
+          final voidType = core.typeProvider.voidType;
           expect(voidType.element, isNull);
           expect(checkMapMixin().isExactlyType(voidType), isFalse);
         });
