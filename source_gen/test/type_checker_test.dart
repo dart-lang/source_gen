@@ -32,7 +32,6 @@ void main() {
   late TypeChecker staticHashMapChecker;
   late TypeChecker staticEnumChecker;
   late LibraryElement core;
-  late LibraryElement core;
 
   // Resolved top-level types from package:source_gen.
   late InterfaceType staticGenerator;
