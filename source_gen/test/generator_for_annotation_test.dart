@@ -149,8 +149,8 @@ void main() {
     await testBuilder(
       builder,
       {
-  'a|lib/imported.dart': '',
-  'a|lib/part.dart': 'part of \'file.dart\';',
+        'a|lib/imported.dart': '',
+        'a|lib/part.dart': 'part of \'file.dart\';',
         'a|lib/file.dart': '''
       library;
       @deprecated
