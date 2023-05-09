@@ -3,8 +3,12 @@
 ## 1.3.0
 
 * Add support for `build_extensions` configuration of builders producing
-  multiple files. Eg: `build_extensions: { '.dart': ['.stub.dart', '.web.dart',
-  '.vm.dart'] }`
+  multiple files. For example:
+  `build_extensions: { '.dart': ['.stub.dart', '.web.dart', '.vm.dart'] }`
+* Avoid throwing when a type without a backing class is checked with
+  `TypeChecker`.
+* Include imports, exports, and part directives in `LibraryReader.allElements`.
+  This allows `GeneratorForAnnotation` to target annotated directives.
 
 ## 1.2.7
 
@@ -42,7 +46,6 @@
   represents their type. Previously we checked this pattern only for enums,
   however there are enum-like usages in classes which are not enums.
 - Allow the latest version of `package:analyzer`.
->>>>>>> master
 
 ## 1.2.0
 
