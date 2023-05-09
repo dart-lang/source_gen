@@ -44,9 +44,9 @@ import 'type_checker.dart';
 ///
 /// If the annotation type cannot be imported on the Dart VM, for example if it
 /// imports `dart:html` or `dart:ui`, then the default behavior of using
-/// `TypeChecker.fromRuntime` is not feasible. In these cases extend
-/// `GeneratorForAnnotation<void>` and override the [typeChecker] member with a
-/// checker matching the annotation type.
+/// `TypeChecker.fromRuntime` is not feasible. In these cases use
+/// `GeneratorForMatchingAnnotation` and pass an appropriate [TypeChecker] to
+/// the constructor.
 abstract class GeneratorForAnnotation<T> extends Generator {
   const GeneratorForAnnotation();
 
@@ -87,4 +87,56 @@ abstract class GeneratorForAnnotation<T> extends Generator {
     ConstantReader annotation,
     BuildStep buildStep,
   );
+}
+
+/// A [Generator] that takes a [TypeChecker] to match an annotation, and a
+/// callback to generate the output for each annotated element.
+///
+/// When all annotated elements have been processed, the results will be
+/// combined into a single output with duplicate items collapsed.
+///
+/// For example, this will allow code generated for all top level elements which
+/// are annotated with `@Deprecated`:
+///
+/// ```dart
+/// Builder createBuilder(BuilderOptions _) => LibraryBuilder(
+///         GeneratorForMatchingAnnotation(TypeChecker.fromUrl(
+///             'dart:core#Deprecated')),
+///         (element, annotation, buildStep) {
+///       // Return the generated content for this element.
+///     });
+/// ```
+///
+/// Elements which are not at the top level, such as the members of a class or
+/// extension, are not searched for annotations. To operate on, for instance,
+/// annotated fields of a class ensure that the class itself is annotated with
+/// a matching annotation and use the [Element] to iterate over fields. The
+/// [TypeChecker] utility may be helpful to check which elements have a given
+/// annotation if the generator should further filter it's target based on
+/// annotations.
+class GeneratorForMatchingAnnotation extends Generator {
+  final TypeChecker _typeChecker;
+  final dynamic Function(Element, ConstantReader annotation, BuildStep)
+      _generateForAnnotatedElement;
+  GeneratorForMatchingAnnotation(
+      this._typeChecker, this._generateForAnnotatedElement, {String? generatorName});
+
+  @override
+  FutureOr<String> generate(LibraryReader library, BuildStep buildStep) async {
+    final values = <String>{};
+
+    for (var annotatedElement in library.annotatedWith(_typeChecker)) {
+      final generatedValue = _generateForAnnotatedElement(
+        annotatedElement.element,
+        annotatedElement.annotation,
+        buildStep,
+      );
+      await for (var value in normalizeGeneratorOutput(generatedValue)) {
+        assert(value.length == value.trim().length);
+        values.add(value);
+      }
+    }
+
+    return values.join('\n\n');
+  }
 }

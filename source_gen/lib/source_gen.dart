@@ -7,7 +7,8 @@ export 'src/builder.dart'
 export 'src/constants/reader.dart' show ConstantReader;
 export 'src/constants/revive.dart' show Revivable;
 export 'src/generator.dart' show Generator, InvalidGenerationSourceError;
-export 'src/generator_for_annotation.dart' show GeneratorForAnnotation;
+export 'src/generator_for_annotation.dart'
+    show GeneratorForAnnotation, GeneratorForMatchingAnnotation;
 export 'src/library.dart' show AnnotatedElement, LibraryReader;
 export 'src/span_for_element.dart' show spanForElement;
 export 'src/type_checker.dart' show TypeChecker, UnresolvedAnnotationException;

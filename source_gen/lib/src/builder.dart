@@ -88,7 +88,9 @@ class _Builder extends Builder {
 
     if (!await resolver.isLibrary(buildStep.inputId)) return;
 
-    if (_generators.every((g) => g is GeneratorForAnnotation) &&
+    if (_generators.every((g) =>
+            g is GeneratorForAnnotation ||
+            g is GeneratorForMatchingAnnotation) &&
         !(await _hasAnyTopLevelAnnotations(
           buildStep.inputId,
           resolver,

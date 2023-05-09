@@ -1,4 +1,8 @@
-## 1.3.1-dev
+## 1.4.0-wip
+
+* Add `GeneratorForMatchingAnnotation` which explicitly takes the generating
+  behavior and `TypeChecker` as separate constructor arguments instead of using
+  an extending class.
 
 ## 1.3.0
 
