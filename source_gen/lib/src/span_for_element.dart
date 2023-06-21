@@ -58,7 +58,7 @@ SourceSpan spanForNode(AstNode node) {
   final unit = node.thisOrAncestorOfType<CompilationUnit>()!;
   final element = unit.declaredElement!;
   final contents = element.source.contents.data;
-  final url = element.source.uri;
+  final url = assetToPackageUrl(element.source.uri);
   final file = SourceFile.fromString(contents, url: url);
   return file.span(node.offset, node.offset + node.length);
 }
