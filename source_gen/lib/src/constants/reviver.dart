@@ -2,6 +2,7 @@ import 'dart:mirrors';
 
 import 'package:analyzer/dart/constant/value.dart';
 
+import '../../source_gen.dart';
 import 'reader.dart';
 
 /// Revives a [ConstantReader] to an instance in memory using Dart mirrors.
@@ -83,26 +84,36 @@ class Reviver {
     } else if (reader.isSymbol) {
       return reader.symbolValue;
     } else {
-      // TODO: Handle enum.
+      final isEnum = reader.instanceOf(const TypeChecker.fromRuntime(Enum));
 
       final revivable = reader.revive();
 
-      // Grab the library from the system
-      final libraryMirror = currentMirrorSystem()
-          .libraries
-          .entries
-          .firstWhere(
-            (element) =>
-                element.key.pathSegments.first ==
-                revivable.source.pathSegments.first,
-          )
-          .value;
+      // Flatten the list of libraries
+      final entries = Map.fromEntries(currentMirrorSystem().libraries.entries)
+          .map((key, value) => MapEntry(key.pathSegments.first, value));
 
-      final decl =
-          libraryMirror.declarations[Symbol(revivable.source.fragment)];
+      // Grab the library from the system
+      final libraryMirror = entries[revivable.source.pathSegments.first];
+      if (libraryMirror == null || libraryMirror.simpleName == Symbol.empty) {
+        throw Exception('Library missing');
+      }
+
+      // Determine the declaration being requested. Split on . when an enum is passed in.
+      var declKey = Symbol(revivable.source.fragment);
+      if (isEnum) {
+        // The accessor when the entry is an enum is the ClassName.value
+        declKey = Symbol(revivable.accessor.split('.')[0]);
+      }
+
+      final decl = libraryMirror.declarations[declKey] as ClassMirror?;
       if (decl == null) {
-        // TODO: Throw instead?
-        return null;
+        throw Exception('Declaration missing');
+      }
+
+      // Handle the enum case
+      if (decl.isEnum) {
+        final values = decl.getField(const Symbol('values')).reflectee as List;
+        return values[reader.objectValue.getField('index')!.toIntValue()!];
       }
 
       final positionalArguments = revivable.positionalArguments
@@ -116,7 +127,7 @@ class Reviver {
         ),
       );
 
-      return (decl as ClassMirror)
+      return decl
           .newInstance(
             Symbol(revivable.accessor),
             positionalArguments,

@@ -20,5 +20,12 @@ class SimpleObject {
 class ComplexObject {
   final SimpleObject sObj;
   final SimpleObject? sObj2;
-  const ComplexObject(this.sObj, {this.sObj2 = null});
+  final CustomEnum? cEnum;
+  const ComplexObject(this.sObj, {this.sObj2 = null, this.cEnum = null});
+}
+
+enum CustomEnum {
+  v1,
+  v2,
+  v3;
 }

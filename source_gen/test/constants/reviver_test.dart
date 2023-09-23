@@ -19,7 +19,7 @@ class TestClassSimple {}
 @TestAnnotationWithComplexObject(ComplexObject(SimpleObject(1)))
 class TestClassComplexPositional {}
 
-@TestAnnotationWithComplexObject(ComplexObject(SimpleObject(1), sObj2: SimpleObject(2)))
+@TestAnnotationWithComplexObject(ComplexObject(SimpleObject(1), cEnum: CustomEnum.v2))
 class TestClassComplexPositionalAndNamed {}
 ''';
         test('with simple objects', () async {
@@ -60,11 +60,12 @@ class TestClassComplexPositionalAndNamed {}
 
             expect(instance.object, isNotNull);
             expect(instance.object.sObj.i, 1);
-            expect(
-              instance.object.sObj2,
-              s == 'Positional' ? isNull : isNotNull,
-            );
-            if (s == 'PositionalAndNamed') expect(instance.object.sObj2!.i, 2);
+            expect(instance.object.sObj2, isNull);
+
+            if (s == 'PositionalAndNamed') {
+              expect(instance.object.cEnum, isNotNull);
+              expect(instance.object.cEnum, CustomEnum.v2);
+            }
           });
         }
       });
