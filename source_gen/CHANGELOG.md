@@ -1,4 +1,5 @@
-## 1.4.1-wip
+## 1.5.0-wip
+- Add a `Reviver` class that hydrates a `ConstantReader` or `DartObject?`
 
 ## 1.4.0
 
