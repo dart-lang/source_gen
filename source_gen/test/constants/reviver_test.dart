@@ -19,7 +19,7 @@ class TestClassSimple {}
 @TestAnnotationWithComplexObject(ComplexObject(SimpleObject(1)))
 class TestClassComplexPositional {}
 
-@TestAnnotationWithComplexObject(ComplexObject(SimpleObject(1), cEnum: CustomEnum.v2))
+@TestAnnotationWithComplexObject(ComplexObject(SimpleObject(1), cEnum: CustomEnum.v2, cMap: <String,ComplexObject>{'1':ComplexObject(SimpleObject(1)),'2':ComplexObject(SimpleObject(2)),'fred':ComplexObject(SimpleObject(3))}, cList: <ComplexObject>[ComplexObject(SimpleObject(1))], cSet: <ComplexObject>{ComplexObject(SimpleObject(1)),ComplexObject(SimpleObject(2))}))
 class TestClassComplexPositionalAndNamed {}
 ''';
         test('with simple objects', () async {
@@ -60,11 +60,28 @@ class TestClassComplexPositionalAndNamed {}
 
             expect(instance.object, isNotNull);
             expect(instance.object.sObj.i, 1);
-            expect(instance.object.sObj2, isNull);
 
             if (s == 'PositionalAndNamed') {
               expect(instance.object.cEnum, isNotNull);
               expect(instance.object.cEnum, CustomEnum.v2);
+
+              expect(instance.object.cList, isNotNull);
+              expect(instance.object.cList!, const <ComplexObject>[
+                ComplexObject(SimpleObject(1)),
+              ]);
+
+              expect(instance.object.cMap, isNotNull);
+              expect(instance.object.cMap!, const <String, ComplexObject>{
+                '1': ComplexObject(SimpleObject(1)),
+                '2': ComplexObject(SimpleObject(2)),
+                'fred': ComplexObject(SimpleObject(3)),
+              });
+
+              expect(instance.object.cSet, isNotNull);
+              expect(instance.object.cSet!, const <ComplexObject>{
+                ComplexObject(SimpleObject(1)),
+                ComplexObject(SimpleObject(2)),
+              });
             }
           });
         }

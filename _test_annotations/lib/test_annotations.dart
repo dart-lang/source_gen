@@ -1,3 +1,6 @@
+/// A sample library for the Annotations used during testing.
+library _test_annotations;
+
 class TestAnnotation {
   const TestAnnotation();
 }
@@ -19,9 +22,17 @@ class SimpleObject {
 
 class ComplexObject {
   final SimpleObject sObj;
-  final SimpleObject? sObj2;
   final CustomEnum? cEnum;
-  const ComplexObject(this.sObj, {this.sObj2 = null, this.cEnum = null});
+  final Map<String, ComplexObject>? cMap;
+  final List<ComplexObject>? cList;
+  final Set<ComplexObject>? cSet;
+  const ComplexObject(
+    this.sObj, {
+    this.cEnum,
+    this.cMap,
+    this.cList,
+    this.cSet,
+  });
 }
 
 enum CustomEnum {
