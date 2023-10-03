@@ -1,4 +1,8 @@
-## 1.4.1-wip
+## 1.5.0-wip
+
+- Rename `InvalidGenerationSourceError` to `InvalidGenerationSource`. Change
+  from a subtype of `Error` to a subtype of `Exception`. This may be breaking if
+  a builder relies on a `on Exception catch` to ignore this error.
 
 ## 1.4.0
 

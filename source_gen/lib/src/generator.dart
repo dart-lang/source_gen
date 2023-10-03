@@ -30,8 +30,10 @@ abstract class Generator {
   String toString() => runtimeType.toString();
 }
 
+typedef InvalidGenerationSourceError = InvalidGenerationSource;
+
 /// May be thrown by generators during [Generator.generate].
-class InvalidGenerationSourceError extends Error {
+class InvalidGenerationSource implements Exception {
   /// What failure occurred.
   final String message;
 
@@ -52,7 +54,7 @@ class InvalidGenerationSourceError extends Error {
   /// code, or if the location was passed with [element].
   final AstNode? node;
 
-  InvalidGenerationSourceError(
+  InvalidGenerationSource(
     this.message, {
     this.todo = '',
     this.element,
