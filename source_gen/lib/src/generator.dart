@@ -32,7 +32,10 @@ abstract class Generator {
 
 typedef InvalidGenerationSourceError = InvalidGenerationSource;
 
-/// May be thrown by generators during [Generator.generate].
+/// A description of a problem in the source input to code generation.
+///
+/// May be thrown by generators during [Generator.generate] to communicate a
+/// problem to the codegen user.
 class InvalidGenerationSource implements Exception {
   /// What failure occurred.
   final String message;
