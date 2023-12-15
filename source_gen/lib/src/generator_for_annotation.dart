@@ -80,7 +80,7 @@ abstract class GeneratorForAnnotation<T> extends Generator {
   /// Supported return values include a single [String] or multiple [String]
   /// instances within an [Iterable] or [Stream]. It is also valid to return a
   /// [Future] of [String], [Iterable], or [Stream]. When multiple values are
-  /// returned through an iterable or stream they will be dedeuplicated.
+  /// returned through an iterable or stream they will be deduplicated.
   /// Typically each value will be an independent unit of code and the
   /// deduplication prevents re-defining the same member multiple times. For
   /// example if multiple annotated elements may need a specific utility method
