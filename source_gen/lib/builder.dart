@@ -85,8 +85,7 @@ class CombiningBuilder implements Builder {
     final pattern = buildStep.inputId
         .changeExtension('.*$_partFiles')
         .path
-        .replaceAll('(', r'\(')
-        .replaceAll(')', r'\)');
+        .replaceAllMapped(RegExp(r'\((.*)\)'), (match) => '\\(${match[1]}\\)');
 
     final inputBaseName =
         p.basenameWithoutExtension(buildStep.inputId.pathSegments.last);
