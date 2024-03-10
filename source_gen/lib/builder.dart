@@ -82,7 +82,11 @@ class CombiningBuilder implements Builder {
   @override
   Future<void> build(BuildStep buildStep) async {
     // Pattern used for `findAssets`, which must be glob-compatible
-    final pattern = buildStep.inputId.changeExtension('.*$_partFiles').path;
+    final pattern = buildStep.inputId
+        .changeExtension('.*$_partFiles')
+        .path
+        .replaceAll('(', r'\(')
+        .replaceAll(')', r'\)');
 
     final inputBaseName =
         p.basenameWithoutExtension(buildStep.inputId.pathSegments.last);
