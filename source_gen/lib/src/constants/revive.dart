@@ -26,7 +26,7 @@ Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
       variableElement.isPublic) {
     final url = Uri.parse(urlOfElement(variableElement)).removeFragment();
     if (variableElement.enclosingElement
-        case TypeDefiningElement enclosingElement?) {
+        case final TypeDefiningElement enclosingElement?) {
       return Revivable._(
         source: url,
         accessor: '${enclosingElement.name}.${variableElement.name}',
