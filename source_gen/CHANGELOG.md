@@ -4,6 +4,7 @@
   `GeneratorForAnnotation.generateForAnnotatedElement`.
 - Support all the glob quotes.
 - Require Dart 3.4.0
+- Revive to the object's `variableElement` if available
 
 ## 1.5.0
 
