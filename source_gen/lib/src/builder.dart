@@ -313,21 +313,13 @@ class LibraryBuilder extends _Builder {
   /// libraries.
   LibraryBuilder(
     Generator generator, {
-    String Function(String, Version) formatOutput = _defaultFormatOutput,
-    String generatedExtension = '.g.dart',
-    List<String> additionalOutputExtensions = const [],
-    String? header,
-    bool allowSyntaxErrors = false,
-    BuilderOptions? options,
-  }) : super(
-          [generator],
-          formatOutput: formatOutput,
-          generatedExtension: generatedExtension,
-          additionalOutputExtensions: additionalOutputExtensions,
-          header: header,
-          allowSyntaxErrors: allowSyntaxErrors,
-          options: options,
-        );
+    super.formatOutput,
+    super.generatedExtension,
+    super.additionalOutputExtensions,
+    super.header,
+    super.allowSyntaxErrors,
+    super.options,
+  }) : super([generator]);
 }
 
 Stream<GeneratedOutput> _generate(
