@@ -35,6 +35,9 @@ class _Builder extends Builder {
 
   final String _header;
 
+  /// Whether to include or emit the gen part descriptions. Defaults to true.
+  final bool _writeDescriptions;
+
   /// Whether to allow syntax errors in input libraries.
   final bool allowSyntaxErrors;
 
@@ -51,6 +54,7 @@ class _Builder extends Builder {
     String generatedExtension = '.g.dart',
     List<String> additionalOutputExtensions = const [],
     String? header,
+    bool? writeDescriptions,
     this.allowSyntaxErrors = false,
     BuilderOptions? options,
   })  : _generatedExtension = generatedExtension,
@@ -61,6 +65,7 @@ class _Builder extends Builder {
             ...additionalOutputExtensions,
           ],
         }),
+        _writeDescriptions = (writeDescriptions ?? true),
         _header = (header ?? defaultFileHeader).trim() {
     if (_generatedExtension.isEmpty || !_generatedExtension.startsWith('.')) {
       throw ArgumentError.value(
@@ -153,16 +158,19 @@ class _Builder extends Builder {
     }
 
     for (var item in generatedOutputs) {
-      contentBuffer
-        ..writeln()
-        ..writeln(_headerLine)
-        ..writeAll(
-          LineSplitter.split(item.generatorDescription)
-              .map((line) => '// $line\n'),
-        )
-        ..writeln(_headerLine)
-        ..writeln()
-        ..writeln(item.output);
+      if (_writeDescriptions) {
+        contentBuffer
+          ..writeln()
+          ..writeln(_headerLine)
+          ..writeAll(
+            LineSplitter.split(item.generatorDescription)
+                .map((line) => '// $line\n'),
+          )
+          ..writeln(_headerLine)
+          ..writeln();
+      }
+
+      contentBuffer.writeln(item.output);
     }
 
     var genPartContent = contentBuffer.toString();
@@ -225,6 +233,7 @@ class SharedPartBuilder extends _Builder {
     super.formatOutput,
     super.additionalOutputExtensions,
     super.allowSyntaxErrors,
+    super.writeDescriptions,
   }) : super(
           generatedExtension: '.$partId.g.part',
           header: '',
@@ -265,6 +274,10 @@ class PartBuilder extends _Builder {
   /// [formatOutput] is called to format the generated code. Defaults to
   /// [DartFormatter.format].
   ///
+  /// If [writeDescriptions] is false, then no generated descriptions will be
+  /// embeded into the generated out file. The default is true, which includes
+  /// the name of the dart files/parts/libraries which were used to generate.
+  ///
   /// [header] is used to specify the content at the top of each generated file.
   /// If `null`, the content of [defaultFileHeader] is used.
   /// If [header] is an empty `String` no header is added.
@@ -279,6 +292,7 @@ class PartBuilder extends _Builder {
     String generatedExtension, {
     super.formatOutput,
     super.additionalOutputExtensions,
+    super.writeDescriptions,
     super.header,
     super.allowSyntaxErrors,
     super.options,
@@ -316,6 +330,7 @@ class LibraryBuilder extends _Builder {
     super.formatOutput,
     super.generatedExtension,
     super.additionalOutputExtensions,
+    super.writeDescriptions,
     super.header,
     super.allowSyntaxErrors,
     super.options,
