@@ -65,7 +65,7 @@ class _Builder extends Builder {
             ...additionalOutputExtensions,
           ],
         }),
-        _writeDescriptions = (writeDescriptions ?? true),
+        _writeDescriptions = writeDescriptions ?? true,
         _header = (header ?? defaultFileHeader).trim() {
     if (_generatedExtension.isEmpty || !_generatedExtension.startsWith('.')) {
       throw ArgumentError.value(
