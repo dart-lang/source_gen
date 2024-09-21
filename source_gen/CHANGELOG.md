@@ -1,3 +1,6 @@
+## 2.1.0-wip
+- `LibraryBuilder`, `PartBuilder`, `SharedPartBuilder`, can now take an optional `writeDescriptions` boolean. When set to `false`, headers and generator descriptions for the files will not be included in the builder output.
+
 ## 2.0.0-wip
 
 - **Breaking Change**: Change `formatOutput` function to accept a language
