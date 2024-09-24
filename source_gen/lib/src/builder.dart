@@ -227,6 +227,12 @@ class SharedPartBuilder extends _Builder {
   ///
   /// [allowSyntaxErrors] indicates whether to allow syntax errors in input
   /// libraries.
+  ///
+  /// [writeDescriptions] adds comments to the output used to separate the
+  /// sections of the file generated from different generators, and reveals
+  /// which generator produced the following output.
+  /// If `null`, [writeDescriptions] is set to true which is the default value.
+  /// If [writeDescriptions] is false, no generator descriptions are added.
   SharedPartBuilder(
     super.generators,
     String partId, {
@@ -274,9 +280,11 @@ class PartBuilder extends _Builder {
   /// [formatOutput] is called to format the generated code. Defaults to
   /// [DartFormatter.format].
   ///
-  /// If [writeDescriptions] is false, then no generated descriptions will be
-  /// embeded into the generated out file. The default is true, which includes
-  /// the name of the dart files/parts/libraries which were used to generate.
+  /// [writeDescriptions] adds comments to the output used to separate the
+  /// sections of the file generated from different generators, and reveals
+  /// which generator produced the following output.
+  /// If `null`, [writeDescriptions] is set to true which is the default value.
+  /// If [writeDescriptions] is false, no generator descriptions are added.
   ///
   /// [header] is used to specify the content at the top of each generated file.
   /// If `null`, the content of [defaultFileHeader] is used.
@@ -318,6 +326,12 @@ class LibraryBuilder extends _Builder {
   ///
   /// [formatOutput] is called to format the generated code. Defaults to
   /// using the standard [DartFormatter].
+  ///
+  /// [writeDescriptions] adds comments to the output used to separate the
+  /// sections of the file generated from different generators, and reveals
+  /// which generator produced the following output.
+  /// If `null`, [writeDescriptions] is set to true which is the default value.
+  /// If [writeDescriptions] is false, no generator descriptions are added.
   ///
   /// [header] is used to specify the content at the top of each generated file.
   /// If `null`, the content of [defaultFileHeader] is used.
