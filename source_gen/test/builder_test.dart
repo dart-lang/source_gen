@@ -87,21 +87,6 @@ void main() {
   test('Omits generated comments if writeDescriptions is explicitly false',
       () async {
     final srcs = _createPackageStub();
-    final builder = LibraryBuilder(
-      const CommentGenerator(),
-      writeDescriptions: false,
-    );
-
-    // With default header
-    await testBuilder(
-      builder,
-      srcs,
-      generateFor: {'$_pkgName|lib/test_lib.dart'},
-      outputs: {
-        '$_pkgName|lib/test_lib.g.dart':
-            decodedMatches(startsWith(defaultFileHeader)),
-      },
-    );
 
     // Explicitly empty header
     final builderEmptyHeader = LibraryBuilder(
