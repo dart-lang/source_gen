@@ -6,7 +6,9 @@ environment:
 workspace:
   - source_gen
   - example
-  - example_usage
+  # TODO(https://github.com/dart-lang/build/issues/3721) - build_runner broken
+  # by workspace resolution.
+  # - example_usage
   - _test_annotations
 
 dev_dependencies:

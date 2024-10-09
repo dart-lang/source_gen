@@ -1,6 +1,8 @@
 name: source_gen_example_usage
 publish_to: none
-resolution: workspace
+# TODO(https://github.com/dart-lang/build/issues/3721) - build_runner broken by
+# workspace resolution.
+# resolution: workspace
 
 environment:
   sdk: ^3.6.0-270.0.dev
