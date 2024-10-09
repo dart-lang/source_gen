@@ -16,3 +16,9 @@ dev_dependencies:
   build_verify: ^3.0.0
   dart_flutter_team_lints: ^3.1.0
   test: ^1.5.1
+
+# TODO(https://github.com/dart-lang/build/issues/3721) - build_runner broken by
+# workspace resolution.
+dependency_overrides:
+  source_gen:
+    path: ../source_gen
