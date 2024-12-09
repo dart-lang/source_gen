@@ -134,7 +134,6 @@ class _Builder extends Builder {
 
       if (this is PartBuilder) {
         contentBuffer
-          ..writeln(dartFormatWidth)
           ..write(languageOverrideForLibrary(library))
           ..writeln('part of \'$partOfUri\';');
         final part = computePartUrl(buildStep.inputId, outputId);
@@ -156,8 +155,6 @@ class _Builder extends Builder {
         // For shared-part builders, `part` statements will be checked by the
         // combining build step.
       }
-    } else {
-      contentBuffer.writeln(dartFormatWidth);
     }
 
     for (var item in generatedOutputs) {
@@ -411,8 +408,10 @@ Future<bool> _hasAnyTopLevelAnnotations(
 
 const defaultFileHeader = '// GENERATED CODE - DO NOT MODIFY BY HAND';
 
-String _defaultFormatOutput(String code, Version version) =>
-    DartFormatter(languageVersion: version).format(code);
+String _defaultFormatOutput(String code, Version version) {
+  code = '$dartFormatWidth\n$code';
+  return DartFormatter(languageVersion: version).format(code);
+}
 
 final _headerLine = '// '.padRight(77, '*');
 

@@ -143,7 +143,6 @@ class CombiningBuilder implements Builder {
 
     final output = '''
 $defaultFileHeader
-$dartFormatWidth
 ${languageOverrideForLibrary(inputLibrary)}$ignoreForFile$preamble
 part of '$partOfUri';
 
