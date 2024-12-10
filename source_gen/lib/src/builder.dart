@@ -50,7 +50,7 @@ class _Builder extends Builder {
   /// [options] to allow output files to be generated into a different directory
   _Builder(
     this._generators, {
-    this.formatOutput = _defaultFormatOutput,
+    required this.formatOutput,
     String generatedExtension = '.g.dart',
     List<String> additionalOutputExtensions = const [],
     String? header,
@@ -134,7 +134,6 @@ class _Builder extends Builder {
 
       if (this is PartBuilder) {
         contentBuffer
-          ..writeln(dartFormatWidth)
           ..write(languageOverrideForLibrary(library))
           ..writeln('part of \'$partOfUri\';');
         final part = computePartUrl(buildStep.inputId, outputId);
@@ -156,8 +155,6 @@ class _Builder extends Builder {
         // For shared-part builders, `part` statements will be checked by the
         // combining build step.
       }
-    } else {
-      contentBuffer.writeln(dartFormatWidth);
     }
 
     for (var item in generatedOutputs) {
@@ -239,7 +236,7 @@ class SharedPartBuilder extends _Builder {
   SharedPartBuilder(
     super.generators,
     String partId, {
-    super.formatOutput,
+    super.formatOutput = _defaultFormatOutput,
     super.additionalOutputExtensions,
     super.allowSyntaxErrors,
     super.writeDescriptions,
@@ -301,7 +298,7 @@ class PartBuilder extends _Builder {
   PartBuilder(
     super.generators,
     String generatedExtension, {
-    super.formatOutput,
+    super.formatOutput = _defaultFormatUnit,
     super.additionalOutputExtensions,
     super.writeDescriptions,
     super.header,
@@ -328,7 +325,8 @@ class LibraryBuilder extends _Builder {
   /// should be indicated in [additionalOutputExtensions].
   ///
   /// [formatOutput] is called to format the generated code. Defaults to
-  /// using the standard [DartFormatter].
+  /// using the standard [DartFormatter] and writing a comment specifying the
+  /// default format width of 80..
   ///
   /// [writeDescriptions] adds comments to the output used to separate the
   /// sections of the file generated from different generators, and reveals
@@ -344,7 +342,7 @@ class LibraryBuilder extends _Builder {
   /// libraries.
   LibraryBuilder(
     Generator generator, {
-    super.formatOutput,
+    super.formatOutput = _defaultFormatUnit,
     super.generatedExtension,
     super.additionalOutputExtensions,
     super.writeDescriptions,
@@ -413,6 +411,12 @@ const defaultFileHeader = '// GENERATED CODE - DO NOT MODIFY BY HAND';
 
 String _defaultFormatOutput(String code, Version version) =>
     DartFormatter(languageVersion: version).format(code);
+
+/// Prefixes a dart format width and formats [code].
+String _defaultFormatUnit(String code, Version version) {
+  code = '$dartFormatWidth\n$code';
+  return _defaultFormatOutput(code, version);
+}
 
 final _headerLine = '// '.padRight(77, '*');
 

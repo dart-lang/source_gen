@@ -43,9 +43,9 @@ void main() {
       builder,
       _inputMap,
       outputs: {
-        'a|lib/file.g.dart': r'''
+        'a|lib/file.g.dart': '''
+$dartFormatWidth
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// dart format width=80
 
 // **************************************************************************
 // Generator: Repeating
@@ -129,8 +129,8 @@ void main() {
       },
       outputs: {
         'a|lib/file.g.dart': '''
-// GENERATED CODE - DO NOT MODIFY BY HAND
 $dartFormatWidth
+// GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
 // Generator: Deprecated
@@ -166,8 +166,8 @@ $dartFormatWidth
       },
       outputs: {
         'a|lib/file.g.dart': '''
-// GENERATED CODE - DO NOT MODIFY BY HAND
 $dartFormatWidth
+// GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
 // Generator: Deprecated
