@@ -28,8 +28,8 @@ void main() {
       export 'type_checker_test.dart' show NonPublic;
     ''',
       (resolver) async {
-        thisTest = LibraryReader(
-          await resolver.libraryFor(
+        thisTest = LibraryReader.v2(
+          await resolver.libraryFor2(
             AssetId('source_gen', 'test/external_only_type_checker_test.dart'),
           ),
         );

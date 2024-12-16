@@ -57,9 +57,10 @@ void main() {
       (resolver) async {
         core = (await resolver.findLibraryByName('dart.core'))!;
         collection = (await resolver.findLibraryByName('dart.collection'))!;
-        sourceGen = LibraryReader(
-          await resolver
-              .libraryFor(AssetId('source_gen', 'lib/source_gen.dart')),
+        sourceGen = LibraryReader.v2(
+          await resolver.libraryFor2(
+            AssetId('source_gen', 'lib/source_gen.dart'),
+          ),
         );
         testSource = await resolver
             .libraryFor(AssetId('source_gen', 'test/type_checker_test.dart'));

@@ -6,6 +6,9 @@ import 'dart:async';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
+// ignore: implementation_imports
+import 'package:analyzer/src/utilities/extensions/element.dart';
 import 'package:build/build.dart';
 
 import 'library.dart';
@@ -49,7 +52,7 @@ class InvalidGenerationSource implements Exception {
   ///
   /// May be `null` if the error had no associated element, or if the location
   /// was passed with [node].
-  final Element? element;
+  final Element2? element2;
 
   /// The AST Node associated with this error.
   ///
@@ -60,9 +63,18 @@ class InvalidGenerationSource implements Exception {
   InvalidGenerationSource(
     this.message, {
     this.todo = '',
-    this.element,
+    Element? element,
     this.node,
-  });
+  }) : element2 = element?.asElement2;
+
+  InvalidGenerationSource.v2(
+    this.message, {
+    this.todo = '',
+    Element2? element,
+    this.node,
+  }) : element2 = element;
+
+  Element? get element => element2?.asElement;
 
   @override
   String toString() {

@@ -11,7 +11,8 @@ class PropertyProductGenerator extends Generator {
   @override
   String generate(LibraryReader library, BuildStep buildStep) {
     final productNames = topLevelNumVariables(library)
-        .map((element) => element.name)
+        .map((element) => element.name3)
+        .nonNulls
         .join(' * ');
 
     return '''
