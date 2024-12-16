@@ -3,6 +3,9 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
+// ignore: implementation_imports
+import 'package:analyzer/src/utilities/extensions/element.dart';
 import 'package:build/build.dart';
 import 'package:path/path.dart' as p;
 
@@ -13,25 +16,29 @@ import 'utils.dart';
 /// Result of finding an [annotation] on [element] through [LibraryReader].
 class AnnotatedElement {
   final ConstantReader annotation;
-  final Element element;
+  final Element2 element2;
 
-  const AnnotatedElement(this.annotation, this.element);
+  const AnnotatedElement(this.annotation, this.element2);
+
+  Element get element => element2.asElement!;
+
+  Metadata? get metadata2 {
+    if (element2 case final Annotatable annotatable) {
+      return annotatable.metadata2;
+    }
+    return null;
+  }
 }
 
 /// A high-level wrapper API with common functionality for [LibraryElement].
 class LibraryReader {
-  final LibraryElement element;
+  final LibraryElement2 element2;
 
-  LibraryReader(this.element);
+  LibraryReader(LibraryElement element) : this.v2(element.asElement2);
 
-  /// Returns a top-level [ClassElement] publicly visible in by [name].
-  ///
-  /// Unlike [LibraryElement.getClass], this also correctly traverses
-  /// identifiers that are accessible via one or more `export` directives.
-  ClassElement? findType(String name) {
-    final type = element.exportNamespace.get(name);
-    return type is ClassElement ? type : null;
-  }
+  LibraryReader.v2(this.element2);
+
+  LibraryElement get element => element2.asElement;
 
   /// All of the declarations in this library.
   Iterable<Element> get allElements => [
@@ -41,6 +48,22 @@ class LibraryReader {
         ...element.definingCompilationUnit.libraryExports,
         ...element.definingCompilationUnit.parts,
       ];
+
+  /// All of the declarations in this library.
+  Iterable<Element2> get allElements2 => [element2, ...element2.children2];
+
+  /// All of the elements representing classes in this library.
+  Iterable<ClassElement> get classes =>
+      element.units.expand((cu) => cu.classes);
+
+  /// All of the elements representing classes in this library.
+  Iterable<ClassElement2> get classes2 => element2.classes;
+
+  /// All of the elements representing enums in this library.
+  Iterable<EnumElement> get enums => element.units.expand((cu) => cu.enums);
+
+  /// All of the elements representing enums in this library.
+  Iterable<EnumElement2> get enums2 => element2.enums;
 
   /// All of the declarations in this library annotated with [checker].
   Iterable<AnnotatedElement> annotatedWith(
@@ -52,8 +75,14 @@ class LibraryReader {
         element,
         throwOnUnresolved: throwOnUnresolved,
       );
+
+      final element2 = element.asElement2;
+      if (element2 == null) {
+        return;
+      }
+
       if (annotation != null) {
-        yield AnnotatedElement(ConstantReader(annotation), element);
+        yield AnnotatedElement(ConstantReader(annotation), element2);
       }
     }
   }
@@ -69,9 +98,18 @@ class LibraryReader {
         throwOnUnresolved: throwOnUnresolved,
       );
       if (annotation != null) {
-        yield AnnotatedElement(ConstantReader(annotation), element);
+        yield AnnotatedElement(ConstantReader(annotation), element.asElement2!);
       }
     }
+  }
+
+  /// Returns a top-level [ClassElement] publicly visible in by [name].
+  ///
+  /// Unlike [LibraryElement.getClass], this also correctly traverses
+  /// identifiers that are accessible via one or more `export` directives.
+  ClassElement? findType(String name) {
+    final type = element.exportNamespace.get(name);
+    return type is ClassElement ? type : null;
   }
 
   /// Returns a [Uri] from the current library to the target [asset].
@@ -85,6 +123,13 @@ class LibraryReader {
   /// This is a typed convenience function for using [pathToUrl], and the same
   /// API restrictions hold around supported schemes and relative paths.
   Uri pathToElement(Element element) => pathToUrl(element.source!.uri);
+
+  /// Returns a [Uri] from the current library to the target [element].
+  ///
+  /// This is a typed convenience function for using [pathToUrl], and the same
+  /// API restrictions hold around supported schemes and relative paths.
+  Uri pathToElement2(Element2 element) =>
+      pathToUrl(element.firstFragment.libraryFragment!.source.uri);
 
   /// Returns a [Uri] from the current library to the one provided.
   ///
@@ -131,15 +176,10 @@ class LibraryReader {
           return Uri(path: to.pathSegments.last);
         }
         final relative = p.toUri(
-          p.relative(
-            to.toString(),
-            from: from.toString(),
-          ),
+          p.relative(to.toString(), from: from.toString()),
         );
         // We now have a URL like "../b.dart", but we just want "b.dart".
-        return relative.replace(
-          pathSegments: relative.pathSegments.skip(1),
-        );
+        return relative.replace(pathSegments: relative.pathSegments.skip(1));
       }
       throw ArgumentError.value(to, 'to', 'Not relative to $from');
     }
@@ -162,11 +202,4 @@ class LibraryReader {
         fromSegments[0] == toSegments[0] &&
         fromSegments[1] == toSegments[1];
   }
-
-  /// All of the elements representing classes in this library.
-  Iterable<ClassElement> get classes =>
-      element.units.expand((cu) => cu.classes);
-
-  /// All of the elements representing enums in this library.
-  Iterable<EnumElement> get enums => element.units.expand((cu) => cu.enums);
 }

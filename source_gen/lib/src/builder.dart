@@ -6,6 +6,9 @@ import 'dart:convert';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
+// ignore: implementation_imports
+import 'package:analyzer/src/utilities/extensions/element.dart';
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:pub_semver/pub_semver.dart';
@@ -103,16 +106,17 @@ class _Builder extends Builder {
     }
 
     final lib = await buildStep.resolver
-        .libraryFor(buildStep.inputId, allowSyntaxErrors: allowSyntaxErrors);
+        .libraryFor2(buildStep.inputId, allowSyntaxErrors: allowSyntaxErrors);
     await _generateForLibrary(lib, buildStep);
   }
 
   Future<void> _generateForLibrary(
-    LibraryElement library,
+    LibraryElement2 library2,
     BuildStep buildStep,
   ) async {
+    final library = library2.asElement;
     final generatedOutputs =
-        await _generate(library, _generators, buildStep).toList();
+        await _generate(library2, _generators, buildStep).toList();
 
     // Don't output useless files.
     //
@@ -353,11 +357,11 @@ class LibraryBuilder extends _Builder {
 }
 
 Stream<GeneratedOutput> _generate(
-  LibraryElement library,
+  LibraryElement2 library2,
   List<Generator> generators,
   BuildStep buildStep,
 ) async* {
-  final libraryReader = LibraryReader(library);
+  final libraryReader = LibraryReader.v2(library2);
   for (var i = 0; i < generators.length; i++) {
     final gen = generators[i];
     var msg = 'Running $gen';

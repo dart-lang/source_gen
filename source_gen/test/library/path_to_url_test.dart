@@ -4,6 +4,7 @@
 
 // Increase timeouts on this test which resolves source code and can be slow.
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/source/source.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
@@ -163,7 +164,7 @@ void main() {
   });
 }
 
-class _FakeLibraryElement implements LibraryElement {
+class _FakeLibraryElement implements LibraryElement, LibraryElement2 {
   final Uri _sourceUri;
 
   _FakeLibraryElement(this._sourceUri);
