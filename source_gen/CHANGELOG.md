@@ -8,7 +8,7 @@
 - Document deduplication behavior for the output of
   `GeneratorForAnnotation.generateForAnnotatedElement`.
 - Support all the glob quotes.
-- Require `'>=6.9.0 <8.0.0'`
+- Require `analyzer: '>=6.9.0 <8.0.0'`
 - Support the latest `package:dart_style`
 - `LibraryBuilder`, `PartBuilder`, and `SharedPartBuilder` now take an optional
   `writeDescriptions` boolean. When set to `false`, headers and generator
