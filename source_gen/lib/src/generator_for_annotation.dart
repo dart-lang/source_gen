@@ -55,6 +55,21 @@ abstract class GeneratorForAnnotation<T> extends Generator {
   FutureOr<String> generate(LibraryReader library, BuildStep buildStep) async {
     final values = <String>{};
 
+    for (var annotatedDirective in library.libraryDirectivesAnnotatedWith(
+      typeChecker,
+      throwOnUnresolved: throwOnUnresolved,
+    )) {
+      final generatedValue = generateForAnnotatedDirective(
+        annotatedDirective.directive,
+        annotatedDirective.annotation,
+        buildStep,
+      );
+      await for (var value in normalizeGeneratorOutput(generatedValue)) {
+        assert(value.length == value.trim().length);
+        values.add(value);
+      }
+    }
+
     for (var annotatedElement in library.annotatedWith(
       typeChecker,
       throwOnUnresolved: throwOnUnresolved,
@@ -120,6 +135,29 @@ abstract class GeneratorForAnnotation<T> extends Generator {
   /// or whitespace-only [String] instances are also ignored.
   dynamic generateForAnnotatedElement2(
     Element2 element,
+    ConstantReader annotation,
+    BuildStep buildStep,
+  ) {}
+
+  /// Implement to return source code to generate for [directive].
+  ///
+  /// This method is invoked based on finding directives annotated with an
+  /// instance of [T]. The [annotation] is provided as a [ConstantReader].
+  ///
+  /// Supported return values include a single [String] or multiple [String]
+  /// instances within an [Iterable] or [Stream]. It is also valid to return a
+  /// [Future] of [String], [Iterable], or [Stream]. When multiple values are
+  /// returned through an iterable or stream they will be deduplicated.
+  /// Typically each value will be an independent unit of code and the
+  /// deduplication prevents re-defining the same member multiple times. For
+  /// example if multiple annotated elements may need a specific utility method
+  /// available it can be output for each one, and the single deduplicated
+  /// definition can be shared.
+  ///
+  /// Implementations should return `null` when no content is generated. Empty
+  /// or whitespace-only [String] instances are also ignored.
+  dynamic generateForAnnotatedDirective(
+    ElementDirective directive,
     ConstantReader annotation,
     BuildStep buildStep,
   ) {}
