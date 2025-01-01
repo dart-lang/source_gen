@@ -9,6 +9,7 @@ library;
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/source_gen.dart';
@@ -25,8 +26,10 @@ void main() {
       'list with null, empty, and whitespace items': [null, '', '\n \t'],
     }.entries) {
       test(entry.key, () async {
-        final generator =
-            _StubGenerator<Deprecated>('Value', (_) => entry.value);
+        final generator = _StubGenerator<Deprecated>(
+          'Value',
+          elementBehavior: (_) => entry.value,
+        );
         final builder = LibraryBuilder(generator);
         await testBuilder(builder, _inputMap, outputs: {});
       });
@@ -34,10 +37,13 @@ void main() {
   });
 
   test('Supports and dedupes multiple return values', () async {
-    final generator = _StubGenerator<Deprecated>('Repeating', (element) sync* {
-      yield '// There are deprecated values in this library!';
-      yield '// ${element.name}';
-    });
+    final generator = _StubGenerator<Deprecated>(
+      'Repeating',
+      elementBehavior: (element) sync* {
+        yield '// There are deprecated values in this library!';
+        yield '// ${element.name}';
+      },
+    );
     final builder = LibraryBuilder(generator);
     await testBuilder(
       builder,
@@ -65,13 +71,19 @@ $dartFormatWidth
 
   group('handles errors correctly', () {
     for (var entry in {
-      'sync errors': _StubGenerator<Deprecated>('Failing', (_) {
-        throw StateError('not supported!');
-      }),
-      'from iterable': _StubGenerator<Deprecated>('FailingIterable', (_) sync* {
-        yield '// There are deprecated values in this library!';
-        throw StateError('not supported!');
-      }),
+      'sync errors': _StubGenerator<Deprecated>(
+        'Failing',
+        elementBehavior: (_) {
+          throw StateError('not supported!');
+        },
+      ),
+      'from iterable': _StubGenerator<Deprecated>(
+        'FailingIterable',
+        elementBehavior: (_) sync* {
+          yield '// There are deprecated values in this library!';
+          throw StateError('not supported!');
+        },
+      ),
     }.entries) {
       test(entry.key, () async {
         final builder = LibraryBuilder(entry.value);
@@ -92,8 +104,12 @@ $dartFormatWidth
 
   test('Does not resolve the library if there are no top level annotations',
       () async {
-    final builder =
-        LibraryBuilder(_StubGenerator<Deprecated>('Deprecated', (_) => null));
+    final builder = LibraryBuilder(
+      _StubGenerator<Deprecated>(
+        'Deprecated',
+        elementBehavior: (_) => null,
+      ),
+    );
     final input = AssetId('a', 'lib/a.dart');
     final assets = {input: 'main() {}'};
 
@@ -116,7 +132,7 @@ $dartFormatWidth
     final builder = LibraryBuilder(
       _StubGenerator<Deprecated>(
         'Deprecated',
-        (element) => '// ${element.displayName}',
+        elementBehavior: (element) => '// ${element.displayName}',
       ),
     );
     await testBuilder(
@@ -142,12 +158,54 @@ $dartFormatWidth
     );
   });
 
+  test('applies to annotated directives', () async {
+    final builder = LibraryBuilder(
+      _StubGenerator<Deprecated>(
+        'Deprecated',
+        directiveBehavior: (element) => '// ${element.runtimeType}',
+        elementBehavior: (element) => '// ${element.runtimeType}',
+      ),
+    );
+    await testBuilder(
+      builder,
+      {
+        'a|lib/imported.dart': '',
+        'a|lib/part.dart': 'part of \'file.dart\';',
+        'a|lib/file.dart': '''
+      library;
+      @deprecated
+      import 'imported.dart';
+      @deprecated
+      export 'imported.dart';
+      @deprecated
+      part 'part.dart';
+      ''',
+      },
+      outputs: {
+        'a|lib/file.g.dart': '''
+$dartFormatWidth
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+// **************************************************************************
+// Generator: Deprecated
+// **************************************************************************
+
+// LibraryImportElementImpl
+
+// LibraryExportElementImpl
+
+// PartElementImpl
+''',
+      },
+    );
+  });
+
   group('Unresolved annotations', () {
     test('cause an error by default', () async {
       final builder = LibraryBuilder(
         _StubGenerator<Deprecated>(
           'Deprecated',
-          (element) => '// ${element.displayName}',
+          elementBehavior: (element) => '// ${element.displayName}',
         ),
       );
       expect(
@@ -169,7 +227,7 @@ $dartFormatWidth
       final builder = LibraryBuilder(
         _StubGenerator<Deprecated>(
           'Deprecated',
-          (element) => '// ${element.displayName}',
+          elementBehavior: (element) => '// ${element.displayName}',
           throwOnUnresolved: false,
         ),
       );
@@ -192,9 +250,23 @@ $dartFormatWidth
 
 class _StubGenerator<T> extends GeneratorForAnnotation<T> {
   final String _name;
-  final Object? Function(Element) _behavior;
+  final Object? Function(ElementDirective) directiveBehavior;
+  final Object? Function(Element) elementBehavior;
 
-  const _StubGenerator(this._name, this._behavior, {super.throwOnUnresolved});
+  const _StubGenerator(
+    this._name, {
+    this.directiveBehavior = _returnNull,
+    required this.elementBehavior,
+    super.throwOnUnresolved,
+  });
+
+  @override
+  Object? generateForAnnotatedDirective(
+    ElementDirective directive,
+    ConstantReader annotation,
+    BuildStep buildStep,
+  ) =>
+      directiveBehavior(directive);
 
   @override
   Object? generateForAnnotatedElement(
@@ -202,10 +274,12 @@ class _StubGenerator<T> extends GeneratorForAnnotation<T> {
     ConstantReader annotation,
     BuildStep buildStep,
   ) =>
-      _behavior(element);
+      elementBehavior(element);
 
   @override
   String toString() => _name;
+
+  static Null _returnNull(Object _) => null;
 }
 
 const _inputMap = {

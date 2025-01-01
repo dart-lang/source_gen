@@ -84,7 +84,7 @@ abstract class TypeChecker {
   ///
   /// Throws on unresolved annotations unless [throwOnUnresolved] is `false`.
   DartObject? firstAnnotationOf2(
-    Element2 element, {
+    Object element, {
     bool throwOnUnresolved = true,
   }) {
     if (element case final Annotatable annotatable) {
@@ -188,13 +188,13 @@ abstract class TypeChecker {
   }
 
   DartObject? _computeConstantValue2(
-    Element2 element,
+    Object element,
     ElementAnnotation annotation,
     int annotationIndex, {
     bool throwOnUnresolved = true,
   }) {
     final result = annotation.computeConstantValue();
-    if (result == null && throwOnUnresolved) {
+    if (result == null && throwOnUnresolved && element is Element2) {
       throw UnresolvedAnnotationException._from(element, annotationIndex);
     }
     return result;
@@ -219,7 +219,7 @@ abstract class TypeChecker {
   /// Throws [UnresolvedAnnotationException] on unresolved annotations unless
   /// [throwOnUnresolved] is explicitly set to `false` (default is `true`).
   Iterable<DartObject> annotationsOf2(
-    Element2 element, {
+    Object element, {
     bool throwOnUnresolved = true,
   }) =>
       _annotationsWhere2(
@@ -246,7 +246,7 @@ abstract class TypeChecker {
   }
 
   Iterable<DartObject> _annotationsWhere2(
-    Element2 element,
+    Object element,
     bool Function(DartType) predicate, {
     bool throwOnUnresolved = true,
   }) sync* {

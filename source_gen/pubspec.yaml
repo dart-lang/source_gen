@@ -29,7 +29,8 @@ dev_dependencies:
   test: ^1.16.0
 
 dependency_overrides:
-  analyzer: ^7.1.0
+  analyzer:
+    path: /Users/scheglov/Source/Dart/sdk.git/sdk/pkg/analyzer
   build:
     git:
       url: https://github.com/dart-lang/build.git
