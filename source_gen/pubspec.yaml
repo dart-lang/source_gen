@@ -10,7 +10,7 @@ environment:
   sdk: ^3.6.0
 
 dependencies:
-  analyzer: '>=6.9.0 <8.0.0'
+  analyzer: '>=7.2.0 <8.0.0'
   async: ^2.5.0
   build: ^2.1.0
   dart_style: '>=2.3.7 <4.0.0'

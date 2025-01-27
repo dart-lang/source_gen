@@ -1,5 +1,7 @@
 ## 2.0.0
 
+- **DO NOT PUBLISH**: Only land into `analyzer-element2` branch.
+    When all clients migrate, replace all APIs.
 - **Breaking Change**: Change `formatOutput` function to accept a language
   version parameter.
 - **Formatting Change**: Generated code will no longer apply any fixes by
@@ -8,7 +10,7 @@
 - Document deduplication behavior for the output of
   `GeneratorForAnnotation.generateForAnnotatedElement`.
 - Support all the glob quotes.
-- Require `analyzer: '>=6.9.0 <8.0.0'`
+- Require `analyzer: '>=7.2.0 <8.0.0'`
 - Support the latest `package:dart_style`
 - `LibraryBuilder`, `PartBuilder`, and `SharedPartBuilder` now take an optional
   `writeDescriptions` boolean. When set to `false`, headers and generator
