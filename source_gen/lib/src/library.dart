@@ -13,6 +13,16 @@ import 'constants/reader.dart';
 import 'type_checker.dart';
 import 'utils.dart';
 
+/// Result of finding an [annotation] on [directive] through [LibraryReader].
+class AnnotatedDirective {
+  final ConstantReader annotation;
+  final ElementDirective directive;
+
+  const AnnotatedDirective(this.annotation, this.directive);
+
+  Metadata? get metadata2 => directive.metadata2;
+}
+
 /// Result of finding an [annotation] on [element] through [LibraryReader].
 class AnnotatedElement {
   final ConstantReader annotation;
@@ -83,6 +93,30 @@ class LibraryReader {
 
       if (annotation != null) {
         yield AnnotatedElement(ConstantReader(annotation), element2);
+      }
+    }
+  }
+
+  /// All of the directives in this library annotated with [checker].
+  Iterable<AnnotatedDirective> libraryDirectivesAnnotatedWith(
+    TypeChecker checker, {
+    bool throwOnUnresolved = true,
+  }) sync* {
+    final firstFragment = element2.firstFragment;
+    final directives = [
+      ...firstFragment.libraryImports2,
+      ...firstFragment.libraryExports2,
+      ...firstFragment.partIncludes,
+    ];
+
+    for (final directive in directives) {
+      final annotation = checker.firstAnnotationOf2(
+        directive,
+        throwOnUnresolved: throwOnUnresolved,
+      );
+
+      if (annotation != null) {
+        yield AnnotatedDirective(ConstantReader(annotation), directive);
       }
     }
   }
