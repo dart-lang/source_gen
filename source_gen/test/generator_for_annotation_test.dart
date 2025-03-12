@@ -8,7 +8,6 @@ library;
 
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
@@ -41,7 +40,7 @@ void main() {
       'Repeating',
       elementBehavior: (element) sync* {
         yield '// There are deprecated values in this library!';
-        yield '// ${element.name}';
+        yield '// ${element.name3}';
       },
     );
     final builder = LibraryBuilder(generator);
@@ -251,7 +250,7 @@ $dartFormatWidth
 class _StubGenerator<T> extends GeneratorForAnnotation<T> {
   final String _name;
   final Object? Function(ElementDirective) directiveBehavior;
-  final Object? Function(Element) elementBehavior;
+  final Object? Function(Element2) elementBehavior;
 
   const _StubGenerator(
     this._name, {
@@ -269,8 +268,8 @@ class _StubGenerator<T> extends GeneratorForAnnotation<T> {
       directiveBehavior(directive);
 
   @override
-  Object? generateForAnnotatedElement(
-    Element element,
+  Object? generateForAnnotatedElement2(
+    Element2 element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) =>
@@ -318,7 +317,7 @@ class _TestingResolver implements ReleasableResolver {
   }
 
   @override
-  Future<LibraryElement> libraryFor(
+  Future<LibraryElement2> libraryFor2(
     AssetId assetId, {
     bool allowSyntaxErrors = false,
   }) async {
