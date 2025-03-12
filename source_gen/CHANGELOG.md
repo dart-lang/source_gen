@@ -12,6 +12,8 @@
 - Support all the glob quotes.
 - Require `analyzer: '>=7.2.0 <8.0.0'`
 - Support the latest `package:dart_style`
+- Add `generateForAnnotatedDirective` in addition to `generateForAnnotatedElement2`
+  because in the analyzer element model V2 directives are not elements.
 - `LibraryBuilder`, `PartBuilder`, and `SharedPartBuilder` now take an optional
   `writeDescriptions` boolean. When set to `false`, headers and generator
   descriptions for the files will not be included in the builder output.

@@ -139,7 +139,10 @@ abstract class GeneratorForAnnotation<T> extends Generator {
     BuildStep buildStep,
   ) {}
 
-  /// Implement to return source code to generate for [directive].
+  /// Implement to return source code to generate for [directive]:
+  ///   - [LibraryImport]
+  ///   - [LibraryExport]
+  ///   - [PartInclude]
   ///
   /// This method is invoked based on finding directives annotated with an
   /// instance of [T]. The [annotation] is provided as a [ConstantReader].
