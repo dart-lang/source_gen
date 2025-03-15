@@ -13,6 +13,6 @@ import 'package:test/test.dart';
 void main() {
   test(
     'ensure_build',
-    () => expectBuildClean(packageRelativeDirectory: 'example_usage'),
+    () async => expectBuildClean(packageRelativeDirectory: 'example_usage'),
   );
 }

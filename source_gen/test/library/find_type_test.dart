@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
@@ -47,24 +47,24 @@ void main() {
   });
 
   test('should return a type not exported', () {
-    expect(library.findType('Example'), _isClassElement);
+    expect(library.findType2('Example'), _isClassElement);
   });
 
   test('should return a type from a part', () {
-    expect(library.findType('PartClass'), _isClassElement);
+    expect(library.findType2('PartClass'), _isClassElement);
   });
 
   test('should return a type exported from dart:', () {
-    expect(library.findType('LinkedHashMap'), _isClassElement);
+    expect(library.findType2('LinkedHashMap'), _isClassElement);
   });
 
   test('should return a type exported from package:', () {
-    expect(library.findType('Generator'), _isClassElement);
+    expect(library.findType2('Generator'), _isClassElement);
   });
 
   test('should not return a type imported', () {
-    expect(library.findType('Stream'), isNull);
+    expect(library.findType2('Stream'), isNull);
   });
 }
 
-const _isClassElement = TypeMatcher<ClassElement>();
+const _isClassElement = TypeMatcher<ClassElement2>();

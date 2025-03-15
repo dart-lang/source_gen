@@ -37,7 +37,7 @@ void main() {
       inputId: AssetId('source_gen', 'test/example.dart'),
     );
 
-    staticNonPublic = thisTest.findType('NonPublic')!.instantiate(
+    staticNonPublic = thisTest.findType2('NonPublic')!.instantiate(
       typeArguments: const [],
       nullabilitySuffix: NullabilitySuffix.none,
     );

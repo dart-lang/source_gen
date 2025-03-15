@@ -141,9 +141,19 @@ class LibraryReader {
   ///
   /// Unlike [LibraryElement.getClass], this also correctly traverses
   /// identifiers that are accessible via one or more `export` directives.
+  @Deprecated('Use findType2() instead')
   ClassElement? findType(String name) {
     final type = element.exportNamespace.get(name);
     return type is ClassElement ? type : null;
+  }
+
+  /// Returns a top-level [ClassElement] publicly visible in by [name].
+  ///
+  /// Unlike [LibraryElement.getClass], this also correctly traverses
+  /// identifiers that are accessible via one or more `export` directives.
+  ClassElement2? findType2(String name) {
+    final type = element.exportNamespace.get2(name);
+    return type is ClassElement2 ? type : null;
   }
 
   /// Returns a [Uri] from the current library to the target [asset].

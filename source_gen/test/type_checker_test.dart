@@ -11,6 +11,7 @@ library;
 import 'dart:collection';
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
@@ -91,28 +92,28 @@ void main() {
     );
     staticEnumChecker = TypeChecker.fromStatic(staticEnum);
     staticEnumMixin =
-        (testSource.exportNamespace.get('MyEnumMixin')! as InterfaceElement)
+        (testSource.exportNamespace.get2('MyEnumMixin')! as InterfaceElement2)
             .instantiate(
       typeArguments: [],
       nullabilitySuffix: NullabilitySuffix.none,
     );
     staticEnumMixinChecker = TypeChecker.fromStatic(staticEnumMixin);
     staticMapMixin =
-        (testSource.exportNamespace.get('MyMapMixin')! as InterfaceElement)
+        (testSource.exportNamespace.get2('MyMapMixin')! as InterfaceElement2)
             .instantiate(
       typeArguments: [],
       nullabilitySuffix: NullabilitySuffix.none,
     );
     staticMapMixinChecker = TypeChecker.fromStatic(staticMapMixin);
     staticMyEnum =
-        (testSource.exportNamespace.get('MyEnum')! as InterfaceElement)
+        (testSource.exportNamespace.get2('MyEnum')! as InterfaceElement2)
             .instantiate(
       typeArguments: [],
       nullabilitySuffix: NullabilitySuffix.none,
     );
-    staticMyEnumWithMixin =
-        (testSource.exportNamespace.get('MyEnumWithMixin')! as InterfaceElement)
-            .instantiate(
+    staticMyEnumWithMixin = (testSource.exportNamespace.get2('MyEnumWithMixin')!
+            as InterfaceElement2)
+        .instantiate(
       typeArguments: [],
       nullabilitySuffix: NullabilitySuffix.none,
     );
@@ -131,13 +132,13 @@ void main() {
       nullabilitySuffix: NullabilitySuffix.none,
     );
 
-    staticGenerator = sourceGen.findType('Generator')!.instantiate(
+    staticGenerator = sourceGen.findType2('Generator')!.instantiate(
       typeArguments: [],
       nullabilitySuffix: NullabilitySuffix.none,
     );
     staticGeneratorChecker = TypeChecker.fromStatic(staticGenerator);
     staticGeneratorForAnnotation =
-        sourceGen.findType('GeneratorForAnnotation')!.instantiate(
+        sourceGen.findType2('GeneratorForAnnotation')!.instantiate(
       typeArguments: [core.typeProvider.dynamicType],
       nullabilitySuffix: NullabilitySuffix.none,
     );
