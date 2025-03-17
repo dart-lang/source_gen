@@ -11,6 +11,7 @@ library;
 import 'dart:collection';
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
@@ -91,28 +92,28 @@ void main() {
     );
     staticEnumChecker = TypeChecker.fromStatic(staticEnum);
     staticEnumMixin =
-        (testSource.exportNamespace.get('MyEnumMixin')! as InterfaceElement)
+        (testSource.exportNamespace.get2('MyEnumMixin')! as InterfaceElement2)
             .instantiate(
       typeArguments: [],
       nullabilitySuffix: NullabilitySuffix.none,
     );
     staticEnumMixinChecker = TypeChecker.fromStatic(staticEnumMixin);
     staticMapMixin =
-        (testSource.exportNamespace.get('MyMapMixin')! as InterfaceElement)
+        (testSource.exportNamespace.get2('MyMapMixin')! as InterfaceElement2)
             .instantiate(
       typeArguments: [],
       nullabilitySuffix: NullabilitySuffix.none,
     );
     staticMapMixinChecker = TypeChecker.fromStatic(staticMapMixin);
     staticMyEnum =
-        (testSource.exportNamespace.get('MyEnum')! as InterfaceElement)
+        (testSource.exportNamespace.get2('MyEnum')! as InterfaceElement2)
             .instantiate(
       typeArguments: [],
       nullabilitySuffix: NullabilitySuffix.none,
     );
-    staticMyEnumWithMixin =
-        (testSource.exportNamespace.get('MyEnumWithMixin')! as InterfaceElement)
-            .instantiate(
+    staticMyEnumWithMixin = (testSource.exportNamespace.get2('MyEnumWithMixin')!
+            as InterfaceElement2)
+        .instantiate(
       typeArguments: [],
       nullabilitySuffix: NullabilitySuffix.none,
     );
@@ -131,13 +132,13 @@ void main() {
       nullabilitySuffix: NullabilitySuffix.none,
     );
 
-    staticGenerator = sourceGen.findType('Generator')!.instantiate(
+    staticGenerator = sourceGen.findType2('Generator')!.instantiate(
       typeArguments: [],
       nullabilitySuffix: NullabilitySuffix.none,
     );
     staticGeneratorChecker = TypeChecker.fromStatic(staticGenerator);
     staticGeneratorForAnnotation =
-        sourceGen.findType('GeneratorForAnnotation')!.instantiate(
+        sourceGen.findType2('GeneratorForAnnotation')!.instantiate(
       typeArguments: [core.typeProvider.dynamicType],
       nullabilitySuffix: NullabilitySuffix.none,
     );
@@ -201,7 +202,7 @@ void main() {
       () {
         test('should equal MapMixin class', () {
           expect(checkMapMixin().isExactlyType(staticMapMixin), isTrue);
-          expect(checkMapMixin().isExactly(staticMapMixin.element), isTrue);
+          expect(checkMapMixin().isExactly2(staticMapMixin.element3), isTrue);
         });
       },
       onPlatform: const {
@@ -214,7 +215,7 @@ void main() {
         expect(
           checkMap().isExactlyType(staticMap),
           isTrue,
-          reason: '${checkMap()} != ${staticMap.element.name}',
+          reason: '${checkMap()} != ${staticMap.element3.name3}',
         );
       });
 
@@ -246,7 +247,7 @@ void main() {
       test('should be assignable from Map<String, String>', () {
         // Using Uri.queryParameters to get a Map<String, String>
         final stringStringMapType =
-            staticUri.getGetter('queryParameters')!.returnType;
+            staticUri.getGetter2('queryParameters')!.returnType;
 
         expect(checkMap().isAssignableFromType(stringStringMapType), isTrue);
         expect(checkMap().isExactlyType(stringStringMapType), isTrue);
@@ -276,7 +277,7 @@ void main() {
         expect(
           checkGenerator().isExactlyType(staticGenerator),
           isTrue,
-          reason: '${checkGenerator()} != ${staticGenerator.element.name}',
+          reason: '${checkGenerator()} != ${staticGenerator.element3.name3}',
         );
       });
 
@@ -285,7 +286,7 @@ void main() {
           checkGenerator().isSuperTypeOf(staticGenerator),
           isFalse,
           reason: '${checkGenerator()} is super of '
-              '${staticGenerator.element.name}',
+              '${staticGenerator.element3.name3}',
         );
       });
 
@@ -294,7 +295,7 @@ void main() {
           checkGenerator().isSuperTypeOf(staticGeneratorForAnnotation),
           isTrue,
           reason: '${checkGenerator()} is not super of '
-              '${staticGeneratorForAnnotation.element.name}',
+              '${staticGeneratorForAnnotation.element3.name3}',
         );
       });
 
@@ -303,7 +304,7 @@ void main() {
           checkGenerator().isAssignableFromType(staticGeneratorForAnnotation),
           isTrue,
           reason: '${checkGenerator()} is not assignable from '
-              '${staticGeneratorForAnnotation.element.name}',
+              '${staticGeneratorForAnnotation.element3.name3}',
         );
       });
     });
@@ -465,34 +466,34 @@ void main() {
     test('of a single @A', () {
       expect($A.hasAnnotationOf($ExampleOfA), isTrue);
       final aAnnotation = $A.firstAnnotationOf($ExampleOfA)!;
-      expect(aAnnotation.type!.element!.name, 'A');
+      expect(aAnnotation.type!.element3!.name3, 'A');
       expect($B.annotationsOf($ExampleOfA), isEmpty);
       expect($C.annotationsOf($ExampleOfA), isEmpty);
     });
 
     test('of a multiple @A', () {
       final aAnnotations = $A.annotationsOf($ExampleOfMultiA);
-      expect(aAnnotations.map((a) => a.type!.element!.name), ['A', 'A']);
+      expect(aAnnotations.map((a) => a.type!.element3!.name3), ['A', 'A']);
       expect($B.annotationsOf($ExampleOfA), isEmpty);
       expect($C.annotationsOf($ExampleOfA), isEmpty);
     });
 
     test('of a single @A + single @B', () {
       final aAnnotations = $A.annotationsOf($ExampleOfAPlusB);
-      expect(aAnnotations.map((a) => a.type!.element!.name), ['A']);
+      expect(aAnnotations.map((a) => a.type!.element3!.name3), ['A']);
       final bAnnotations = $B.annotationsOf($ExampleOfAPlusB);
-      expect(bAnnotations.map((a) => a.type!.element!.name), ['B']);
+      expect(bAnnotations.map((a) => a.type!.element3!.name3), ['B']);
       expect($C.annotationsOf($ExampleOfAPlusB), isEmpty);
     });
 
     test('of a single @B + single @C', () {
       final cAnnotations = $C.annotationsOf($ExampleOfBPlusC);
-      expect(cAnnotations.map((a) => a.type!.element!.name), ['C']);
+      expect(cAnnotations.map((a) => a.type!.element3!.name3), ['C']);
       final bAnnotations = $B.annotationsOf($ExampleOfBPlusC);
-      expect(bAnnotations.map((a) => a.type!.element!.name), ['B', 'C']);
+      expect(bAnnotations.map((a) => a.type!.element3!.name3), ['B', 'C']);
       expect($B.hasAnnotationOfExact($ExampleOfBPlusC), isTrue);
       final bExact = $B.annotationsOfExact($ExampleOfBPlusC);
-      expect(bExact.map((a) => a.type!.element!.name), ['B']);
+      expect(bExact.map((a) => a.type!.element3!.name3), ['B']);
     });
   });
 
@@ -573,28 +574,28 @@ void main() {
         $A
             .firstAnnotationOf($ExampleOfA, throwOnUnresolved: false)!
             .type!
-            .element!
-            .name,
+            .element3!
+            .name3,
         'A',
       );
       expect(
         $A
             .annotationsOf($ExampleOfA, throwOnUnresolved: false)
-            .map((a) => a.type!.element!.name),
+            .map((a) => a.type!.element3!.name3),
         ['A'],
       );
       expect(
         $A
             .firstAnnotationOfExact($ExampleOfA, throwOnUnresolved: false)!
             .type!
-            .element!
-            .name,
+            .element3!
+            .name3,
         'A',
       );
       expect(
         $A
             .annotationsOfExact($ExampleOfA, throwOnUnresolved: false)
-            .map((a) => a.type!.element!.name),
+            .map((a) => a.type!.element3!.name3),
         ['A'],
       );
     });

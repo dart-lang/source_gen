@@ -37,7 +37,7 @@ void main() {
       inputId: AssetId('source_gen', 'test/example.dart'),
     );
 
-    staticNonPublic = thisTest.findType('NonPublic')!.instantiate(
+    staticNonPublic = thisTest.findType2('NonPublic')!.instantiate(
       typeArguments: const [],
       nullabilitySuffix: NullabilitySuffix.none,
     );
@@ -53,7 +53,7 @@ void main() {
         expect(
           checkNonPublic().isExactlyType(staticNonPublic),
           isTrue,
-          reason: '${checkNonPublic()} != ${staticNonPublic.element.name}',
+          reason: '${checkNonPublic()} != ${staticNonPublic.element3.name3}',
         );
       });
 
@@ -62,7 +62,7 @@ void main() {
           checkNonPublic().isAssignableFromType(staticNonPublic),
           isTrue,
           reason: '${checkNonPublic()} is not assignable from '
-              '${staticNonPublic.element.name}',
+              '${staticNonPublic.element3.name3}',
         );
       });
     });

@@ -174,7 +174,7 @@ $dartFormatWidth
 
   test(
     'Simple Generator test for library',
-    () => _generateTest(
+    () async => _generateTest(
       const CommentGenerator(forClasses: false, forLibrary: true),
       _testGenPartContentForLibrary,
     ),
@@ -182,7 +182,7 @@ $dartFormatWidth
 
   test(
     'Simple Generator test for classes and library',
-    () => _generateTest(
+    () async => _generateTest(
       const CommentGenerator(forLibrary: true),
       _testGenPartContentForClassesAndLibrary,
     ),

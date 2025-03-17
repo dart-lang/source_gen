@@ -84,7 +84,7 @@ abstract class TypeChecker {
   ///
   /// Throws on unresolved annotations unless [throwOnUnresolved] is `false`.
   DartObject? firstAnnotationOf2(
-    Element2 element, {
+    Object element, {
     bool throwOnUnresolved = true,
   }) {
     if (element case final Annotatable annotatable) {
@@ -188,13 +188,13 @@ abstract class TypeChecker {
   }
 
   DartObject? _computeConstantValue2(
-    Element2 element,
+    Object element,
     ElementAnnotation annotation,
     int annotationIndex, {
     bool throwOnUnresolved = true,
   }) {
     final result = annotation.computeConstantValue();
-    if (result == null && throwOnUnresolved) {
+    if (result == null && throwOnUnresolved && element is Element2) {
       throw UnresolvedAnnotationException._from(element, annotationIndex);
     }
     return result;
@@ -219,7 +219,7 @@ abstract class TypeChecker {
   /// Throws [UnresolvedAnnotationException] on unresolved annotations unless
   /// [throwOnUnresolved] is explicitly set to `false` (default is `true`).
   Iterable<DartObject> annotationsOf2(
-    Element2 element, {
+    Object element, {
     bool throwOnUnresolved = true,
   }) =>
       _annotationsWhere2(
@@ -246,7 +246,7 @@ abstract class TypeChecker {
   }
 
   Iterable<DartObject> _annotationsWhere2(
-    Element2 element,
+    Object element,
     bool Function(DartType) predicate, {
     bool throwOnUnresolved = true,
   }) sync* {
@@ -307,8 +307,8 @@ abstract class TypeChecker {
 
   /// Returns `true` if [staticType] can be assigned to this type.
   bool isAssignableFromType(DartType staticType) {
-    final element = staticType.element;
-    return element != null && isAssignableFrom(element);
+    final element = staticType.element3;
+    return element != null && isAssignableFrom2(element);
   }
 
   /// Returns `true` if representing the exact same class as [element].
@@ -322,9 +322,9 @@ abstract class TypeChecker {
   /// This will always return false for types without a backingclass such as
   /// `void` or function types.
   bool isExactlyType(DartType staticType) {
-    final element = staticType.element;
+    final element = staticType.element3;
     if (element != null) {
-      return isExactly(element);
+      return isExactly2(element);
     } else {
       return false;
     }
@@ -350,11 +350,31 @@ abstract class TypeChecker {
     return false;
   }
 
+  /// Returns `true` if representing a super class of [element].
+  ///
+  /// This check only takes into account the *extends* hierarchy. If you wish
+  /// to check mixins and interfaces, use [isAssignableFrom].
+  bool isSuperOf2(Element2 element) {
+    if (element is InterfaceElement2) {
+      var theSuper = element.supertype;
+
+      do {
+        if (isExactlyType(theSuper!)) {
+          return true;
+        }
+
+        theSuper = theSuper.superclass;
+      } while (theSuper != null);
+    }
+
+    return false;
+  }
+
   /// Returns `true` if representing a super type of [staticType].
   ///
   /// This only takes into account the *extends* hierarchy. If you wish
   /// to check mixins and interfaces, use [isAssignableFromType].
-  bool isSuperTypeOf(DartType staticType) => isSuperOf(staticType.element!);
+  bool isSuperTypeOf(DartType staticType) => isSuperOf2(staticType.element3!);
 }
 
 // Checks a static type against another static type;
@@ -363,6 +383,7 @@ class _LibraryTypeChecker extends TypeChecker {
 
   const _LibraryTypeChecker(this._type) : super._();
 
+  @Deprecated('Use isExactly2() instead')
   @override
   bool isExactly(Element element) =>
       element is InterfaceElement && element == _type.element;
@@ -372,7 +393,7 @@ class _LibraryTypeChecker extends TypeChecker {
       element is InterfaceElement2 && element == _type.element3;
 
   @override
-  String toString() => urlOfElement(_type.element!);
+  String toString() => urlOfElement2(_type.element3!);
 }
 
 // Checks a runtime type against a static type.
@@ -473,7 +494,7 @@ class UnresolvedAnnotationException implements Exception {
           annotatedElement.session!.getParsedLibraryByElement2(
         annotatedElement.library2!,
       ) as ParsedLibraryResult;
-      final declaration = parsedLibrary.getElementDeclaration2(
+      final declaration = parsedLibrary.getFragmentDeclaration(
         annotatedElement.firstFragment,
       );
       if (declaration == null) {

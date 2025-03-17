@@ -13,6 +13,16 @@ import 'constants/reader.dart';
 import 'type_checker.dart';
 import 'utils.dart';
 
+/// Result of finding an [annotation] on [directive] through [LibraryReader].
+class AnnotatedDirective {
+  final ConstantReader annotation;
+  final ElementDirective directive;
+
+  const AnnotatedDirective(this.annotation, this.directive);
+
+  Metadata? get metadata2 => directive.metadata2;
+}
+
 /// Result of finding an [annotation] on [element] through [LibraryReader].
 class AnnotatedElement {
   final ConstantReader annotation;
@@ -87,6 +97,30 @@ class LibraryReader {
     }
   }
 
+  /// All of the directives in this library annotated with [checker].
+  Iterable<AnnotatedDirective> libraryDirectivesAnnotatedWith(
+    TypeChecker checker, {
+    bool throwOnUnresolved = true,
+  }) sync* {
+    final firstFragment = element2.firstFragment;
+    final directives = [
+      ...firstFragment.libraryImports2,
+      ...firstFragment.libraryExports2,
+      ...firstFragment.partIncludes,
+    ];
+
+    for (final directive in directives) {
+      final annotation = checker.firstAnnotationOf2(
+        directive,
+        throwOnUnresolved: throwOnUnresolved,
+      );
+
+      if (annotation != null) {
+        yield AnnotatedDirective(ConstantReader(annotation), directive);
+      }
+    }
+  }
+
   /// All of the declarations in this library annotated with exactly [checker].
   Iterable<AnnotatedElement> annotatedWithExact(
     TypeChecker checker, {
@@ -107,9 +141,19 @@ class LibraryReader {
   ///
   /// Unlike [LibraryElement.getClass], this also correctly traverses
   /// identifiers that are accessible via one or more `export` directives.
+  @Deprecated('Use findType2() instead')
   ClassElement? findType(String name) {
     final type = element.exportNamespace.get(name);
     return type is ClassElement ? type : null;
+  }
+
+  /// Returns a top-level [ClassElement] publicly visible in by [name].
+  ///
+  /// Unlike [LibraryElement.getClass], this also correctly traverses
+  /// identifiers that are accessible via one or more `export` directives.
+  ClassElement2? findType2(String name) {
+    final type = element.exportNamespace.get2(name);
+    return type is ClassElement2 ? type : null;
   }
 
   /// Returns a [Uri] from the current library to the target [asset].

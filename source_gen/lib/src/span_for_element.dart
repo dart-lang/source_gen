@@ -97,9 +97,9 @@ SourceSpan spanForElement2(Element2 element, [SourceFile? file]) {
 /// Returns a source span that spans the location where [node] is written.
 SourceSpan spanForNode(AstNode node) {
   final unit = node.thisOrAncestorOfType<CompilationUnit>()!;
-  final element = unit.declaredElement!;
-  final contents = element.source.contents.data;
-  final url = assetToPackageUrl(element.source.uri);
+  final unitFragment = unit.declaredFragment!;
+  final contents = unitFragment.source.contents.data;
+  final url = assetToPackageUrl(unitFragment.source.uri);
   final file = SourceFile.fromString(contents, url: url);
   return file.span(node.offset, node.offset + node.length);
 }

@@ -11,6 +11,7 @@ Stream<String> normalizeGeneratorOutput(Object? value) {
   if (value == null) {
     return const Stream.empty();
   } else if (value is Future) {
+    // ignore:discarded_futures
     return StreamCompleter.fromFuture(value.then(normalizeGeneratorOutput));
   } else if (value is String) {
     value = [value];
