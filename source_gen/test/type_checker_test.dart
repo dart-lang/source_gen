@@ -200,10 +200,14 @@ void main() {
     group(
       '(MapMixin',
       () {
-        test('should equal MapMixin class', () {
-          expect(checkMapMixin().isExactlyType(staticMapMixin), isTrue);
-          expect(checkMapMixin().isExactly2(staticMapMixin.element3), isTrue);
-        }, skip: 'Google3 test gives google3:// URI for the test mirror');
+        test(
+          'should equal MapMixin class',
+          () {
+            expect(checkMapMixin().isExactlyType(staticMapMixin), isTrue);
+            expect(checkMapMixin().isExactly2(staticMapMixin.element3), isTrue);
+          },
+          skip: 'Google3 test gives google3:// URI for the test mirror',
+        );
       },
       onPlatform: const {
         'windows': Skip('https://github.com/dart-lang/source_gen/issues/573'),

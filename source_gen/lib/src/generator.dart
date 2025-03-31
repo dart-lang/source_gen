@@ -60,7 +60,7 @@ class InvalidGenerationSource implements Exception {
   /// code, or if the location was passed with [element].
   final AstNode? node;
 
-  @deprecated
+  @Deprecated('use v2 instead')
   InvalidGenerationSource(
     this.message, {
     this.todo = '',
@@ -75,7 +75,7 @@ class InvalidGenerationSource implements Exception {
     this.node,
   }) : element2 = element;
 
-  @deprecated
+  @Deprecated('use element2 instead')
   Element? get element => element2?.asElement;
 
   @override

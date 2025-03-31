@@ -112,7 +112,7 @@ abstract class GeneratorForAnnotation<T> extends Generator {
   ///
   /// Implementations should return `null` when no content is generated. Empty
   /// or whitespace-only [String] instances are also ignored.
-  @deprecated
+  @Deprecated('use generateForAnnotatedElement2 instead')
   dynamic generateForAnnotatedElement(
     Element element,
     ConstantReader annotation,

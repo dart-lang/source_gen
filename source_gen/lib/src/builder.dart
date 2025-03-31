@@ -425,7 +425,7 @@ const partIdRegExpLiteral = r'[A-Za-z_\d-]+';
 
 final _partIdRegExp = RegExp('^$partIdRegExpLiteral\$');
 
-@deprecated
+@Deprecated('Use languageOverrideForLibrary2 instead')
 String languageOverrideForLibrary(LibraryElement library) {
   final override = library.languageVersion.override;
   return override == null

@@ -22,7 +22,7 @@ import '../utils.dart';
 /// **NOTE**: Some returned [Revivable] instances are not representable as valid
 /// Dart source code (such as referencing private constructors). It is up to the
 /// build tool(s) using this library to surface error messages to the user.
-@deprecated
+@Deprecated('use reviveInstance2 instead')
 Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
   final objectType = object.type;
   Element? element = objectType!.alias?.element;

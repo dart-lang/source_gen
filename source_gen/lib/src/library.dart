@@ -30,7 +30,7 @@ class AnnotatedElement {
 
   const AnnotatedElement(this.annotation, this.element2);
 
-  @deprecated
+  @Deprecated('use element2 instead')
   Element get element => element2.asElement!;
 
   Metadata? get metadata2 {
@@ -45,16 +45,16 @@ class AnnotatedElement {
 class LibraryReader {
   final LibraryElement2 element2;
 
-  @deprecated
+  @Deprecated('use v2 instead')
   LibraryReader(LibraryElement element) : this.v2(element.asElement2);
 
   LibraryReader.v2(this.element2);
 
-  @deprecated
+  @Deprecated('use element2 instead')
   LibraryElement get element => element2.asElement;
 
   /// All of the declarations in this library.
-  @deprecated
+  @Deprecated('use allElements2 instead')
   Iterable<Element> get allElements => [
         element,
         ...element.topLevelElements,
@@ -67,7 +67,7 @@ class LibraryReader {
   Iterable<Element2> get allElements2 => [element2, ...element2.children2];
 
   /// All of the elements representing classes in this library.
-  @deprecated
+  @Deprecated('use classes2 instead')
   Iterable<ClassElement> get classes =>
       element.units.expand((cu) => cu.classes);
 
@@ -75,7 +75,7 @@ class LibraryReader {
   Iterable<ClassElement2> get classes2 => element2.classes;
 
   /// All of the elements representing enums in this library.
-  @deprecated
+  @Deprecated('use enums2 instead')
   Iterable<EnumElement> get enums => element.units.expand((cu) => cu.enums);
 
   /// All of the elements representing enums in this library.
@@ -150,7 +150,7 @@ class LibraryReader {
 
   /// Returns a top-level [ClassElement2] publicly visible in by [name].
   ///
-  /// Unlike [LibraryElement2.getClass], this also correctly traverses
+  /// Unlike `LibraryElement2.getClass`, this also correctly traverses
   /// identifiers that are accessible via one or more `export` directives.
   ClassElement2? findType2(String name) {
     final type = element2.exportNamespace.get2(name);
@@ -167,7 +167,7 @@ class LibraryReader {
   ///
   /// This is a typed convenience function for using [pathToUrl], and the same
   /// API restrictions hold around supported schemes and relative paths.
-  @deprecated
+  @Deprecated('use pathToElement2 instead')
   Uri pathToElement(Element element) => pathToUrl(element.source!.uri);
 
   /// Returns a [Uri] from the current library to the target [element].
