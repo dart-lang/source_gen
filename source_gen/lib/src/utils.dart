@@ -45,7 +45,14 @@ bool hasExpectedPartDirective(CompilationUnit unit, String part) =>
         .any((e) => e.uri.stringValue == part);
 
 /// Returns a uri suitable for `part of "..."` when pointing to [element].
+@deprecated
 String uriOfPartial(LibraryElement element, AssetId source, AssetId output) {
+  assert(source.package == output.package);
+  return p.url.relative(source.path, from: p.url.dirname(output.path));
+}
+
+/// Returns a uri suitable for `part of "..."` when pointing to [element].
+String uriOfPartial2(LibraryElement2 element, AssetId source, AssetId output) {
   assert(source.package == output.package);
   return p.url.relative(source.path, from: p.url.dirname(output.path));
 }
@@ -58,6 +65,7 @@ String computePartUrl(AssetId input, AssetId output) => p.url.joinAll(
     );
 
 /// Returns a URL representing [element].
+@deprecated
 String urlOfElement(Element element) => element.kind == ElementKind.DYNAMIC
     ? 'dart:core#dynamic'
     // using librarySource.uri – in case the element is in a part

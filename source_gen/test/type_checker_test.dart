@@ -10,7 +10,6 @@ library;
 
 import 'dart:collection';
 
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -32,7 +31,7 @@ void main() {
   late TypeChecker staticMapMixinChecker;
   late TypeChecker staticHashMapChecker;
   late TypeChecker staticEnumChecker;
-  late LibraryElement core;
+  late LibraryElement2 core;
 
   // Resolved top-level types from package:source_gen.
   late InterfaceType staticGenerator;
@@ -47,38 +46,38 @@ void main() {
   late InterfaceType staticMyEnumWithMixin;
 
   setUpAll(() async {
-    late LibraryElement collection;
+    late LibraryElement2 collection;
     late LibraryReader sourceGen;
-    late LibraryElement testSource;
+    late LibraryElement2 testSource;
     await resolveSource(
       r'''
       export 'package:source_gen/source_gen.dart';
       export 'type_checker_test.dart' show NonPublic;
     ''',
       (resolver) async {
-        core = (await resolver.findLibraryByName('dart.core'))!;
-        collection = (await resolver.findLibraryByName('dart.collection'))!;
+        core = (await resolver.findLibraryByName2('dart.core'))!;
+        collection = (await resolver.findLibraryByName2('dart.collection'))!;
         sourceGen = LibraryReader.v2(
           await resolver.libraryFor2(
             AssetId('source_gen', 'lib/source_gen.dart'),
           ),
         );
         testSource = await resolver
-            .libraryFor(AssetId('source_gen', 'test/type_checker_test.dart'));
+            .libraryFor2(AssetId('source_gen', 'test/type_checker_test.dart'));
       },
       inputId: AssetId('source_gen', 'test/example.dart'),
     );
 
-    final staticIterable = core.getClass('Iterable')!.instantiate(
+    final staticIterable = core.getClass2('Iterable')!.instantiate(
       typeArguments: [core.typeProvider.dynamicType],
       nullabilitySuffix: NullabilitySuffix.none,
     );
     staticIterableChecker = TypeChecker.fromStatic(staticIterable);
-    staticUri = core.getClass('Uri')!.instantiate(
+    staticUri = core.getClass2('Uri')!.instantiate(
       typeArguments: [],
       nullabilitySuffix: NullabilitySuffix.none,
     );
-    staticMap = core.getClass('Map')!.instantiate(
+    staticMap = core.getClass2('Map')!.instantiate(
       typeArguments: [
         core.typeProvider.dynamicType,
         core.typeProvider.dynamicType,
@@ -86,7 +85,7 @@ void main() {
       nullabilitySuffix: NullabilitySuffix.none,
     );
     staticMapChecker = TypeChecker.fromStatic(staticMap);
-    staticEnum = core.getClass('Enum')!.instantiate(
+    staticEnum = core.getClass2('Enum')!.instantiate(
       typeArguments: [],
       nullabilitySuffix: NullabilitySuffix.none,
     );
@@ -118,7 +117,7 @@ void main() {
       nullabilitySuffix: NullabilitySuffix.none,
     );
 
-    staticHashMap = collection.getClass('HashMap')!.instantiate(
+    staticHashMap = collection.getClass2('HashMap')!.instantiate(
       typeArguments: [
         core.typeProvider.dynamicType,
         core.typeProvider.dynamicType,
@@ -127,7 +126,7 @@ void main() {
     );
     staticHashMapChecker = TypeChecker.fromStatic(staticHashMap);
     staticUnmodifiableListView =
-        collection.getClass('UnmodifiableListView')!.instantiate(
+        collection.getClass2('UnmodifiableListView')!.instantiate(
       typeArguments: [core.typeProvider.dynamicType],
       nullabilitySuffix: NullabilitySuffix.none,
     );
@@ -183,6 +182,7 @@ void main() {
         onPlatform: const {
           'windows': Skip('https://github.com/dart-lang/source_gen/issues/573'),
         },
+        skip: 'Google3 test gives google3:// URI for the test mirror',
       );
     });
 
@@ -203,7 +203,7 @@ void main() {
         test('should equal MapMixin class', () {
           expect(checkMapMixin().isExactlyType(staticMapMixin), isTrue);
           expect(checkMapMixin().isExactly2(staticMapMixin.element3), isTrue);
-        });
+        }, skip: 'Google3 test gives google3:// URI for the test mirror');
       },
       onPlatform: const {
         'windows': Skip('https://github.com/dart-lang/source_gen/issues/573'),
@@ -366,13 +366,13 @@ void main() {
       @depracated // Intentionally mispelled.
       class X {}
     ''',
-      (resolver) async => (await resolver.findLibraryByName('_test'))!,
+      (resolver) async => (await resolver.findLibraryByName2('_test'))!,
     );
-    final classX = library.getClass('X')!;
+    final classX = library.getClass2('X')!;
     const $deprecated = TypeChecker.fromRuntime(Deprecated);
 
     expect(
-      () => $deprecated.annotationsOf(classX),
+      () => $deprecated.annotationsOf2(classX),
       throwsA(
         const TypeMatcher<UnresolvedAnnotationException>().having(
           (e) => e.toString(),
@@ -399,10 +399,10 @@ void main() {
     late TypeChecker $B;
     late TypeChecker $C;
 
-    late ClassElement $ExampleOfA;
-    late ClassElement $ExampleOfMultiA;
-    late ClassElement $ExampleOfAPlusB;
-    late ClassElement $ExampleOfBPlusC;
+    late ClassElement2 $ExampleOfA;
+    late ClassElement2 $ExampleOfMultiA;
+    late ClassElement2 $ExampleOfAPlusB;
+    late ClassElement2 $ExampleOfBPlusC;
 
     setUpAll(() async {
       final library = await resolveSource(
@@ -436,71 +436,71 @@ void main() {
         const C();
       }
     ''',
-        (resolver) async => (await resolver.findLibraryByName('_test'))!,
+        (resolver) async => (await resolver.findLibraryByName2('_test'))!,
       );
 
       $A = TypeChecker.fromStatic(
-        library.getClass('A')!.instantiate(
+        library.getClass2('A')!.instantiate(
           typeArguments: [],
           nullabilitySuffix: NullabilitySuffix.none,
         ),
       );
       $B = TypeChecker.fromStatic(
-        library.getClass('B')!.instantiate(
+        library.getClass2('B')!.instantiate(
           typeArguments: [],
           nullabilitySuffix: NullabilitySuffix.none,
         ),
       );
       $C = TypeChecker.fromStatic(
-        library.getClass('C')!.instantiate(
+        library.getClass2('C')!.instantiate(
           typeArguments: [],
           nullabilitySuffix: NullabilitySuffix.none,
         ),
       );
-      $ExampleOfA = library.getClass('ExampleOfA')!;
-      $ExampleOfMultiA = library.getClass('ExampleOfMultiA')!;
-      $ExampleOfAPlusB = library.getClass('ExampleOfAPlusB')!;
-      $ExampleOfBPlusC = library.getClass('ExampleOfBPlusC')!;
+      $ExampleOfA = library.getClass2('ExampleOfA')!;
+      $ExampleOfMultiA = library.getClass2('ExampleOfMultiA')!;
+      $ExampleOfAPlusB = library.getClass2('ExampleOfAPlusB')!;
+      $ExampleOfBPlusC = library.getClass2('ExampleOfBPlusC')!;
     });
 
     test('of a single @A', () {
-      expect($A.hasAnnotationOf($ExampleOfA), isTrue);
-      final aAnnotation = $A.firstAnnotationOf($ExampleOfA)!;
+      expect($A.hasAnnotationOf2($ExampleOfA), isTrue);
+      final aAnnotation = $A.firstAnnotationOf2($ExampleOfA)!;
       expect(aAnnotation.type!.element3!.name3, 'A');
-      expect($B.annotationsOf($ExampleOfA), isEmpty);
-      expect($C.annotationsOf($ExampleOfA), isEmpty);
+      expect($B.annotationsOf2($ExampleOfA), isEmpty);
+      expect($C.annotationsOf2($ExampleOfA), isEmpty);
     });
 
     test('of a multiple @A', () {
-      final aAnnotations = $A.annotationsOf($ExampleOfMultiA);
+      final aAnnotations = $A.annotationsOf2($ExampleOfMultiA);
       expect(aAnnotations.map((a) => a.type!.element3!.name3), ['A', 'A']);
-      expect($B.annotationsOf($ExampleOfA), isEmpty);
-      expect($C.annotationsOf($ExampleOfA), isEmpty);
+      expect($B.annotationsOf2($ExampleOfA), isEmpty);
+      expect($C.annotationsOf2($ExampleOfA), isEmpty);
     });
 
     test('of a single @A + single @B', () {
-      final aAnnotations = $A.annotationsOf($ExampleOfAPlusB);
+      final aAnnotations = $A.annotationsOf2($ExampleOfAPlusB);
       expect(aAnnotations.map((a) => a.type!.element3!.name3), ['A']);
-      final bAnnotations = $B.annotationsOf($ExampleOfAPlusB);
+      final bAnnotations = $B.annotationsOf2($ExampleOfAPlusB);
       expect(bAnnotations.map((a) => a.type!.element3!.name3), ['B']);
-      expect($C.annotationsOf($ExampleOfAPlusB), isEmpty);
+      expect($C.annotationsOf2($ExampleOfAPlusB), isEmpty);
     });
 
     test('of a single @B + single @C', () {
-      final cAnnotations = $C.annotationsOf($ExampleOfBPlusC);
+      final cAnnotations = $C.annotationsOf2($ExampleOfBPlusC);
       expect(cAnnotations.map((a) => a.type!.element3!.name3), ['C']);
-      final bAnnotations = $B.annotationsOf($ExampleOfBPlusC);
+      final bAnnotations = $B.annotationsOf2($ExampleOfBPlusC);
       expect(bAnnotations.map((a) => a.type!.element3!.name3), ['B', 'C']);
-      expect($B.hasAnnotationOfExact($ExampleOfBPlusC), isTrue);
-      final bExact = $B.annotationsOfExact($ExampleOfBPlusC);
+      expect($B.hasAnnotationOfExact2($ExampleOfBPlusC), isTrue);
+      final bExact = $B.annotationsOfExact2($ExampleOfBPlusC);
       expect(bExact.map((a) => a.type!.element3!.name3), ['B']);
     });
   });
 
   group('unresolved annotations', () {
     late TypeChecker $A;
-    late ClassElement $ExampleOfA;
-    late ParameterElement $annotatedParameter;
+    late ClassElement2 $ExampleOfA;
+    late FormalParameterElement $annotatedParameter;
 
     setUpAll(() async {
       final library = await resolveSource(
@@ -518,53 +518,52 @@ void main() {
         const A();
       }
     ''',
-        (resolver) async => (await resolver.findLibraryByName('_test'))!,
+        (resolver) async => (await resolver.findLibraryByName2('_test'))!,
       );
       $A = TypeChecker.fromStatic(
-        library.getClass('A')!.instantiate(
+        library.getClass2('A')!.instantiate(
           typeArguments: [],
           nullabilitySuffix: NullabilitySuffix.none,
         ),
       );
-      $ExampleOfA = library.getClass('ExampleOfA')!;
-      $annotatedParameter = library.topLevelElements
-          .whereType<FunctionElement>()
-          .firstWhere((f) => f.name == 'annotatedParameter')
-          .parameters
+      $ExampleOfA = library.getClass2('ExampleOfA')!;
+      $annotatedParameter = library.topLevelFunctions
+          .firstWhere((f) => f.name3 == 'annotatedParameter')
+          .formalParameters
           .single;
     });
 
     test('should throw by default', () {
       expect(
-        () => $A.firstAnnotationOf($ExampleOfA),
+        () => $A.firstAnnotationOf2($ExampleOfA),
         throwsUnresolvedAnnotationException,
       );
       expect(
-        () => $A.annotationsOf($ExampleOfA),
+        () => $A.annotationsOf2($ExampleOfA),
         throwsUnresolvedAnnotationException,
       );
       expect(
-        () => $A.firstAnnotationOfExact($ExampleOfA),
+        () => $A.firstAnnotationOfExact2($ExampleOfA),
         throwsUnresolvedAnnotationException,
       );
       expect(
-        () => $A.annotationsOfExact($ExampleOfA),
+        () => $A.annotationsOfExact2($ExampleOfA),
         throwsUnresolvedAnnotationException,
       );
       expect(
-        () => $A.firstAnnotationOf($annotatedParameter),
+        () => $A.firstAnnotationOf2($annotatedParameter),
         throwsUnresolvedAnnotationException,
       );
       expect(
-        () => $A.annotationsOf($annotatedParameter),
+        () => $A.annotationsOf2($annotatedParameter),
         throwsUnresolvedAnnotationException,
       );
       expect(
-        () => $A.firstAnnotationOfExact($annotatedParameter),
+        () => $A.firstAnnotationOfExact2($annotatedParameter),
         throwsUnresolvedAnnotationException,
       );
       expect(
-        () => $A.annotationsOfExact($annotatedParameter),
+        () => $A.annotationsOfExact2($annotatedParameter),
         throwsUnresolvedAnnotationException,
       );
     });
@@ -572,7 +571,7 @@ void main() {
     test('should not throw if `throwOnUnresolved` == false', () {
       expect(
         $A
-            .firstAnnotationOf($ExampleOfA, throwOnUnresolved: false)!
+            .firstAnnotationOf2($ExampleOfA, throwOnUnresolved: false)!
             .type!
             .element3!
             .name3,
@@ -580,13 +579,13 @@ void main() {
       );
       expect(
         $A
-            .annotationsOf($ExampleOfA, throwOnUnresolved: false)
+            .annotationsOf2($ExampleOfA, throwOnUnresolved: false)
             .map((a) => a.type!.element3!.name3),
         ['A'],
       );
       expect(
         $A
-            .firstAnnotationOfExact($ExampleOfA, throwOnUnresolved: false)!
+            .firstAnnotationOfExact2($ExampleOfA, throwOnUnresolved: false)!
             .type!
             .element3!
             .name3,
@@ -594,7 +593,7 @@ void main() {
       );
       expect(
         $A
-            .annotationsOfExact($ExampleOfA, throwOnUnresolved: false)
+            .annotationsOfExact2($ExampleOfA, throwOnUnresolved: false)
             .map((a) => a.type!.element3!.name3),
         ['A'],
       );

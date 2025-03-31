@@ -119,9 +119,9 @@ class CombiningBuilder implements Builder {
         .join('\n\n');
     if (assets.isEmpty) return;
 
-    final inputLibrary = await buildStep.inputLibrary;
+    final inputLibrary = await buildStep.inputLibrary2;
     final outputId = buildStep.allowedOutputs.single;
-    final partOfUri = uriOfPartial(inputLibrary, buildStep.inputId, outputId);
+    final partOfUri = uriOfPartial2(inputLibrary, buildStep.inputId, outputId);
 
     // Ensure that the input has a correct `part` statement.
     final libraryUnit =
@@ -143,7 +143,7 @@ class CombiningBuilder implements Builder {
 
     final output = '''
 $defaultFileHeader
-${languageOverrideForLibrary(inputLibrary)}$ignoreForFile$preamble
+${languageOverrideForLibrary2(inputLibrary)}$ignoreForFile$preamble
 part of '$partOfUri';
 
 $assets

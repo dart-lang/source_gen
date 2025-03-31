@@ -60,6 +60,7 @@ class InvalidGenerationSource implements Exception {
   /// code, or if the location was passed with [element].
   final AstNode? node;
 
+  @deprecated
   InvalidGenerationSource(
     this.message, {
     this.todo = '',
@@ -74,15 +75,16 @@ class InvalidGenerationSource implements Exception {
     this.node,
   }) : element2 = element;
 
+  @deprecated
   Element? get element => element2?.asElement;
 
   @override
   String toString() {
     final buffer = StringBuffer(message);
 
-    if (element case final element?) {
+    if (element2 case final element2?) {
       try {
-        final span = spanForElement(element);
+        final span = spanForElement2(element2);
         buffer
           ..writeln()
           ..writeln(span.start.toolString)
@@ -92,7 +94,7 @@ class InvalidGenerationSource implements Exception {
         // associated source. We can still give the name.
         buffer
           ..writeln()
-          ..writeln('Cause: $element');
+          ..writeln('Cause: $element2');
       }
     }
 
