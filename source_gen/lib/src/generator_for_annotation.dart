@@ -39,7 +39,7 @@ import 'type_checker.dart';
 /// Elements which are not at the top level, such as the members of a class or
 /// extension, are not searched for annotations. To operate on, for instance,
 /// annotated fields of a class ensure that the class itself is annotated with
-/// [T] and use the [Element] to iterate over fields. The [TypeChecker] utility
+/// [T] and use the [Element2] to iterate over fields. The [TypeChecker] utility
 /// may be helpful to check which elements have a given annotation.
 abstract class GeneratorForAnnotation<T> extends Generator {
   final bool throwOnUnresolved;
@@ -74,13 +74,15 @@ abstract class GeneratorForAnnotation<T> extends Generator {
       typeChecker,
       throwOnUnresolved: throwOnUnresolved,
     )) {
-      var generatedValue = generateForAnnotatedElement(
-        annotatedElement.element,
+      var generatedValue = generateForAnnotatedElement2(
+        annotatedElement.element2,
         annotatedElement.annotation,
         buildStep,
       );
-      generatedValue ??= generateForAnnotatedElement2(
-        annotatedElement.element2,
+      generatedValue ??= generateForAnnotatedElement(
+        // Support "generateForAnnotatedElements" until it's removed.
+        // ignore: analyzer_use_new_elements
+        annotatedElement.element,
         annotatedElement.annotation,
         buildStep,
       );
@@ -110,6 +112,7 @@ abstract class GeneratorForAnnotation<T> extends Generator {
   ///
   /// Implementations should return `null` when no content is generated. Empty
   /// or whitespace-only [String] instances are also ignored.
+  @Deprecated('use generateForAnnotatedElement2 instead')
   dynamic generateForAnnotatedElement(
     Element element,
     ConstantReader annotation,

@@ -6,13 +6,13 @@
 @Timeout.factor(2.0)
 library;
 
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/src/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
-  late ClassElement example;
+  late ClassElement2 example;
 
   setUpAll(() async {
     const source = r'''
@@ -29,18 +29,18 @@ void main() {
     example = await resolveSource(
       source,
       (resolver) => resolver
-          .findLibraryByName('example')
-          .then((e) => e!.getClass('Example')!),
+          .findLibraryByName2('example')
+          .then((e) => e!.getClass2('Example')!),
     );
   });
 
   test('should return the name of a class type', () {
-    final classType = example.methods.first.returnType;
+    final classType = example.methods2.first.returnType;
     expect(typeNameOf(classType), 'ClassType');
   });
 
   test('should return the name of a function type', () {
-    final functionType = example.methods.last.returnType;
+    final functionType = example.methods2.last.returnType;
     expect(typeNameOf(functionType), 'FunctionType');
   });
 

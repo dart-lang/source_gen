@@ -30,6 +30,7 @@ class AnnotatedElement {
 
   const AnnotatedElement(this.annotation, this.element2);
 
+  @Deprecated('use element2 instead')
   Element get element => element2.asElement!;
 
   Metadata? get metadata2 {
@@ -40,17 +41,20 @@ class AnnotatedElement {
   }
 }
 
-/// A high-level wrapper API with common functionality for [LibraryElement].
+/// A high-level wrapper API with common functionality for [LibraryElement2].
 class LibraryReader {
   final LibraryElement2 element2;
 
+  @Deprecated('use v2 instead')
   LibraryReader(LibraryElement element) : this.v2(element.asElement2);
 
   LibraryReader.v2(this.element2);
 
+  @Deprecated('use element2 instead')
   LibraryElement get element => element2.asElement;
 
   /// All of the declarations in this library.
+  @Deprecated('use allElements2 instead')
   Iterable<Element> get allElements => [
         element,
         ...element.topLevelElements,
@@ -63,6 +67,7 @@ class LibraryReader {
   Iterable<Element2> get allElements2 => [element2, ...element2.children2];
 
   /// All of the elements representing classes in this library.
+  @Deprecated('use classes2 instead')
   Iterable<ClassElement> get classes =>
       element.units.expand((cu) => cu.classes);
 
@@ -70,6 +75,7 @@ class LibraryReader {
   Iterable<ClassElement2> get classes2 => element2.classes;
 
   /// All of the elements representing enums in this library.
+  @Deprecated('use enums2 instead')
   Iterable<EnumElement> get enums => element.units.expand((cu) => cu.enums);
 
   /// All of the elements representing enums in this library.
@@ -80,19 +86,14 @@ class LibraryReader {
     TypeChecker checker, {
     bool throwOnUnresolved = true,
   }) sync* {
-    for (final element in allElements) {
-      final annotation = checker.firstAnnotationOf(
+    for (final element in allElements2) {
+      final annotation = checker.firstAnnotationOf2(
         element,
         throwOnUnresolved: throwOnUnresolved,
       );
 
-      final element2 = element.asElement2;
-      if (element2 == null) {
-        return;
-      }
-
       if (annotation != null) {
-        yield AnnotatedElement(ConstantReader(annotation), element2);
+        yield AnnotatedElement(ConstantReader(annotation), element);
       }
     }
   }
@@ -126,13 +127,13 @@ class LibraryReader {
     TypeChecker checker, {
     bool throwOnUnresolved = true,
   }) sync* {
-    for (final element in allElements) {
-      final annotation = checker.firstAnnotationOfExact(
+    for (final element in allElements2) {
+      final annotation = checker.firstAnnotationOfExact2(
         element,
         throwOnUnresolved: throwOnUnresolved,
       );
       if (annotation != null) {
-        yield AnnotatedElement(ConstantReader(annotation), element.asElement2!);
+        yield AnnotatedElement(ConstantReader(annotation), element);
       }
     }
   }
@@ -147,12 +148,12 @@ class LibraryReader {
     return type is ClassElement ? type : null;
   }
 
-  /// Returns a top-level [ClassElement] publicly visible in by [name].
+  /// Returns a top-level [ClassElement2] publicly visible in by [name].
   ///
-  /// Unlike [LibraryElement.getClass], this also correctly traverses
+  /// Unlike `LibraryElement2.getClass`, this also correctly traverses
   /// identifiers that are accessible via one or more `export` directives.
   ClassElement2? findType2(String name) {
-    final type = element.exportNamespace.get2(name);
+    final type = element2.exportNamespace.get2(name);
     return type is ClassElement2 ? type : null;
   }
 
@@ -166,6 +167,7 @@ class LibraryReader {
   ///
   /// This is a typed convenience function for using [pathToUrl], and the same
   /// API restrictions hold around supported schemes and relative paths.
+  @Deprecated('use pathToElement2 instead')
   Uri pathToElement(Element element) => pathToUrl(element.source!.uri);
 
   /// Returns a [Uri] from the current library to the target [element].
@@ -210,7 +212,7 @@ class LibraryReader {
       if (to.pathSegments.length > 1 && to.pathSegments[1] == 'lib') {
         return assetToPackageUrl(to);
       }
-      var from = element.source.uri;
+      var from = element2.uri;
       // Normalize (convert to an asset: URL).
       from = normalizeUrl(from);
       if (_isRelative(from, to)) {

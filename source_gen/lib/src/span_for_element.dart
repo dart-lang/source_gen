@@ -20,6 +20,7 @@ import 'utils.dart';
 ///
 /// Not all results from the analyzer API may return source information as part
 /// of the element, so [file] may need to be manually provided in those cases.
+@Deprecated('use spanForElement2 instead')
 SourceSpan spanForElement(Element element, [SourceFile? file]) {
   final url = assetToPackageUrl(element.source!.uri);
   if (file == null) {

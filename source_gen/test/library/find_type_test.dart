@@ -39,11 +39,11 @@ void main() {
   });
 
   test('class count', () {
-    expect(library.classes.map((c) => c.name), ['Example', 'PartClass']);
+    expect(library.classes2.map((c) => c.name3), ['Example', 'PartClass']);
   });
 
   test('enum count', () {
-    expect(library.enums.map((e) => e.name), ['Enum', 'PartEnum']);
+    expect(library.enums2.map((e) => e.name3), ['Enum', 'PartEnum']);
   });
 
   test('should return a type not exported', () {

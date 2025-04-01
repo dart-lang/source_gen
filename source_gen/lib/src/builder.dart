@@ -7,8 +7,6 @@ import 'dart:convert';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/element2.dart';
-// ignore: implementation_imports
-import 'package:analyzer/src/utilities/extensions/element.dart';
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:pub_semver/pub_semver.dart';
@@ -114,7 +112,6 @@ class _Builder extends Builder {
     LibraryElement2 library2,
     BuildStep buildStep,
   ) async {
-    final library = library2.asElement;
     final generatedOutputs =
         await _generate(library2, _generators, buildStep).toList();
 
@@ -133,12 +130,12 @@ class _Builder extends Builder {
 
     if (!_isLibraryBuilder) {
       final asset = buildStep.inputId;
-      final partOfUri = uriOfPartial(library, asset, outputId);
+      final partOfUri = uriOfPartial2(library2, asset, outputId);
       contentBuffer.writeln();
 
       if (this is PartBuilder) {
         contentBuffer
-          ..write(languageOverrideForLibrary(library))
+          ..write(languageOverrideForLibrary2(library2))
           ..writeln('part of \'$partOfUri\';');
         final part = computePartUrl(buildStep.inputId, outputId);
 
@@ -181,12 +178,12 @@ class _Builder extends Builder {
 
     try {
       genPartContent =
-          formatOutput(genPartContent, library.languageVersion.effective);
+          formatOutput(genPartContent, library2.languageVersion.effective);
     } catch (e, stack) {
       log.severe(
         '''
 An error `${e.runtimeType}` occurred while formatting the generated source for
-  `${library.identifier}`
+  `${library2.identifier}`
 which was output to
   `${outputId.path}`.
 This may indicate an issue in the generator, the input source code, or in the
@@ -428,7 +425,15 @@ const partIdRegExpLiteral = r'[A-Za-z_\d-]+';
 
 final _partIdRegExp = RegExp('^$partIdRegExpLiteral\$');
 
+@Deprecated('Use languageOverrideForLibrary2 instead')
 String languageOverrideForLibrary(LibraryElement library) {
+  final override = library.languageVersion.override;
+  return override == null
+      ? ''
+      : '// @dart=${override.major}.${override.minor}\n';
+}
+
+String languageOverrideForLibrary2(LibraryElement2 library) {
   final override = library.languageVersion.override;
   return override == null
       ? ''

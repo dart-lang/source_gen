@@ -58,11 +58,12 @@ void main() {
           const Super() : super(aString: 'Super Hello');
         }
       ''',
-        (resolver) async => (await resolver.findLibraryByName('test_lib'))!,
+        (resolver) async => (await resolver.findLibraryByName2('test_lib'))!,
       );
       constants = library
-          .getClass('Example')!
-          .metadata
+          .getClass2('Example')!
+          .metadata2
+          .annotations
           .map((e) => ConstantReader(e.computeConstantValue()!))
           .toList();
     });
@@ -297,11 +298,12 @@ void main() {
 
         void _privateFunction() {}
       ''',
-        (resolver) async => (await resolver.findLibraryByName('test_lib'))!,
+        (resolver) async => (await resolver.findLibraryByName2('test_lib'))!,
       );
       constants = library
-          .getClass('Example')!
-          .metadata
+          .getClass2('Example')!
+          .metadata2
+          .annotations
           .map((e) => ConstantReader(e.computeConstantValue()))
           .toList();
     });

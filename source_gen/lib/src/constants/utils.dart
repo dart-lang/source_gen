@@ -32,7 +32,7 @@ void assertHasField(InterfaceElement root, String name) {
 
 /// Throws a [FormatException] if [root] does not have a given field [name].
 ///
-/// Super types [InterfaceElement.supertype] are also checked before throwing.
+/// Super types [InterfaceElement2.supertype] are also checked before throwing.
 void assertHasField2(InterfaceElement2 root, String name) {
   InterfaceElement2? element = root;
   while (element != null) {

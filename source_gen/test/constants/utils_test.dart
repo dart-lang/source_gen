@@ -3,14 +3,14 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/src/constants/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('assertHasField', () {
-    late LibraryElement testLib;
+    late LibraryElement2 testLib;
 
     setUpAll(() async {
       testLib = await resolveSource(
@@ -29,26 +29,26 @@ void main() {
             String c;
           }
           ''',
-        (resolver) async => (await resolver.findLibraryByName('test_lib'))!,
+        (resolver) async => (await resolver.findLibraryByName2('test_lib'))!,
       );
     });
 
     test('should not throw when a class contains a field', () {
-      final $A = testLib.getClass('A')!;
+      final $A = testLib.getClass2('A')!;
       // ignore: deprecated_member_use_from_same_package
-      expect(() => assertHasField($A, 'a'), returnsNormally);
+      expect(() => assertHasField2($A, 'a'), returnsNormally);
     });
 
     test('should not throw when a super class contains a field', () {
-      final $B = testLib.getClass('B')!;
+      final $B = testLib.getClass2('B')!;
       // ignore: deprecated_member_use_from_same_package
-      expect(() => assertHasField($B, 'a'), returnsNormally);
+      expect(() => assertHasField2($B, 'a'), returnsNormally);
     });
 
     test('should throw when a class does not contain a field', () {
-      final $C = testLib.getClass('C')!;
+      final $C = testLib.getClass2('C')!;
       // ignore: deprecated_member_use_from_same_package
-      expect(() => assertHasField($C, 'a'), throwsFormatException);
+      expect(() => assertHasField2($C, 'a'), throwsFormatException);
     });
   });
 
@@ -83,11 +83,12 @@ void main() {
             const C(this.c);
           }
           ''',
-        (resolver) async => (await resolver.findLibraryByName('test_lib'))!,
+        (resolver) async => (await resolver.findLibraryByName2('test_lib'))!,
       );
       objects = testLib
-          .getClass('Example')!
-          .metadata
+          .getClass2('Example')!
+          .metadata2
+          .annotations
           .map((e) => e.computeConstantValue()!)
           .toList();
     });
