@@ -23,7 +23,7 @@ void main() {
 
   group('from a package URL to', () {
     setUpAll(() {
-      reader = LibraryReader.v2(_FakeLibraryElement(packageA));
+      reader = LibraryReader(_FakeLibraryElement(packageA));
     });
 
     test('a dart SDK library', () {
@@ -61,7 +61,7 @@ void main() {
 
   group('from an asset URL representing a package to', () {
     setUpAll(() {
-      reader = LibraryReader.v2(_FakeLibraryElement(assetPackageA));
+      reader = LibraryReader(_FakeLibraryElement(assetPackageA));
     });
 
     test('a dart SDK library', () {
@@ -99,7 +99,7 @@ void main() {
 
   group('from an asset URL representing a test directory to', () {
     setUpAll(() {
-      reader = LibraryReader.v2(_FakeLibraryElement(packageATestDir));
+      reader = LibraryReader(_FakeLibraryElement(packageATestDir));
     });
 
     test('a dart SDK library', () {
@@ -142,7 +142,7 @@ void main() {
     });
 
     test('in the same package in the test directory, a shallow file', () {
-      reader = LibraryReader.v2(_FakeLibraryElement(packageATestDirDeepFile));
+      reader = LibraryReader(_FakeLibraryElement(packageATestDirDeepFile));
       expect(reader.pathToUrl(packageATestDir), Uri.parse('../../../a.dart'));
     });
 

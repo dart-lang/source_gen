@@ -4,7 +4,6 @@
 
 import 'dart:async';
 
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 
@@ -74,14 +73,12 @@ abstract class GeneratorForAnnotation<T> extends Generator {
       typeChecker,
       throwOnUnresolved: throwOnUnresolved,
     )) {
-      var generatedValue = generateForAnnotatedElement2(
-        annotatedElement.element2,
+      var generatedValue = generateForAnnotatedElement(
+        annotatedElement.element,
         annotatedElement.annotation,
         buildStep,
       );
-      generatedValue ??= generateForAnnotatedElement(
-        // Support "generateForAnnotatedElements" until it's removed.
-        // ignore: analyzer_use_new_elements
+      generatedValue ??= generateForAnnotatedElement2(
         annotatedElement.element,
         annotatedElement.annotation,
         buildStep,
@@ -112,9 +109,8 @@ abstract class GeneratorForAnnotation<T> extends Generator {
   ///
   /// Implementations should return `null` when no content is generated. Empty
   /// or whitespace-only [String] instances are also ignored.
-  @Deprecated('use generateForAnnotatedElement2 instead')
   dynamic generateForAnnotatedElement(
-    Element element,
+    Element2 element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) {}
@@ -136,6 +132,7 @@ abstract class GeneratorForAnnotation<T> extends Generator {
   ///
   /// Implementations should return `null` when no content is generated. Empty
   /// or whitespace-only [String] instances are also ignored.
+  @Deprecated('use generateForAnnotatedElement instead')
   dynamic generateForAnnotatedElement2(
     Element2 element,
     ConstantReader annotation,

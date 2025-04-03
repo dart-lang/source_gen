@@ -268,7 +268,7 @@ class _StubGenerator<T> extends GeneratorForAnnotation<T> {
       directiveBehavior(directive);
 
   @override
-  Object? generateForAnnotatedElement2(
+  Object? generateForAnnotatedElement(
     Element2 element,
     ConstantReader annotation,
     BuildStep buildStep,

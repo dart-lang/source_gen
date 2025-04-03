@@ -5,7 +5,6 @@
 import 'dart:convert';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
@@ -130,12 +129,12 @@ class _Builder extends Builder {
 
     if (!_isLibraryBuilder) {
       final asset = buildStep.inputId;
-      final partOfUri = uriOfPartial2(library2, asset, outputId);
+      final partOfUri = uriOfPartial(library2, asset, outputId);
       contentBuffer.writeln();
 
       if (this is PartBuilder) {
         contentBuffer
-          ..write(languageOverrideForLibrary2(library2))
+          ..write(languageOverrideForLibrary(library2))
           ..writeln('part of \'$partOfUri\';');
         final part = computePartUrl(buildStep.inputId, outputId);
 
@@ -358,7 +357,7 @@ Stream<GeneratedOutput> _generate(
   List<Generator> generators,
   BuildStep buildStep,
 ) async* {
-  final libraryReader = LibraryReader.v2(library2);
+  final libraryReader = LibraryReader(library2);
   for (var i = 0; i < generators.length; i++) {
     final gen = generators[i];
     var msg = 'Running $gen';
@@ -425,20 +424,16 @@ const partIdRegExpLiteral = r'[A-Za-z_\d-]+';
 
 final _partIdRegExp = RegExp('^$partIdRegExpLiteral\$');
 
-@Deprecated('Use languageOverrideForLibrary2 instead')
-String languageOverrideForLibrary(LibraryElement library) {
+String languageOverrideForLibrary(LibraryElement2 library) {
   final override = library.languageVersion.override;
   return override == null
       ? ''
       : '// @dart=${override.major}.${override.minor}\n';
 }
 
-String languageOverrideForLibrary2(LibraryElement2 library) {
-  final override = library.languageVersion.override;
-  return override == null
-      ? ''
-      : '// @dart=${override.major}.${override.minor}\n';
-}
+@Deprecated('Use languageOverrideForLibrary instead')
+String languageOverrideForLibrary2(LibraryElement2 library) =>
+    languageOverrideForLibrary(library);
 
 /// A comment configuring `dart_style` to use the default code width so no
 /// configuration discovery is required.

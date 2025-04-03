@@ -15,15 +15,14 @@ class CommentGenerator extends Generator {
   Future<String> generate(LibraryReader library, _) async {
     final output = <String>[];
     if (forLibrary) {
-      var name = library.element2.name3!;
+      var name = library.element.name3!;
       if (name.isEmpty) {
-        name = library.element2.uri.pathSegments.last;
+        name = library.element.uri.pathSegments.last;
       }
       output.add('// Code for "$name"');
     }
     if (forClasses) {
-      for (var classElement
-          in library.allElements2.whereType<ClassElement2>()) {
+      for (var classElement in library.allElements.whereType<ClassElement2>()) {
         if (classElement.displayName.contains('GoodError')) {
           throw InvalidGenerationSourceError.v2(
             "Don't use classes with the word 'Error' in the name",
@@ -42,6 +41,6 @@ class CommentGenerator extends Generator {
 class DeprecatedGeneratorForAnnotation
     extends GeneratorForAnnotation<Deprecated> {
   @override
-  String generateForAnnotatedElement2(Element2 element, _, __) =>
+  String generateForAnnotatedElement(Element2 element, _, __) =>
       '// "$element" is deprecated!';
 }

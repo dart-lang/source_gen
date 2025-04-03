@@ -5,7 +5,6 @@
 import 'dart:io';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
@@ -45,13 +44,13 @@ bool hasExpectedPartDirective(CompilationUnit unit, String part) =>
         .any((e) => e.uri.stringValue == part);
 
 /// Returns a uri suitable for `part of "..."` when pointing to [element].
-@Deprecated('use uriOfPartial2 instead')
-String uriOfPartial(LibraryElement element, AssetId source, AssetId output) {
+String uriOfPartial(LibraryElement2 element, AssetId source, AssetId output) {
   assert(source.package == output.package);
   return p.url.relative(source.path, from: p.url.dirname(output.path));
 }
 
 /// Returns a uri suitable for `part of "..."` when pointing to [element].
+@Deprecated('use uriOfPartial instead')
 String uriOfPartial2(LibraryElement2 element, AssetId source, AssetId output) {
   assert(source.package == output.package);
   return p.url.relative(source.path, from: p.url.dirname(output.path));
@@ -65,15 +64,15 @@ String computePartUrl(AssetId input, AssetId output) => p.url.joinAll(
     );
 
 /// Returns a URL representing [element].
-@Deprecated('use urlOfElement2 instead')
-String urlOfElement(Element element) => element.kind == ElementKind.DYNAMIC
+String urlOfElement(Element2 element) => element.kind == ElementKind.DYNAMIC
     ? 'dart:core#dynamic'
     // using librarySource.uri – in case the element is in a part
-    : normalizeUrl(element.librarySource!.uri)
-        .replace(fragment: element.name)
+    : normalizeUrl(element.library2!.uri)
+        .replace(fragment: element.name3)
         .toString();
 
 /// Returns a URL representing [element].
+@Deprecated('use urlOfElement instead')
 String urlOfElement2(Element2 element) => element.kind == ElementKind.DYNAMIC
     ? 'dart:core#dynamic'
     // using librarySource.uri – in case the element is in a part

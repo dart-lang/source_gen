@@ -36,19 +36,19 @@ void main() {
     test('should not throw when a class contains a field', () {
       final $A = testLib.getClass2('A')!;
       // ignore: deprecated_member_use_from_same_package
-      expect(() => assertHasField2($A, 'a'), returnsNormally);
+      expect(() => assertHasField($A, 'a'), returnsNormally);
     });
 
     test('should not throw when a super class contains a field', () {
       final $B = testLib.getClass2('B')!;
       // ignore: deprecated_member_use_from_same_package
-      expect(() => assertHasField2($B, 'a'), returnsNormally);
+      expect(() => assertHasField($B, 'a'), returnsNormally);
     });
 
     test('should throw when a class does not contain a field', () {
       final $C = testLib.getClass2('C')!;
       // ignore: deprecated_member_use_from_same_package
-      expect(() => assertHasField2($C, 'a'), throwsFormatException);
+      expect(() => assertHasField($C, 'a'), throwsFormatException);
     });
   });
 

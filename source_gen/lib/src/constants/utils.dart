@@ -3,37 +3,12 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/element2.dart';
 
 /// Throws a [FormatException] if [root] does not have a given field [name].
 ///
-/// Super types [InterfaceElement.supertype] are also checked before throwing.
-@Deprecated('Use assertHasField2() instead')
-void assertHasField(InterfaceElement root, String name) {
-  InterfaceElement? element = root;
-  while (element != null) {
-    final field = element.getField(name);
-    if (field != null) {
-      return;
-    }
-    element = element.supertype?.element;
-  }
-  final allFields = {
-    ...root.fields,
-    for (var t in root.allSupertypes) ...t.element.fields,
-  };
-
-  throw FormatException(
-    'Class ${root.name} does not have field "$name".',
-    'Fields: \n  - ${allFields.map((e) => e.name).join('\n  - ')}',
-  );
-}
-
-/// Throws a [FormatException] if [root] does not have a given field [name].
-///
 /// Super types [InterfaceElement2.supertype] are also checked before throwing.
-void assertHasField2(InterfaceElement2 root, String name) {
+void assertHasField(InterfaceElement2 root, String name) {
   InterfaceElement2? element = root;
   while (element != null) {
     final field = element.getField2(name);
@@ -52,6 +27,13 @@ void assertHasField2(InterfaceElement2 root, String name) {
     'Fields: \n  - ${allFields.map((e) => e.name3).join('\n  - ')}',
   );
 }
+
+/// Throws a [FormatException] if [root] does not have a given field [name].
+///
+/// Super types [InterfaceElement2.supertype] are also checked before throwing.
+@Deprecated('Use assertHasField() instead')
+void assertHasField2(InterfaceElement2 root, String name) =>
+    assertHasField(root, name);
 
 /// Returns whether or not [object] is or represents a `null` value.
 bool isNullLike(DartObject? object) => object?.isNull != false;

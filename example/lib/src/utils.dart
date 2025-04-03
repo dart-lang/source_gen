@@ -8,7 +8,7 @@ import 'package:source_gen/source_gen.dart';
 /// Returns all [TopLevelVariableElement2] members in [reader]'s library that
 /// have a type of [num].
 Iterable<TopLevelVariableElement2> topLevelNumVariables(LibraryReader reader) =>
-    reader.allElements2.whereType<TopLevelVariableElement2>().where(
+    reader.allElements.whereType<TopLevelVariableElement2>().where(
           (element) =>
               element.type.isDartCoreNum ||
               element.type.isDartCoreInt ||
