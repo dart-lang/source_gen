@@ -13,7 +13,7 @@ class MemberCountLibraryGenerator extends Generator {
     final topLevelVarCount = topLevelNumVariables(library).length;
 
     return '''
-// Source library: ${library.element2.uri}
+// Source library: ${library.element.uri}
 const topLevelNumVarCount = $topLevelVarCount;
 ''';
   }

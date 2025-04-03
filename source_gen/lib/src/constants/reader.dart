@@ -268,7 +268,7 @@ class _DartObjectConstant extends ConstantReader {
   ConstantReader read(String field) {
     final reader = peek(field);
     if (reader == null) {
-      assertHasField2(objectValue.type!.element3 as InterfaceElement2, field);
+      assertHasField(objectValue.type!.element3 as InterfaceElement2, field);
       return const _NullConstant();
     }
     return reader;

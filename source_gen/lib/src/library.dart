@@ -2,10 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/element2.dart';
-// ignore: implementation_imports
-import 'package:analyzer/src/utilities/extensions/element.dart';
 import 'package:build/build.dart';
 import 'package:path/path.dart' as p;
 
@@ -26,15 +23,15 @@ class AnnotatedDirective {
 /// Result of finding an [annotation] on [element] through [LibraryReader].
 class AnnotatedElement {
   final ConstantReader annotation;
-  final Element2 element2;
+  final Element2 element;
 
-  const AnnotatedElement(this.annotation, this.element2);
+  const AnnotatedElement(this.annotation, this.element);
 
-  @Deprecated('use element2 instead')
-  Element get element => element2.asElement!;
+  @Deprecated('use element instead')
+  Element2 get element2 => element;
 
   Metadata? get metadata2 {
-    if (element2 case final Annotatable annotatable) {
+    if (element case final Annotatable annotatable) {
       return annotatable.metadata2;
     }
     return null;
@@ -43,51 +40,44 @@ class AnnotatedElement {
 
 /// A high-level wrapper API with common functionality for [LibraryElement2].
 class LibraryReader {
-  final LibraryElement2 element2;
+  final LibraryElement2 element;
 
-  @Deprecated('use v2 instead')
-  LibraryReader(LibraryElement element) : this.v2(element.asElement2);
+  LibraryReader(this.element);
 
-  LibraryReader.v2(this.element2);
+  @Deprecated('use the default constructor instead')
+  LibraryReader.v2(this.element);
 
-  @Deprecated('use element2 instead')
-  LibraryElement get element => element2.asElement;
-
-  /// All of the declarations in this library.
-  @Deprecated('use allElements2 instead')
-  Iterable<Element> get allElements => [
-        element,
-        ...element.topLevelElements,
-        ...element.definingCompilationUnit.libraryImports,
-        ...element.definingCompilationUnit.libraryExports,
-        ...element.definingCompilationUnit.parts,
-      ];
+  @Deprecated('use element instead')
+  LibraryElement2 get element2 => element;
 
   /// All of the declarations in this library.
-  Iterable<Element2> get allElements2 => [element2, ...element2.children2];
+  Iterable<Element2> get allElements => [element, ...element.children2];
+
+  /// All of the declarations in this library.
+  @Deprecated('use allElements instead')
+  Iterable<Element2> get allElements2 => allElements;
 
   /// All of the elements representing classes in this library.
-  @Deprecated('use classes2 instead')
-  Iterable<ClassElement> get classes =>
-      element.units.expand((cu) => cu.classes);
+  Iterable<ClassElement2> get classes => element.classes;
 
   /// All of the elements representing classes in this library.
-  Iterable<ClassElement2> get classes2 => element2.classes;
+  @Deprecated('use classes instead')
+  Iterable<ClassElement2> get classes2 => classes;
 
   /// All of the elements representing enums in this library.
-  @Deprecated('use enums2 instead')
-  Iterable<EnumElement> get enums => element.units.expand((cu) => cu.enums);
+  Iterable<EnumElement2> get enums => element.enums;
 
   /// All of the elements representing enums in this library.
-  Iterable<EnumElement2> get enums2 => element2.enums;
+  @Deprecated('use enums instead')
+  Iterable<EnumElement2> get enums3 => enums;
 
   /// All of the declarations in this library annotated with [checker].
   Iterable<AnnotatedElement> annotatedWith(
     TypeChecker checker, {
     bool throwOnUnresolved = true,
   }) sync* {
-    for (final element in allElements2) {
-      final annotation = checker.firstAnnotationOf2(
+    for (final element in allElements) {
+      final annotation = checker.firstAnnotationOf(
         element,
         throwOnUnresolved: throwOnUnresolved,
       );
@@ -103,7 +93,7 @@ class LibraryReader {
     TypeChecker checker, {
     bool throwOnUnresolved = true,
   }) sync* {
-    final firstFragment = element2.firstFragment;
+    final firstFragment = element.firstFragment;
     final directives = [
       ...firstFragment.libraryImports2,
       ...firstFragment.libraryExports2,
@@ -111,7 +101,7 @@ class LibraryReader {
     ];
 
     for (final directive in directives) {
-      final annotation = checker.firstAnnotationOf2(
+      final annotation = checker.firstAnnotationOf(
         directive,
         throwOnUnresolved: throwOnUnresolved,
       );
@@ -127,8 +117,8 @@ class LibraryReader {
     TypeChecker checker, {
     bool throwOnUnresolved = true,
   }) sync* {
-    for (final element in allElements2) {
-      final annotation = checker.firstAnnotationOfExact2(
+    for (final element in allElements) {
+      final annotation = checker.firstAnnotationOfExact(
         element,
         throwOnUnresolved: throwOnUnresolved,
       );
@@ -138,24 +128,21 @@ class LibraryReader {
     }
   }
 
-  /// Returns a top-level [ClassElement] publicly visible in by [name].
+  /// Returns a top-level [ClassElement2] publicly visible in by [name].
   ///
-  /// Unlike [LibraryElement.getClass], this also correctly traverses
+  /// Unlike [LibraryElement2.getClass2], this also correctly traverses
   /// identifiers that are accessible via one or more `export` directives.
-  @Deprecated('Use findType2() instead')
-  ClassElement? findType(String name) {
-    final type = element.exportNamespace.get(name);
-    return type is ClassElement ? type : null;
+  ClassElement2? findType(String name) {
+    final type = element.exportNamespace.get2(name);
+    return type is ClassElement2 ? type : null;
   }
 
   /// Returns a top-level [ClassElement2] publicly visible in by [name].
   ///
   /// Unlike `LibraryElement2.getClass`, this also correctly traverses
   /// identifiers that are accessible via one or more `export` directives.
-  ClassElement2? findType2(String name) {
-    final type = element2.exportNamespace.get2(name);
-    return type is ClassElement2 ? type : null;
-  }
+  @Deprecated('Use findType() instead')
+  ClassElement2? findType2(String name) => findType(name);
 
   /// Returns a [Uri] from the current library to the target [asset].
   ///
@@ -167,15 +154,15 @@ class LibraryReader {
   ///
   /// This is a typed convenience function for using [pathToUrl], and the same
   /// API restrictions hold around supported schemes and relative paths.
-  @Deprecated('use pathToElement2 instead')
-  Uri pathToElement(Element element) => pathToUrl(element.source!.uri);
+  Uri pathToElement(Element2 element) =>
+      pathToUrl(element.firstFragment.libraryFragment!.source.uri);
 
   /// Returns a [Uri] from the current library to the target [element].
   ///
   /// This is a typed convenience function for using [pathToUrl], and the same
   /// API restrictions hold around supported schemes and relative paths.
-  Uri pathToElement2(Element2 element) =>
-      pathToUrl(element.firstFragment.libraryFragment!.source.uri);
+  @Deprecated('use pathToElement instead')
+  Uri pathToElement2(Element2 element) => pathToElement(element);
 
   /// Returns a [Uri] from the current library to the one provided.
   ///
@@ -212,7 +199,7 @@ class LibraryReader {
       if (to.pathSegments.length > 1 && to.pathSegments[1] == 'lib') {
         return assetToPackageUrl(to);
       }
-      var from = element2.uri;
+      var from = element.uri;
       // Normalize (convert to an asset: URL).
       from = normalizeUrl(from);
       if (_isRelative(from, to)) {

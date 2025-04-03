@@ -28,7 +28,7 @@ void main() {
       export 'type_checker_test.dart' show NonPublic;
     ''',
       (resolver) async {
-        thisTest = LibraryReader.v2(
+        thisTest = LibraryReader(
           await resolver.libraryFor2(
             AssetId('source_gen', 'test/external_only_type_checker_test.dart'),
           ),
@@ -37,7 +37,7 @@ void main() {
       inputId: AssetId('source_gen', 'test/example.dart'),
     );
 
-    staticNonPublic = thisTest.findType2('NonPublic')!.instantiate(
+    staticNonPublic = thisTest.findType('NonPublic')!.instantiate(
       typeArguments: const [],
       nullabilitySuffix: NullabilitySuffix.none,
     );

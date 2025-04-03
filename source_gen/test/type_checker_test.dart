@@ -57,7 +57,7 @@ void main() {
       (resolver) async {
         core = (await resolver.findLibraryByName2('dart.core'))!;
         collection = (await resolver.findLibraryByName2('dart.collection'))!;
-        sourceGen = LibraryReader.v2(
+        sourceGen = LibraryReader(
           await resolver.libraryFor2(
             AssetId('source_gen', 'lib/source_gen.dart'),
           ),
@@ -131,13 +131,13 @@ void main() {
       nullabilitySuffix: NullabilitySuffix.none,
     );
 
-    staticGenerator = sourceGen.findType2('Generator')!.instantiate(
+    staticGenerator = sourceGen.findType('Generator')!.instantiate(
       typeArguments: [],
       nullabilitySuffix: NullabilitySuffix.none,
     );
     staticGeneratorChecker = TypeChecker.fromStatic(staticGenerator);
     staticGeneratorForAnnotation =
-        sourceGen.findType2('GeneratorForAnnotation')!.instantiate(
+        sourceGen.findType('GeneratorForAnnotation')!.instantiate(
       typeArguments: [core.typeProvider.dynamicType],
       nullabilitySuffix: NullabilitySuffix.none,
     );
@@ -201,7 +201,7 @@ void main() {
       () {
         test('should equal MapMixin class', () {
           expect(checkMapMixin().isExactlyType(staticMapMixin), isTrue);
-          expect(checkMapMixin().isExactly2(staticMapMixin.element3), isTrue);
+          expect(checkMapMixin().isExactly(staticMapMixin.element3), isTrue);
         });
       },
       onPlatform: const {
@@ -371,7 +371,7 @@ void main() {
     const $deprecated = TypeChecker.fromRuntime(Deprecated);
 
     expect(
-      () => $deprecated.annotationsOf2(classX),
+      () => $deprecated.annotationsOf(classX),
       throwsA(
         const TypeMatcher<UnresolvedAnnotationException>().having(
           (e) => e.toString(),
@@ -463,35 +463,35 @@ void main() {
     });
 
     test('of a single @A', () {
-      expect($A.hasAnnotationOf2($ExampleOfA), isTrue);
-      final aAnnotation = $A.firstAnnotationOf2($ExampleOfA)!;
+      expect($A.hasAnnotationOf($ExampleOfA), isTrue);
+      final aAnnotation = $A.firstAnnotationOf($ExampleOfA)!;
       expect(aAnnotation.type!.element3!.name3, 'A');
-      expect($B.annotationsOf2($ExampleOfA), isEmpty);
-      expect($C.annotationsOf2($ExampleOfA), isEmpty);
+      expect($B.annotationsOf($ExampleOfA), isEmpty);
+      expect($C.annotationsOf($ExampleOfA), isEmpty);
     });
 
     test('of a multiple @A', () {
-      final aAnnotations = $A.annotationsOf2($ExampleOfMultiA);
+      final aAnnotations = $A.annotationsOf($ExampleOfMultiA);
       expect(aAnnotations.map((a) => a.type!.element3!.name3), ['A', 'A']);
-      expect($B.annotationsOf2($ExampleOfA), isEmpty);
-      expect($C.annotationsOf2($ExampleOfA), isEmpty);
+      expect($B.annotationsOf($ExampleOfA), isEmpty);
+      expect($C.annotationsOf($ExampleOfA), isEmpty);
     });
 
     test('of a single @A + single @B', () {
-      final aAnnotations = $A.annotationsOf2($ExampleOfAPlusB);
+      final aAnnotations = $A.annotationsOf($ExampleOfAPlusB);
       expect(aAnnotations.map((a) => a.type!.element3!.name3), ['A']);
-      final bAnnotations = $B.annotationsOf2($ExampleOfAPlusB);
+      final bAnnotations = $B.annotationsOf($ExampleOfAPlusB);
       expect(bAnnotations.map((a) => a.type!.element3!.name3), ['B']);
-      expect($C.annotationsOf2($ExampleOfAPlusB), isEmpty);
+      expect($C.annotationsOf($ExampleOfAPlusB), isEmpty);
     });
 
     test('of a single @B + single @C', () {
-      final cAnnotations = $C.annotationsOf2($ExampleOfBPlusC);
+      final cAnnotations = $C.annotationsOf($ExampleOfBPlusC);
       expect(cAnnotations.map((a) => a.type!.element3!.name3), ['C']);
-      final bAnnotations = $B.annotationsOf2($ExampleOfBPlusC);
+      final bAnnotations = $B.annotationsOf($ExampleOfBPlusC);
       expect(bAnnotations.map((a) => a.type!.element3!.name3), ['B', 'C']);
-      expect($B.hasAnnotationOfExact2($ExampleOfBPlusC), isTrue);
-      final bExact = $B.annotationsOfExact2($ExampleOfBPlusC);
+      expect($B.hasAnnotationOfExact($ExampleOfBPlusC), isTrue);
+      final bExact = $B.annotationsOfExact($ExampleOfBPlusC);
       expect(bExact.map((a) => a.type!.element3!.name3), ['B']);
     });
   });
@@ -534,35 +534,35 @@ void main() {
 
     test('should throw by default', () {
       expect(
-        () => $A.firstAnnotationOf2($ExampleOfA),
+        () => $A.firstAnnotationOf($ExampleOfA),
         throwsUnresolvedAnnotationException,
       );
       expect(
-        () => $A.annotationsOf2($ExampleOfA),
+        () => $A.annotationsOf($ExampleOfA),
         throwsUnresolvedAnnotationException,
       );
       expect(
-        () => $A.firstAnnotationOfExact2($ExampleOfA),
+        () => $A.firstAnnotationOfExact($ExampleOfA),
         throwsUnresolvedAnnotationException,
       );
       expect(
-        () => $A.annotationsOfExact2($ExampleOfA),
+        () => $A.annotationsOfExact($ExampleOfA),
         throwsUnresolvedAnnotationException,
       );
       expect(
-        () => $A.firstAnnotationOf2($annotatedParameter),
+        () => $A.firstAnnotationOf($annotatedParameter),
         throwsUnresolvedAnnotationException,
       );
       expect(
-        () => $A.annotationsOf2($annotatedParameter),
+        () => $A.annotationsOf($annotatedParameter),
         throwsUnresolvedAnnotationException,
       );
       expect(
-        () => $A.firstAnnotationOfExact2($annotatedParameter),
+        () => $A.firstAnnotationOfExact($annotatedParameter),
         throwsUnresolvedAnnotationException,
       );
       expect(
-        () => $A.annotationsOfExact2($annotatedParameter),
+        () => $A.annotationsOfExact($annotatedParameter),
         throwsUnresolvedAnnotationException,
       );
     });
@@ -570,7 +570,7 @@ void main() {
     test('should not throw if `throwOnUnresolved` == false', () {
       expect(
         $A
-            .firstAnnotationOf2($ExampleOfA, throwOnUnresolved: false)!
+            .firstAnnotationOf($ExampleOfA, throwOnUnresolved: false)!
             .type!
             .element3!
             .name3,
@@ -578,13 +578,13 @@ void main() {
       );
       expect(
         $A
-            .annotationsOf2($ExampleOfA, throwOnUnresolved: false)
+            .annotationsOf($ExampleOfA, throwOnUnresolved: false)
             .map((a) => a.type!.element3!.name3),
         ['A'],
       );
       expect(
         $A
-            .firstAnnotationOfExact2($ExampleOfA, throwOnUnresolved: false)!
+            .firstAnnotationOfExact($ExampleOfA, throwOnUnresolved: false)!
             .type!
             .element3!
             .name3,
@@ -592,7 +592,7 @@ void main() {
       );
       expect(
         $A
-            .annotationsOfExact2($ExampleOfA, throwOnUnresolved: false)
+            .annotationsOfExact($ExampleOfA, throwOnUnresolved: false)
             .map((a) => a.type!.element3!.name3),
         ['A'],
       );

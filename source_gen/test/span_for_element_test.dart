@@ -39,7 +39,7 @@ abstract class Example implements List {
 
   test('should highlight the use of "class Example"', () async {
     expect(
-      spanForElement2(library.getClass2('Example')!).message('Here it is'),
+      spanForElement(library.getClass2('Example')!).message('Here it is'),
       r"""
 line 3, column 16 of package:test_lib/test_lib.dart: Here it is
   ,
@@ -51,7 +51,7 @@ line 3, column 16 of package:test_lib/test_lib.dart: Here it is
 
   test('should correctly highlight getter', () async {
     expect(
-      spanForElement2(library.getClass2('Example')!.getField2('getter')!)
+      spanForElement(library.getClass2('Example')!.getField2('getter')!)
           .message('Here it is'),
       r"""
 line 4, column 15 of package:test_lib/test_lib.dart: Here it is
@@ -64,7 +64,7 @@ line 4, column 15 of package:test_lib/test_lib.dart: Here it is
 
   test('should correctly highlight setter', () async {
     expect(
-      spanForElement2(library.getClass2('Example')!.getField2('setter')!)
+      spanForElement(library.getClass2('Example')!.getField2('setter')!)
           .message('Here it is'),
       r"""
 line 5, column 7 of package:test_lib/test_lib.dart: Here it is
@@ -77,7 +77,7 @@ line 5, column 7 of package:test_lib/test_lib.dart: Here it is
 
   test('should correctly highlight field', () async {
     expect(
-      spanForElement2(library.getClass2('Example')!.getField2('field')!)
+      spanForElement(library.getClass2('Example')!.getField2('field')!)
           .message('Here it is'),
       r"""
 line 6, column 7 of package:test_lib/test_lib.dart: Here it is
@@ -90,7 +90,7 @@ line 6, column 7 of package:test_lib/test_lib.dart: Here it is
 
   test('highlight getter with getter/setter property', () async {
     expect(
-      spanForElement2(library.getClass2('Example')!.getField2('fieldProp')!)
+      spanForElement(library.getClass2('Example')!.getField2('fieldProp')!)
           .message('Here it is'),
       r"""
 line 7, column 11 of package:test_lib/test_lib.dart: Here it is

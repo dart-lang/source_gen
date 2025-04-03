@@ -33,7 +33,7 @@ Revivable reviveInstance(DartObject object, [LibraryElement2? origin]) {
     }
   }
   origin ??= element!.library2;
-  var url = Uri.parse(urlOfElement2(element!));
+  var url = Uri.parse(urlOfElement(element!));
   if (element is TopLevelFunctionElement || element is LocalFunctionElement) {
     return Revivable._(source: url.removeFragment(), accessor: element.name3!);
   }
@@ -67,8 +67,9 @@ Revivable reviveInstance(DartObject object, [LibraryElement2? origin]) {
   }
 
   for (final type in origin!.classes) {
-    for (final e in type.fields2
-        .where((f) => f.isConst && f.computeConstantValue() == object)) {
+    for (final e in type.fields2.where(
+      (f) => f.isConst && f.computeConstantValue() == object,
+    )) {
       final result = Revivable._(
         source: url.removeFragment(),
         accessor: '${type.name3}.${e.name3}',
@@ -80,7 +81,7 @@ Revivable reviveInstance(DartObject object, [LibraryElement2? origin]) {
   }
   final i = (object as DartObjectImpl).getInvocation();
   if (i != null) {
-    url = Uri.parse(urlOfElement2(i.constructor2.enclosingElement2));
+    url = Uri.parse(urlOfElement(i.constructor2.enclosingElement2));
     final result = Revivable._(
       source: url,
       accessor: i.constructor.name,
@@ -95,7 +96,7 @@ Revivable reviveInstance(DartObject object, [LibraryElement2? origin]) {
     (f) => f.isConst && f.computeConstantValue() == object,
   )) {
     final result = Revivable._(
-      source: Uri.parse(urlOfElement2(origin)).replace(fragment: ''),
+      source: Uri.parse(urlOfElement(origin)).replace(fragment: ''),
       accessor: e.name3!,
     );
     if (tryResult(result)) {

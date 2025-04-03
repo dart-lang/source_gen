@@ -5,10 +5,7 @@
 import 'dart:async';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/element2.dart';
-// ignore: implementation_imports
-import 'package:analyzer/src/utilities/extensions/element.dart';
 import 'package:build/build.dart';
 
 import 'library.dart';
@@ -52,7 +49,7 @@ class InvalidGenerationSource implements Exception {
   ///
   /// May be `null` if the error had no associated element, or if the location
   /// was passed with [node].
-  final Element2? element2;
+  final Element2? element;
 
   /// The AST Node associated with this error.
   ///
@@ -60,31 +57,31 @@ class InvalidGenerationSource implements Exception {
   /// code, or if the location was passed with [element].
   final AstNode? node;
 
-  @Deprecated('use v2 instead')
   InvalidGenerationSource(
     this.message, {
     this.todo = '',
-    Element? element,
+    this.element,
     this.node,
-  }) : element2 = element?.asElement2;
+  });
 
+  @Deprecated('use the unnamed constructor instead')
   InvalidGenerationSource.v2(
     this.message, {
     this.todo = '',
-    Element2? element,
+    this.element,
     this.node,
-  }) : element2 = element;
+  });
 
-  @Deprecated('use element2 instead')
-  Element? get element => element2?.asElement;
+  @Deprecated('use element instead')
+  Element2? get element2 => element;
 
   @override
   String toString() {
     final buffer = StringBuffer(message);
 
-    if (element2 case final element2?) {
+    if (element case final element2?) {
       try {
-        final span = spanForElement2(element2);
+        final span = spanForElement(element2);
         buffer
           ..writeln()
           ..writeln(span.start.toolString)

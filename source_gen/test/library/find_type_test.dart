@@ -34,36 +34,36 @@ void main() {
   setUpAll(() async {
     library = await resolveSources(
       {'a|source.dart': _source, 'a|part.dart': _partSource},
-      (r) async => LibraryReader.v2((await r.findLibraryByName2('test_lib'))!),
+      (r) async => LibraryReader((await r.findLibraryByName2('test_lib'))!),
     );
   });
 
   test('class count', () {
-    expect(library.classes2.map((c) => c.name3), ['Example', 'PartClass']);
+    expect(library.classes.map((c) => c.name3), ['Example', 'PartClass']);
   });
 
   test('enum count', () {
-    expect(library.enums2.map((e) => e.name3), ['Enum', 'PartEnum']);
+    expect(library.enums.map((e) => e.name3), ['Enum', 'PartEnum']);
   });
 
   test('should return a type not exported', () {
-    expect(library.findType2('Example'), _isClassElement);
+    expect(library.findType('Example'), _isClassElement);
   });
 
   test('should return a type from a part', () {
-    expect(library.findType2('PartClass'), _isClassElement);
+    expect(library.findType('PartClass'), _isClassElement);
   });
 
   test('should return a type exported from dart:', () {
-    expect(library.findType2('LinkedHashMap'), _isClassElement);
+    expect(library.findType('LinkedHashMap'), _isClassElement);
   });
 
   test('should return a type exported from package:', () {
-    expect(library.findType2('Generator'), _isClassElement);
+    expect(library.findType('Generator'), _isClassElement);
   });
 
   test('should not return a type imported', () {
-    expect(library.findType2('Stream'), isNull);
+    expect(library.findType('Stream'), isNull);
   });
 }
 
