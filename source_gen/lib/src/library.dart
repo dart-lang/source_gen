@@ -27,9 +27,6 @@ class AnnotatedElement {
 
   const AnnotatedElement(this.annotation, this.element);
 
-  @Deprecated('use element instead')
-  Element2 get element2 => element;
-
   Metadata? get metadata2 {
     if (element case final Annotatable annotatable) {
       return annotatable.metadata2;
@@ -44,32 +41,14 @@ class LibraryReader {
 
   LibraryReader(this.element);
 
-  @Deprecated('use the default constructor instead')
-  LibraryReader.v2(this.element);
-
-  @Deprecated('use element instead')
-  LibraryElement2 get element2 => element;
-
   /// All of the declarations in this library.
   Iterable<Element2> get allElements => [element, ...element.children2];
-
-  /// All of the declarations in this library.
-  @Deprecated('use allElements instead')
-  Iterable<Element2> get allElements2 => allElements;
 
   /// All of the elements representing classes in this library.
   Iterable<ClassElement2> get classes => element.classes;
 
-  /// All of the elements representing classes in this library.
-  @Deprecated('use classes instead')
-  Iterable<ClassElement2> get classes2 => classes;
-
   /// All of the elements representing enums in this library.
   Iterable<EnumElement2> get enums => element.enums;
-
-  /// All of the elements representing enums in this library.
-  @Deprecated('use enums instead')
-  Iterable<EnumElement2> get enums3 => enums;
 
   /// All of the declarations in this library annotated with [checker].
   Iterable<AnnotatedElement> annotatedWith(
@@ -137,13 +116,6 @@ class LibraryReader {
     return type is ClassElement2 ? type : null;
   }
 
-  /// Returns a top-level [ClassElement2] publicly visible in by [name].
-  ///
-  /// Unlike `LibraryElement2.getClass`, this also correctly traverses
-  /// identifiers that are accessible via one or more `export` directives.
-  @Deprecated('Use findType() instead')
-  ClassElement2? findType2(String name) => findType(name);
-
   /// Returns a [Uri] from the current library to the target [asset].
   ///
   /// This is a typed convenience function for using [pathToUrl], and the same
@@ -156,13 +128,6 @@ class LibraryReader {
   /// API restrictions hold around supported schemes and relative paths.
   Uri pathToElement(Element2 element) =>
       pathToUrl(element.firstFragment.libraryFragment!.source.uri);
-
-  /// Returns a [Uri] from the current library to the target [element].
-  ///
-  /// This is a typed convenience function for using [pathToUrl], and the same
-  /// API restrictions hold around supported schemes and relative paths.
-  @Deprecated('use pathToElement instead')
-  Uri pathToElement2(Element2 element) => pathToElement(element);
 
   /// Returns a [Uri] from the current library to the one provided.
   ///

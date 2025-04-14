@@ -11,6 +11,6 @@ export 'src/generator.dart'
 export 'src/generator_for_annotation.dart' show GeneratorForAnnotation;
 export 'src/library.dart'
     show AnnotatedDirective, AnnotatedElement, LibraryReader;
-export 'src/span_for_element.dart' show spanForElement, spanForElement2;
+export 'src/span_for_element.dart' show spanForElement;
 export 'src/type_checker.dart' show TypeChecker, UnresolvedAnnotationException;
 export 'src/utils.dart' show typeNameOf;

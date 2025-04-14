@@ -431,10 +431,6 @@ String languageOverrideForLibrary(LibraryElement2 library) {
       : '// @dart=${override.major}.${override.minor}\n';
 }
 
-@Deprecated('Use languageOverrideForLibrary instead')
-String languageOverrideForLibrary2(LibraryElement2 library) =>
-    languageOverrideForLibrary(library);
-
 /// A comment configuring `dart_style` to use the default code width so no
 /// configuration discovery is required.
 const dartFormatWidth = '// dart format width=80';

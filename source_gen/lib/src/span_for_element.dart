@@ -54,21 +54,6 @@ SourceSpan spanForElement(Element2 element, [SourceFile? file]) {
   );
 }
 
-/// Returns a source span that spans the location where [element] is defined.
-///
-/// May be used to emit user-friendly warning and error messages:
-/// ```dart
-/// void invalidClass(ClassElement class) {
-///   log.warning(spanForElement.message('Cannot implement "Secret"'));
-/// }
-/// ```
-///
-/// Not all results from the analyzer API may return source information as part
-/// of the element, so [file] may need to be manually provided in those cases.
-@Deprecated('use spanForElement instead')
-SourceSpan spanForElement2(Element2 element, [SourceFile? file]) =>
-    spanForElement(element, file);
-
 /// Returns a source span that spans the location where [node] is written.
 SourceSpan spanForNode(AstNode node) {
   final unit = node.thisOrAncestorOfType<CompilationUnit>()!;

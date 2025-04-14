@@ -64,17 +64,6 @@ class InvalidGenerationSource implements Exception {
     this.node,
   });
 
-  @Deprecated('use the unnamed constructor instead')
-  InvalidGenerationSource.v2(
-    this.message, {
-    this.todo = '',
-    this.element,
-    this.node,
-  });
-
-  @Deprecated('use element instead')
-  Element2? get element2 => element;
-
   @override
   String toString() {
     final buffer = StringBuffer(message);
