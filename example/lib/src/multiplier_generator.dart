@@ -10,7 +10,7 @@ import '../annotations.dart';
 
 class MultiplierGenerator extends GeneratorForAnnotation<Multiplier> {
   @override
-  String generateForAnnotatedElement2(
+  String generateForAnnotatedElement(
     Element2 element,
     ConstantReader annotation,
     BuildStep buildStep,
