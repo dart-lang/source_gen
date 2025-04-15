@@ -29,7 +29,7 @@ void main() {
     ''',
       (resolver) async {
         thisTest = LibraryReader(
-          await resolver.libraryFor2(
+          await resolver.libraryFor(
             AssetId('source_gen', 'test/external_only_type_checker_test.dart'),
           ),
         );

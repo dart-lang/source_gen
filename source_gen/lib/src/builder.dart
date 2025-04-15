@@ -103,7 +103,7 @@ class _Builder extends Builder {
     }
 
     final lib = await buildStep.resolver
-        .libraryFor2(buildStep.inputId, allowSyntaxErrors: allowSyntaxErrors);
+        .libraryFor(buildStep.inputId, allowSyntaxErrors: allowSyntaxErrors);
     await _generateForLibrary(lib, buildStep);
   }
 

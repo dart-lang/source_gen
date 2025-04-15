@@ -29,7 +29,7 @@ void main() {
     example = await resolveSource(
       source,
       (resolver) => resolver
-          .findLibraryByName2('example')
+          .findLibraryByName('example')
           .then((e) => e!.getClass2('Example')!),
     );
   });

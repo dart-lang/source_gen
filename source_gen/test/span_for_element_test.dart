@@ -31,7 +31,7 @@ abstract class Example implements List {
 ''',
       (r) async {
         resolver = r;
-        return (await resolver.findLibraryByName2('test_lib'))!;
+        return (await resolver.findLibraryByName('test_lib'))!;
       },
       inputId: AssetId('test_lib', 'lib/test_lib.dart'),
     );
@@ -104,7 +104,7 @@ line 7, column 11 of package:test_lib/test_lib.dart: Here it is
   test('highlights based on AstNode source location', () async {
     final element =
         library.getClass2('Example')!.getField2('field')!.firstFragment;
-    final node = (await resolver.astNodeFor2(element, resolve: true))!;
+    final node = (await resolver.astNodeFor(element, resolve: true))!;
     expect(
       spanForNode(node).message('Here it is'),
       r"""

@@ -119,7 +119,7 @@ class CombiningBuilder implements Builder {
         .join('\n\n');
     if (assets.isEmpty) return;
 
-    final inputLibrary = await buildStep.inputLibrary2;
+    final inputLibrary = await buildStep.inputLibrary;
     final outputId = buildStep.allowedOutputs.single;
     final partOfUri = uriOfPartial(inputLibrary, buildStep.inputId, outputId);
 
