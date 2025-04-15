@@ -73,7 +73,7 @@ abstract class GeneratorForAnnotation<T> extends Generator {
       typeChecker,
       throwOnUnresolved: throwOnUnresolved,
     )) {
-      var generatedValue = generateForAnnotatedElement(
+      final generatedValue = generateForAnnotatedElement(
         annotatedElement.element,
         annotatedElement.annotation,
         buildStep,
