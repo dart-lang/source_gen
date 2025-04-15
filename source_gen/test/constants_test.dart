@@ -58,7 +58,7 @@ void main() {
           const Super() : super(aString: 'Super Hello');
         }
       ''',
-        (resolver) async => (await resolver.findLibraryByName2('test_lib'))!,
+        (resolver) async => (await resolver.findLibraryByName('test_lib'))!,
       );
       constants = library
           .getClass2('Example')!
@@ -298,7 +298,7 @@ void main() {
 
         void _privateFunction() {}
       ''',
-        (resolver) async => (await resolver.findLibraryByName2('test_lib'))!,
+        (resolver) async => (await resolver.findLibraryByName('test_lib'))!,
       );
       constants = library
           .getClass2('Example')!

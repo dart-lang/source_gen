@@ -28,13 +28,6 @@ void assertHasField(InterfaceElement2 root, String name) {
   );
 }
 
-/// Throws a [FormatException] if [root] does not have a given field [name].
-///
-/// Super types [InterfaceElement2.supertype] are also checked before throwing.
-@Deprecated('Use assertHasField() instead')
-void assertHasField2(InterfaceElement2 root, String name) =>
-    assertHasField(root, name);
-
 /// Returns whether or not [object] is or represents a `null` value.
 bool isNullLike(DartObject? object) => object?.isNull != false;
 

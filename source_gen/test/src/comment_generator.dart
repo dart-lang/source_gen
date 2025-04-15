@@ -24,7 +24,7 @@ class CommentGenerator extends Generator {
     if (forClasses) {
       for (var classElement in library.allElements.whereType<ClassElement2>()) {
         if (classElement.displayName.contains('GoodError')) {
-          throw InvalidGenerationSourceError.v2(
+          throw InvalidGenerationSourceError(
             "Don't use classes with the word 'Error' in the name",
             todo: 'Rename ${classElement.displayName} to something else.',
             element: classElement,

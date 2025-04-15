@@ -49,13 +49,6 @@ String uriOfPartial(LibraryElement2 element, AssetId source, AssetId output) {
   return p.url.relative(source.path, from: p.url.dirname(output.path));
 }
 
-/// Returns a uri suitable for `part of "..."` when pointing to [element].
-@Deprecated('use uriOfPartial instead')
-String uriOfPartial2(LibraryElement2 element, AssetId source, AssetId output) {
-  assert(source.package == output.package);
-  return p.url.relative(source.path, from: p.url.dirname(output.path));
-}
-
 /// Returns what 'part "..."' URL is needed to import [output] from [input].
 ///
 /// For example, will return `test_lib.g.dart` for `test_lib.dart`.
@@ -65,15 +58,6 @@ String computePartUrl(AssetId input, AssetId output) => p.url.joinAll(
 
 /// Returns a URL representing [element].
 String urlOfElement(Element2 element) => element.kind == ElementKind.DYNAMIC
-    ? 'dart:core#dynamic'
-    // using librarySource.uri – in case the element is in a part
-    : normalizeUrl(element.library2!.uri)
-        .replace(fragment: element.name3)
-        .toString();
-
-/// Returns a URL representing [element].
-@Deprecated('use urlOfElement instead')
-String urlOfElement2(Element2 element) => element.kind == ElementKind.DYNAMIC
     ? 'dart:core#dynamic'
     // using librarySource.uri – in case the element is in a part
     : normalizeUrl(element.library2!.uri)

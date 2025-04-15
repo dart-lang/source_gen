@@ -103,7 +103,7 @@ class _Builder extends Builder {
     }
 
     final lib = await buildStep.resolver
-        .libraryFor2(buildStep.inputId, allowSyntaxErrors: allowSyntaxErrors);
+        .libraryFor(buildStep.inputId, allowSyntaxErrors: allowSyntaxErrors);
     await _generateForLibrary(lib, buildStep);
   }
 
@@ -430,10 +430,6 @@ String languageOverrideForLibrary(LibraryElement2 library) {
       ? ''
       : '// @dart=${override.major}.${override.minor}\n';
 }
-
-@Deprecated('Use languageOverrideForLibrary instead')
-String languageOverrideForLibrary2(LibraryElement2 library) =>
-    languageOverrideForLibrary(library);
 
 /// A comment configuring `dart_style` to use the default code width so no
 /// configuration discovery is required.

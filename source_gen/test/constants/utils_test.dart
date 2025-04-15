@@ -29,7 +29,7 @@ void main() {
             String c;
           }
           ''',
-        (resolver) async => (await resolver.findLibraryByName2('test_lib'))!,
+        (resolver) async => (await resolver.findLibraryByName('test_lib'))!,
       );
     });
 
@@ -83,7 +83,7 @@ void main() {
             const C(this.c);
           }
           ''',
-        (resolver) async => (await resolver.findLibraryByName2('test_lib'))!,
+        (resolver) async => (await resolver.findLibraryByName('test_lib'))!,
       );
       objects = testLib
           .getClass2('Example')!

@@ -78,30 +78,11 @@ abstract class TypeChecker {
     return results.isEmpty ? null : results.first;
   }
 
-  /// Returns the first constant annotating [element] assignable to this type.
-  ///
-  /// Otherwise returns `null`.
-  ///
-  /// Throws on unresolved annotations unless [throwOnUnresolved] is `false`.
-  @Deprecated('use firstAnnotationOf instead')
-  DartObject? firstAnnotationOf2(
-    Object element, {
-    bool throwOnUnresolved = true,
-  }) =>
-      firstAnnotationOf(element, throwOnUnresolved: throwOnUnresolved);
-
   /// Returns if a constant annotating [element] is assignable to this type.
   ///
   /// Throws on unresolved annotations unless [throwOnUnresolved] is `false`.
   bool hasAnnotationOf(Element2 element, {bool throwOnUnresolved = true}) =>
       firstAnnotationOf(element, throwOnUnresolved: throwOnUnresolved) != null;
-
-  /// Returns if a constant annotating [element] is assignable to this type.
-  ///
-  /// Throws on unresolved annotations unless [throwOnUnresolved] is `false`.
-  @Deprecated('use hasAnnotationOf instead')
-  bool hasAnnotationOf2(Element2 element, {bool throwOnUnresolved = true}) =>
-      hasAnnotationOf(element, throwOnUnresolved: throwOnUnresolved);
 
   /// Returns the first constant annotating [element] that is exactly this type.
   ///
@@ -125,17 +106,6 @@ abstract class TypeChecker {
     return null;
   }
 
-  /// Returns the first constant annotating [element] that is exactly this type.
-  ///
-  /// Throws [UnresolvedAnnotationException] on unresolved annotations unless
-  /// [throwOnUnresolved] is explicitly set to `false` (default is `true`).
-  @Deprecated('use firstAnnotationOfExact instead')
-  DartObject? firstAnnotationOfExact2(
-    Element2 element, {
-    bool throwOnUnresolved = true,
-  }) =>
-      firstAnnotationOfExact(element, throwOnUnresolved: throwOnUnresolved);
-
   /// Returns if a constant annotating [element] is exactly this type.
   ///
   /// Throws [UnresolvedAnnotationException] on unresolved annotations unless
@@ -146,17 +116,6 @@ abstract class TypeChecker {
   }) =>
       firstAnnotationOfExact(element, throwOnUnresolved: throwOnUnresolved) !=
       null;
-
-  /// Returns if a constant annotating [element] is exactly this type.
-  ///
-  /// Throws [UnresolvedAnnotationException] on unresolved annotations unless
-  /// [throwOnUnresolved] is explicitly set to `false` (default is `true`).
-  @Deprecated('use hasAnnotationOfExact instead')
-  bool hasAnnotationOfExact2(
-    Element2 element, {
-    bool throwOnUnresolved = true,
-  }) =>
-      hasAnnotationOfExact(element, throwOnUnresolved: throwOnUnresolved);
 
   DartObject? _computeConstantValue(
     Object element,
@@ -184,17 +143,6 @@ abstract class TypeChecker {
         isAssignableFromType,
         throwOnUnresolved: throwOnUnresolved,
       );
-
-  /// Returns annotating constants on [element] assignable to this type.
-  ///
-  /// Throws [UnresolvedAnnotationException] on unresolved annotations unless
-  /// [throwOnUnresolved] is explicitly set to `false` (default is `true`).
-  @Deprecated('use annotationsOf instead')
-  Iterable<DartObject> annotationsOf2(
-    Object element, {
-    bool throwOnUnresolved = true,
-  }) =>
-      annotationsOf(element, throwOnUnresolved: throwOnUnresolved);
 
   Iterable<DartObject> _annotationsWhere(
     Object element,
@@ -231,26 +179,11 @@ abstract class TypeChecker {
         throwOnUnresolved: throwOnUnresolved,
       );
 
-  /// Returns annotating constants on [element] of exactly this type.
-  ///
-  /// Throws [UnresolvedAnnotationException] on unresolved annotations unless
-  /// [throwOnUnresolved] is explicitly set to `false` (default is `true`).
-  @Deprecated('use annotationsOfExact instead')
-  Iterable<DartObject> annotationsOfExact2(
-    Element2 element, {
-    bool throwOnUnresolved = true,
-  }) =>
-      annotationsOfExact(element, throwOnUnresolved: throwOnUnresolved);
-
   /// Returns `true` if the type of [element] can be assigned to this type.
   bool isAssignableFrom(Element2 element) =>
       isExactly(element) ||
       (element is InterfaceElement2 &&
           element.allSupertypes.any(isExactlyType));
-
-  /// Returns `true` if the type of [element] can be assigned to this type.
-  @Deprecated('use isAssignableFrom instead')
-  bool isAssignableFrom2(Element2 element) => isAssignableFrom(element);
 
   /// Returns `true` if [staticType] can be assigned to this type.
   bool isAssignableFromType(DartType staticType) {
@@ -260,10 +193,6 @@ abstract class TypeChecker {
 
   /// Returns `true` if representing the exact same class as [element].
   bool isExactly(Element2 element);
-
-  /// Returns `true` if representing the exact same class as [element].
-  @Deprecated('use isExactly instead')
-  bool isExactly2(Element2 element) => isExactly(element);
 
   /// Returns `true` if representing the exact same type as [staticType].
   ///
@@ -298,13 +227,6 @@ abstract class TypeChecker {
     return false;
   }
 
-  /// Returns `true` if representing a super class of [element].
-  ///
-  /// This check only takes into account the *extends* hierarchy. If you wish
-  /// to check mixins and interfaces, use [isAssignableFrom].
-  @Deprecated('use isSuperOf instead')
-  bool isSuperOf2(Element2 element) => isSuperOf(element);
-
   /// Returns `true` if representing a super type of [staticType].
   ///
   /// This only takes into account the *extends* hierarchy. If you wish
@@ -321,10 +243,6 @@ class _LibraryTypeChecker extends TypeChecker {
   @override
   bool isExactly(Element2 element) =>
       element is InterfaceElement2 && element == _type.element3;
-
-  @Deprecated('Use isExactly() instead')
-  @override
-  bool isExactly2(Element2 element) => isExactly(element);
 
   @override
   String toString() => urlOfElement(_type.element3!);
@@ -348,10 +266,6 @@ class _MirrorTypeChecker extends TypeChecker {
 
   @override
   bool isExactly(Element2 element) => _computed.isExactly(element);
-
-  @Deprecated('use isExactly instead')
-  @override
-  bool isExactly2(Element2 element) => isExactly(element);
 
   @override
   String toString() => _computed.toString();
@@ -385,10 +299,6 @@ class _UriTypeChecker extends TypeChecker {
   @override
   bool isExactly(Element2 element) => hasSameUrl(urlOfElement(element));
 
-  @Deprecated('use isExactly instead')
-  @override
-  bool isExactly2(Element2 element) => isExactly(element);
-
   @override
   String toString() => '$uri';
 }
@@ -401,10 +311,6 @@ class _AnyChecker extends TypeChecker {
   @override
   bool isExactly(Element2 element) =>
       _checkers.any((c) => c.isExactly(element));
-
-  @Deprecated('use isExactly2 instead')
-  @override
-  bool isExactly2(Element2 element) => isExactly(element);
 }
 
 /// Exception thrown when [TypeChecker] fails to resolve a metadata annotation.
@@ -421,9 +327,6 @@ class UnresolvedAnnotationException implements Exception {
   ///
   /// May be `null` if the import library was not found.
   final SourceSpan? annotationSource;
-
-  @Deprecated('use annotatedElement instead')
-  Element2 get annotatedElement2 => annotatedElement;
 
   static SourceSpan? _findSpan(Element2 annotatedElement, int annotationIndex) {
     try {

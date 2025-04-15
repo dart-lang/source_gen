@@ -55,15 +55,15 @@ void main() {
       export 'type_checker_test.dart' show NonPublic;
     ''',
       (resolver) async {
-        core = (await resolver.findLibraryByName2('dart.core'))!;
-        collection = (await resolver.findLibraryByName2('dart.collection'))!;
+        core = (await resolver.findLibraryByName('dart.core'))!;
+        collection = (await resolver.findLibraryByName('dart.collection'))!;
         sourceGen = LibraryReader(
-          await resolver.libraryFor2(
+          await resolver.libraryFor(
             AssetId('source_gen', 'lib/source_gen.dart'),
           ),
         );
         testSource = await resolver
-            .libraryFor2(AssetId('source_gen', 'test/type_checker_test.dart'));
+            .libraryFor(AssetId('source_gen', 'test/type_checker_test.dart'));
       },
       inputId: AssetId('source_gen', 'test/example.dart'),
     );
@@ -365,7 +365,7 @@ void main() {
       @depracated // Intentionally mispelled.
       class X {}
     ''',
-      (resolver) async => (await resolver.findLibraryByName2('_test'))!,
+      (resolver) async => (await resolver.findLibraryByName('_test'))!,
     );
     final classX = library.getClass2('X')!;
     const $deprecated = TypeChecker.fromRuntime(Deprecated);
@@ -435,7 +435,7 @@ void main() {
         const C();
       }
     ''',
-        (resolver) async => (await resolver.findLibraryByName2('_test'))!,
+        (resolver) async => (await resolver.findLibraryByName('_test'))!,
       );
 
       $A = TypeChecker.fromStatic(
@@ -517,7 +517,7 @@ void main() {
         const A();
       }
     ''',
-        (resolver) async => (await resolver.findLibraryByName2('_test'))!,
+        (resolver) async => (await resolver.findLibraryByName('_test'))!,
       );
       $A = TypeChecker.fromStatic(
         library.getClass2('A')!.instantiate(
