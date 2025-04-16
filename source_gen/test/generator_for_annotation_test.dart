@@ -317,7 +317,7 @@ class _TestingResolver implements ReleasableResolver {
   }
 
   @override
-  Future<LibraryElement2> libraryFor2(
+  Future<LibraryElement2> libraryFor(
     AssetId assetId, {
     bool allowSyntaxErrors = false,
   }) async {
