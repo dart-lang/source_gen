@@ -2,9 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// TODO(kevmoo): migrate analyzer APIs when we can get latest with a stable SDK
-// ignore_for_file: deprecated_member_use
-
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -84,7 +81,7 @@ Revivable reviveInstance(DartObject object, [LibraryElement2? origin]) {
     url = Uri.parse(urlOfElement(i.constructor2.enclosingElement2));
     final result = Revivable._(
       source: url,
-      accessor: i.constructor.name,
+      accessor: i.constructor2.name3!,
       namedArguments: i.namedArguments,
       positionalArguments: i.positionalArguments,
     );
