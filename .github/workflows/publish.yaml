@@ -13,6 +13,5 @@ jobs:
     if: ${{ github.repository_owner == 'dart-lang' }}
     uses: dart-lang/ecosystem/.github/workflows/publish.yaml@main
     permissions:
-      contents: read # You might already have this, but it's good practice
-      pull-requests: write # Add this line
-      id-token: write # Add this line
+      pull-requests: write
+      id-token: write
