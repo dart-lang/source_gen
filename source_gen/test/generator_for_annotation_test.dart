@@ -161,7 +161,12 @@ $dartFormatWidth
     final builder = LibraryBuilder(
       _StubGenerator<Deprecated>(
         'Deprecated',
-        directiveBehavior: (element) => '// ${element.runtimeType}',
+        directiveBehavior: (element) => switch (element) {
+          LibraryImport() => '// LibraryImport',
+          LibraryExport() => '// LibraryExport',
+          PartInclude() => '// PartInclude',
+          _ => throw UnimplementedError('${element.runtimeType}')
+        },
         elementBehavior: (element) => '// ${element.runtimeType}',
       ),
     );
@@ -189,11 +194,11 @@ $dartFormatWidth
 // Generator: Deprecated
 // **************************************************************************
 
-// LibraryImportElementImpl
+// LibraryImport
 
-// LibraryExportElementImpl
+// LibraryExport
 
-// PartElementImpl
+// PartInclude
 ''',
       },
     );
