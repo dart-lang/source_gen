@@ -1,3 +1,7 @@
+## 2.0.1-WIP
+
+- Keep `// GENERATED FILE` comments on the first line.
+
 ## 2.0.0
 
 - **Breaking Change**: Change `formatOutput` function to accept a language
