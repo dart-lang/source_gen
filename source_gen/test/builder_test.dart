@@ -1067,8 +1067,8 @@ final int foo = 42
 ''';
 
 const _testGenPartContent = '''
-$dartFormatWidth
 // GENERATED CODE - DO NOT MODIFY BY HAND
+$dartFormatWidth
 
 part of 'test_lib.dart';
 
@@ -1081,8 +1081,8 @@ part of 'test_lib.dart';
 ''';
 
 const _testGenPartContentForLibrary = '''
-$dartFormatWidth
 // GENERATED CODE - DO NOT MODIFY BY HAND
+$dartFormatWidth
 
 part of 'test_lib.dart';
 
@@ -1094,8 +1094,8 @@ part of 'test_lib.dart';
 ''';
 
 const _testGenStandaloneContent = '''
-$dartFormatWidth
 // GENERATED CODE - DO NOT MODIFY BY HAND
+$dartFormatWidth
 
 // **************************************************************************
 // CommentGenerator
@@ -1106,8 +1106,8 @@ $dartFormatWidth
 ''';
 
 const _testGenPartContentForClassesAndLibrary = '''
-$dartFormatWidth
 // GENERATED CODE - DO NOT MODIFY BY HAND
+$dartFormatWidth
 
 part of 'test_lib.dart';
 
@@ -1121,8 +1121,8 @@ part of 'test_lib.dart';
 ''';
 
 const _testGenNoLibrary = '''
-$dartFormatWidth
 // GENERATED CODE - DO NOT MODIFY BY HAND
+$dartFormatWidth
 
 part of 'test_lib.dart';
 
