@@ -9,8 +9,8 @@ import 'package:source_gen/source_gen.dart';
 /// have a type of [num].
 Iterable<TopLevelVariableElement> topLevelNumVariables(LibraryReader reader) =>
     reader.allElements.whereType<TopLevelVariableElement>().where(
-          (element) =>
-              element.type.isDartCoreNum ||
-              element.type.isDartCoreInt ||
-              element.type.isDartCoreDouble,
-        );
+      (element) =>
+          element.type.isDartCoreNum ||
+          element.type.isDartCoreInt ||
+          element.type.isDartCoreDouble,
+    );

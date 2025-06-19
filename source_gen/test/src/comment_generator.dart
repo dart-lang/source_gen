@@ -41,6 +41,6 @@ class CommentGenerator extends Generator {
 class DeprecatedGeneratorForAnnotation
     extends GeneratorForAnnotation<Deprecated> {
   @override
-  String generateForAnnotatedElement(Element element, _, __) =>
+  String generateForAnnotatedElement(Element element, _, _) =>
       '// "$element" is deprecated!';
 }

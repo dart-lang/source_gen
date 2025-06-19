@@ -82,11 +82,12 @@ void main() {
           ''',
         (resolver) async => (await resolver.findLibraryByName('test_lib'))!,
       );
-      objects = testLib
-          .getClass('Example')!
-          .metadata
-          .map((e) => e.computeConstantValue()!)
-          .toList();
+      objects =
+          testLib
+              .getClass('Example')!
+              .metadata
+              .map((e) => e.computeConstantValue()!)
+              .toList();
     });
 
     test('should find a field directly on an object', () {

@@ -37,17 +37,17 @@ void main() {
       inputId: AssetId('source_gen', 'test/example.dart'),
     );
 
-    staticNonPublic = thisTest.findType('NonPublic')!.instantiate(
-      typeArguments: const [],
-      nullabilitySuffix: NullabilitySuffix.none,
-    );
+    staticNonPublic = thisTest
+        .findType('NonPublic')!
+        .instantiate(
+          typeArguments: const [],
+          nullabilitySuffix: NullabilitySuffix.none,
+        );
     staticNonPublicChecker = TypeChecker.fromStatic(staticNonPublic);
   });
 
   // Run a common set of type comparison checks with various implementations.
-  void commonTests({
-    required TypeChecker Function() checkNonPublic,
-  }) {
+  void commonTests({required TypeChecker Function() checkNonPublic}) {
     group('NonPublic', () {
       test('should equal NonPublic', () {
         expect(
@@ -61,7 +61,8 @@ void main() {
         expect(
           checkNonPublic().isAssignableFromType(staticNonPublic),
           isTrue,
-          reason: '${checkNonPublic()} is not assignable from '
+          reason:
+              '${checkNonPublic()} is not assignable from '
               '${staticNonPublic.element.name}',
         );
       });
@@ -81,16 +82,15 @@ void main() {
   );
 
   group('TypeChecker.forStatic', () {
-    commonTests(
-      checkNonPublic: () => staticNonPublicChecker,
-    );
+    commonTests(checkNonPublic: () => staticNonPublicChecker);
   });
 
   group('TypeChecker.fromUrl', () {
     commonTests(
-      checkNonPublic: () => const TypeChecker.fromUrl(
-        'asset:source_gen/test/external_only_type_checker_test.dart#NonPublic',
-      ),
+      checkNonPublic:
+          () => const TypeChecker.fromUrl(
+            'asset:source_gen/test/external_only_type_checker_test.dart#NonPublic',
+          ),
     );
   });
 }

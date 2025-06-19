@@ -9,7 +9,7 @@ class UnformattedCodeGenerator extends Generator {
   const UnformattedCodeGenerator();
 
   @override
-  String generate(_, __) => unformattedCode;
+  String generate(_, _) => unformattedCode;
 
   static const formattedCode = '''
 void hello() => print('hello');

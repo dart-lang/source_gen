@@ -57,16 +57,15 @@ class _Builder extends Builder {
     bool? writeDescriptions,
     this.allowSyntaxErrors = false,
     BuilderOptions? options,
-  })  : _generatedExtension = generatedExtension,
-        buildExtensions = validatedBuildExtensionsFrom(
-            options != null ? Map.of(options.config) : null, {
-          '.dart': [
-            generatedExtension,
-            ...additionalOutputExtensions,
-          ],
-        }),
-        _writeDescriptions = writeDescriptions ?? true,
-        _header = (header ?? defaultFileHeader).trim() {
+  }) : _generatedExtension = generatedExtension,
+       buildExtensions = validatedBuildExtensionsFrom(
+         options != null ? Map.of(options.config) : null,
+         {
+           '.dart': [generatedExtension, ...additionalOutputExtensions],
+         },
+       ),
+       _writeDescriptions = writeDescriptions ?? true,
+       _header = (header ?? defaultFileHeader).trim() {
     if (_generatedExtension.isEmpty || !_generatedExtension.startsWith('.')) {
       throw ArgumentError.value(
         _generatedExtension,
@@ -102,8 +101,10 @@ class _Builder extends Builder {
       return;
     }
 
-    final lib = await buildStep.resolver
-        .libraryFor(buildStep.inputId, allowSyntaxErrors: allowSyntaxErrors);
+    final lib = await buildStep.resolver.libraryFor(
+      buildStep.inputId,
+      allowSyntaxErrors: allowSyntaxErrors,
+    );
     await _generateForLibrary(lib, buildStep);
   }
 
@@ -138,10 +139,13 @@ class _Builder extends Builder {
           ..writeln('part of \'$partOfUri\';');
         final part = computePartUrl(buildStep.inputId, outputId);
 
-        final libraryUnit =
-            await buildStep.resolver.compilationUnitFor(buildStep.inputId);
-        final hasLibraryPartDirectiveWithOutputUri =
-            hasExpectedPartDirective(libraryUnit, part);
+        final libraryUnit = await buildStep.resolver.compilationUnitFor(
+          buildStep.inputId,
+        );
+        final hasLibraryPartDirectiveWithOutputUri = hasExpectedPartDirective(
+          libraryUnit,
+          part,
+        );
         if (!hasLibraryPartDirectiveWithOutputUri) {
           // TODO: Upgrade to error in a future breaking change?
           log.warning(
@@ -163,8 +167,9 @@ class _Builder extends Builder {
           ..writeln()
           ..writeln(_headerLine)
           ..writeAll(
-            LineSplitter.split(item.generatorDescription)
-                .map((line) => '// $line\n'),
+            LineSplitter.split(
+              item.generatorDescription,
+            ).map((line) => '// $line\n'),
           )
           ..writeln(_headerLine)
           ..writeln();
@@ -176,8 +181,10 @@ class _Builder extends Builder {
     var genPartContent = contentBuffer.toString();
 
     try {
-      genPartContent =
-          formatOutput(genPartContent, library.languageVersion.effective);
+      genPartContent = formatOutput(
+        genPartContent,
+        library.languageVersion.effective,
+      );
     } catch (e, stack) {
       log.severe(
         '''
@@ -240,10 +247,7 @@ class SharedPartBuilder extends _Builder {
     super.additionalOutputExtensions,
     super.allowSyntaxErrors,
     super.writeDescriptions,
-  }) : super(
-          generatedExtension: '.$partId.g.part',
-          header: '',
-        ) {
+  }) : super(generatedExtension: '.$partId.g.part', header: '') {
     if (!_partIdRegExp.hasMatch(partId)) {
       throw ArgumentError.value(
         partId,
@@ -304,9 +308,7 @@ class PartBuilder extends _Builder {
     super.header,
     super.allowSyntaxErrors,
     super.options,
-  }) : super(
-          generatedExtension: generatedExtension,
-        );
+  }) : super(generatedExtension: generatedExtension);
 }
 
 /// A [Builder] which generates standalone Dart library files.

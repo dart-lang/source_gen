@@ -55,28 +55,22 @@ void main() {
     });
 
     test('allows multiple output extensions', () {
-      final buildExtensions = validatedBuildExtensionsFrom(
-        {
-          'build_extensions': {
-            '.dart': ['.g.dart', '.h.dart'],
-          },
+      final buildExtensions = validatedBuildExtensionsFrom({
+        'build_extensions': {
+          '.dart': ['.g.dart', '.h.dart'],
         },
-        {},
-      );
+      }, {});
       expect(buildExtensions, {
         '.dart': ['.g.dart', '.h.dart'],
       });
     });
 
     test('allows multiple output extensions of various types ', () {
-      final buildExtensions = validatedBuildExtensionsFrom(
-        {
-          'build_extensions': {
-            '.dart': ['.g.dart', '.swagger.json'],
-          },
+      final buildExtensions = validatedBuildExtensionsFrom({
+        'build_extensions': {
+          '.dart': ['.g.dart', '.swagger.json'],
         },
-        {},
-      );
+      }, {});
       expect(buildExtensions, {
         '.dart': ['.g.dart', '.swagger.json'],
       });
@@ -91,24 +85,20 @@ void main() {
 
     test('disallows empty options', () {
       expect(
-        () => validatedBuildExtensionsFrom(
-          {'build_extensions': <String, Object?>{}},
-          {},
-        ),
+        () => validatedBuildExtensionsFrom({
+          'build_extensions': <String, Object?>{},
+        }, {}),
         throwsArgumentError,
       );
     });
 
     test('disallows inputs not ending with .dart', () {
       expect(
-        () => validatedBuildExtensionsFrom(
-          {
-            'build_extensions': {
-              '.txt': ['.dart'],
-            },
+        () => validatedBuildExtensionsFrom({
+          'build_extensions': {
+            '.txt': ['.dart'],
           },
-          {},
-        ),
+        }, {}),
         throwsA(
           isArgumentError.having(
             (e) => e.message,
@@ -122,12 +112,9 @@ void main() {
 
     test('disallows outputs not ending with .dart', () {
       expect(
-        () => validatedBuildExtensionsFrom(
-          {
-            'build_extensions': {'.dart': '.out'},
-          },
-          {},
-        ),
+        () => validatedBuildExtensionsFrom({
+          'build_extensions': {'.dart': '.out'},
+        }, {}),
         throwsA(
           isArgumentError.having(
             (e) => e.message,
@@ -139,14 +126,11 @@ void main() {
       );
 
       expect(
-        () => validatedBuildExtensionsFrom(
-          {
-            'build_extensions': {
-              '.dart': ['.out', '.g.dart'],
-            },
+        () => validatedBuildExtensionsFrom({
+          'build_extensions': {
+            '.dart': ['.out', '.g.dart'],
           },
-          {},
-        ),
+        }, {}),
         throwsA(
           isArgumentError.having(
             (e) => e.message,
