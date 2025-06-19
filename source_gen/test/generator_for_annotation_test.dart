@@ -81,17 +81,13 @@ $dartFormatWidth
         }.entries) {
       test(entry.key, () async {
         final builder = LibraryBuilder(entry.value);
-
-        await expectLater(
-          () => testBuilder(builder, _inputMap),
-          throwsA(
-            isA<StateError>().having(
-              (source) => source.message,
-              'message',
-              'not supported!',
-            ),
-          ),
+        final logs = <String>[];
+        await testBuilder(
+          builder,
+          _inputMap,
+          onLog: (r) => logs.add(r.toString()),
         );
+        expect(logs, contains(contains('Bad state: not supported!')));
       });
     }
   });
@@ -105,14 +101,16 @@ $dartFormatWidth
       final input = AssetId('a', 'lib/a.dart');
       final assets = {input: 'main() {}'};
 
-      final reader = InMemoryAssetReader(sourceAssets: assets);
+      final readerWriter =
+          TestReaderWriter()..testing.writeString(input, assets[input]!);
+
       final resolver = _TestingResolver(assets);
 
       await runBuilder(
         builder,
         [input],
-        reader,
-        InMemoryAssetWriter(),
+        readerWriter,
+        readerWriter,
         _FixedResolvers(resolver),
       );
 
@@ -200,14 +198,26 @@ $dartFormatWidth
           (element) => '// ${element.displayName}',
         ),
       );
-      expect(
-        testBuilder(builder, {
+      final logs = <String>[];
+
+      await testBuilder(
+        builder,
+        {
           'a|lib/file.dart': '''
       @doesNotExist
       library foo;
       ''',
-        }, outputs: {}),
-        throwsA(isA<UnresolvedAnnotationException>()),
+        },
+        outputs: {},
+        onLog: (r) => logs.add(r.toString()),
+      );
+      expect(
+        logs,
+        contains(
+          contains(
+            'Could not resolve annotation for `library package:a/file.dart`.',
+          ),
+        ),
       );
     });
 
