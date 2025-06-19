@@ -143,13 +143,8 @@ void main() {
     });
 
     test('in the same package in the test directory, a shallow file', () {
-      reader = LibraryReader(
-        _FakeLibraryElement(packageATestDirDeepFile),
-      );
-      expect(
-        reader.pathToUrl(packageATestDir),
-        Uri.parse('../../../a.dart'),
-      );
+      reader = LibraryReader(_FakeLibraryElement(packageATestDirDeepFile));
+      expect(reader.pathToUrl(packageATestDir), Uri.parse('../../../a.dart'));
     });
 
     test('the same package in the tool directory should throw', () {

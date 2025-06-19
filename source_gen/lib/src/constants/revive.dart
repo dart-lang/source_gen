@@ -35,10 +35,7 @@ Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
   origin ??= element!.library;
   var url = Uri.parse(urlOfElement(element!));
   if (element is FunctionElement) {
-    return Revivable._(
-      source: url.removeFragment(),
-      accessor: element.name,
-    );
+    return Revivable._(source: url.removeFragment(), accessor: element.name);
   }
   if (element is MethodElement && element.isStatic) {
     return Revivable._(
@@ -68,8 +65,9 @@ Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
   }
 
   for (final type in origin!.definingCompilationUnit.classes) {
-    for (final e in type.fields
-        .where((f) => f.isConst && f.computeConstantValue() == object)) {
+    for (final e in type.fields.where(
+      (f) => f.isConst && f.computeConstantValue() == object,
+    )) {
       final result = Revivable._(
         source: url.removeFragment(),
         accessor: '${type.name}.${e.name}',

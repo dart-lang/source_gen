@@ -38,10 +38,10 @@ String typeNameOf(DartType type) {
   throw UnimplementedError('(${type.runtimeType}) $type');
 }
 
-bool hasExpectedPartDirective(CompilationUnit unit, String part) =>
-    unit.directives
-        .whereType<PartDirective>()
-        .any((e) => e.uri.stringValue == part);
+bool hasExpectedPartDirective(CompilationUnit unit, String part) => unit
+    .directives
+    .whereType<PartDirective>()
+    .any((e) => e.uri.stringValue == part);
 
 /// Returns a uri suitable for `part of "..."` when pointing to [element].
 String uriOfPartial(LibraryElement element, AssetId source, AssetId output) {
@@ -53,23 +53,24 @@ String uriOfPartial(LibraryElement element, AssetId source, AssetId output) {
 ///
 /// For example, will return `test_lib.g.dart` for `test_lib.dart`.
 String computePartUrl(AssetId input, AssetId output) => p.url.joinAll(
-      p.url.split(p.url.relative(output.path, from: input.path)).skip(1),
-    );
+  p.url.split(p.url.relative(output.path, from: input.path)).skip(1),
+);
 
 /// Returns a URL representing [element].
-String urlOfElement(Element element) => element.kind == ElementKind.DYNAMIC
-    ? 'dart:core#dynamic'
-    // using librarySource.uri – in case the element is in a part
-    : normalizeUrl(element.librarySource!.uri)
-        .replace(fragment: element.name)
-        .toString();
+String urlOfElement(Element element) =>
+    element.kind == ElementKind.DYNAMIC
+        ? 'dart:core#dynamic'
+        // using librarySource.uri – in case the element is in a part
+        : normalizeUrl(
+          element.librarySource!.uri,
+        ).replace(fragment: element.name).toString();
 
 Uri normalizeUrl(Uri url) => switch (url.scheme) {
-      'dart' => normalizeDartUrl(url),
-      'package' => _packageToAssetUrl(url),
-      'file' => _fileToAssetUrl(url),
-      _ => url
-    };
+  'dart' => normalizeDartUrl(url),
+  'package' => _packageToAssetUrl(url),
+  'file' => _fileToAssetUrl(url),
+  _ => url,
+};
 
 /// Make `dart:`-type URLs look like a user-knowable path.
 ///
@@ -77,9 +78,10 @@ Uri normalizeUrl(Uri url) => switch (url.scheme) {
 ///
 /// This isn't a user-knowable path, so we strip out extra path segments
 /// and only expose `dart:core`.
-Uri normalizeDartUrl(Uri url) => url.pathSegments.isNotEmpty
-    ? url.replace(pathSegments: url.pathSegments.take(1))
-    : url;
+Uri normalizeDartUrl(Uri url) =>
+    url.pathSegments.isNotEmpty
+        ? url.replace(pathSegments: url.pathSegments.take(1))
+        : url;
 
 Uri _fileToAssetUrl(Uri url) {
   if (!p.isWithin(p.url.current, url.path)) return url;
@@ -97,16 +99,17 @@ Uri _fileToAssetUrl(Uri url) {
 ///
 /// For example, this transforms `package:source_gen/source_gen.dart` into:
 /// `asset:source_gen/lib/source_gen.dart`.
-Uri _packageToAssetUrl(Uri url) => url.scheme == 'package'
-    ? url.replace(
-        scheme: 'asset',
-        pathSegments: <String>[
-          url.pathSegments.first,
-          'lib',
-          ...url.pathSegments.skip(1),
-        ],
-      )
-    : url;
+Uri _packageToAssetUrl(Uri url) =>
+    url.scheme == 'package'
+        ? url.replace(
+          scheme: 'asset',
+          pathSegments: <String>[
+            url.pathSegments.first,
+            'lib',
+            ...url.pathSegments.skip(1),
+          ],
+        )
+        : url;
 
 /// Returns a `asset:` URL converted to a `package:` URL.
 ///
@@ -117,17 +120,15 @@ Uri _packageToAssetUrl(Uri url) => url.scheme == 'package'
 /// Asset URLs come from `package:build`, as they are able to describe URLs that
 /// are not describable using `package:...`, such as files in the `bin`, `tool`,
 /// `web`, or even root directory of a package - `asset:some_lib/web/main.dart`.
-Uri assetToPackageUrl(Uri url) => url.scheme == 'asset' &&
-        url.pathSegments.isNotEmpty &&
-        url.pathSegments[1] == 'lib'
-    ? url.replace(
-        scheme: 'package',
-        pathSegments: [
-          url.pathSegments.first,
-          ...url.pathSegments.skip(2),
-        ],
-      )
-    : url;
+Uri assetToPackageUrl(Uri url) =>
+    url.scheme == 'asset' &&
+            url.pathSegments.isNotEmpty &&
+            url.pathSegments[1] == 'lib'
+        ? url.replace(
+          scheme: 'package',
+          pathSegments: [url.pathSegments.first, ...url.pathSegments.skip(2)],
+        )
+        : url;
 
 final String rootPackageName = () {
   final name =

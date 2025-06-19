@@ -1,3 +1,7 @@
+## 2.0.1-wip
+
+- Require Dart 3.7.0
+
 ## 2.0.0
 
 - **Breaking Change**: Change `formatOutput` function to accept a language

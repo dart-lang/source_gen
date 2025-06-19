@@ -68,8 +68,10 @@ abstract class TypeChecker {
     if (element.metadata.isEmpty) {
       return null;
     }
-    final results =
-        annotationsOf(element, throwOnUnresolved: throwOnUnresolved);
+    final results = annotationsOf(
+      element,
+      throwOnUnresolved: throwOnUnresolved,
+    );
     return results.isEmpty ? null : results.first;
   }
 
@@ -90,8 +92,10 @@ abstract class TypeChecker {
     if (element.metadata.isEmpty) {
       return null;
     }
-    final results =
-        annotationsOfExact(element, throwOnUnresolved: throwOnUnresolved);
+    final results = annotationsOfExact(
+      element,
+      throwOnUnresolved: throwOnUnresolved,
+    );
     return results.isEmpty ? null : results.first;
   }
 
@@ -123,12 +127,11 @@ abstract class TypeChecker {
   Iterable<DartObject> annotationsOf(
     Element element, {
     bool throwOnUnresolved = true,
-  }) =>
-      _annotationsWhere(
-        element,
-        isAssignableFromType,
-        throwOnUnresolved: throwOnUnresolved,
-      );
+  }) => _annotationsWhere(
+    element,
+    isAssignableFromType,
+    throwOnUnresolved: throwOnUnresolved,
+  );
 
   Iterable<DartObject> _annotationsWhere(
     Element element,
@@ -154,12 +157,11 @@ abstract class TypeChecker {
   Iterable<DartObject> annotationsOfExact(
     Element element, {
     bool throwOnUnresolved = true,
-  }) =>
-      _annotationsWhere(
-        element,
-        isExactlyType,
-        throwOnUnresolved: throwOnUnresolved,
-      );
+  }) => _annotationsWhere(
+    element,
+    isExactlyType,
+    throwOnUnresolved: throwOnUnresolved,
+  );
 
   /// Returns `true` if the type of [element] can be assigned to this type.
   bool isAssignableFrom(Element element) =>
@@ -231,9 +233,9 @@ class _LibraryTypeChecker extends TypeChecker {
 
 // Checks a runtime type against a static type.
 class _MirrorTypeChecker extends TypeChecker {
-  static Uri _uriOf(ClassMirror mirror) =>
-      normalizeUrl((mirror.owner as LibraryMirror).uri)
-          .replace(fragment: MirrorSystem.getName(mirror.simpleName));
+  static Uri _uriOf(ClassMirror mirror) => normalizeUrl(
+    (mirror.owner as LibraryMirror).uri,
+  ).replace(fragment: MirrorSystem.getName(mirror.simpleName));
 
   // Precomputed type checker for types that already have been used.
   static final _cache = Expando<TypeChecker>();
@@ -259,9 +261,7 @@ class _UriTypeChecker extends TypeChecker {
   // Precomputed cache of String --> Uri.
   static final _cache = Expando<Uri>();
 
-  const _UriTypeChecker(dynamic url)
-      : _url = '$url',
-        super._();
+  const _UriTypeChecker(dynamic url) : _url = '$url', super._();
 
   @override
   bool operator ==(Object o) => o is _UriTypeChecker && o._url == _url;
@@ -308,14 +308,13 @@ class UnresolvedAnnotationException implements Exception {
   /// May be `null` if the import library was not found.
   final SourceSpan? annotationSource;
 
-  static SourceSpan? _findSpan(
-    Element annotatedElement,
-    int annotationIndex,
-  ) {
+  static SourceSpan? _findSpan(Element annotatedElement, int annotationIndex) {
     try {
-      final parsedLibrary = annotatedElement.session!
-              .getParsedLibraryByElement(annotatedElement.library!)
-          as ParsedLibraryResult;
+      final parsedLibrary =
+          annotatedElement.session!.getParsedLibraryByElement(
+                annotatedElement.library!,
+              )
+              as ParsedLibraryResult;
       final declaration = parsedLibrary.getElementDeclaration(annotatedElement);
       if (declaration == null) {
         return null;

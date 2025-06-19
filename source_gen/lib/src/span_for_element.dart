@@ -25,14 +25,8 @@ SourceSpan spanForElement(Element element, [SourceFile? file]) {
     final contents = element.source?.contents;
     if (contents == null) {
       return SourceSpan(
-        SourceLocation(
-          element.nameOffset,
-          sourceUrl: url,
-        ),
-        SourceLocation(
-          element.nameOffset + element.nameLength,
-          sourceUrl: url,
-        ),
+        SourceLocation(element.nameOffset, sourceUrl: url),
+        SourceLocation(element.nameOffset + element.nameLength, sourceUrl: url),
         element.name!,
       );
     }

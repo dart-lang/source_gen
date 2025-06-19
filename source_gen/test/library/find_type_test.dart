@@ -32,10 +32,10 @@ void main() {
   late LibraryReader library;
 
   setUpAll(() async {
-    library = await resolveSources(
-      {'a|source.dart': _source, 'a|part.dart': _partSource},
-      (r) async => LibraryReader((await r.findLibraryByName('test_lib'))!),
-    );
+    library = await resolveSources({
+      'a|source.dart': _source,
+      'a|part.dart': _partSource,
+    }, (r) async => LibraryReader((await r.findLibraryByName('test_lib'))!));
   });
 
   test('class count', () {

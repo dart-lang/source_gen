@@ -33,8 +33,10 @@ Builder combiningBuilder([BuilderOptions options = BuilderOptions.empty]) {
     optionsMap.remove('ignore_for_file') as List? ?? <String>[],
   );
   final preamble = optionsMap.remove('preamble') as String? ?? '';
-  final buildExtensions =
-      validatedBuildExtensionsFrom(optionsMap, _defaultExtensions);
+  final buildExtensions = validatedBuildExtensionsFrom(
+    optionsMap,
+    _defaultExtensions,
+  );
 
   final builder = CombiningBuilder(
     includePartName: includePartName,
@@ -75,9 +77,9 @@ class CombiningBuilder implements Builder {
     Set<String>? ignoreForFile,
     String? preamble,
     this.buildExtensions = _defaultExtensions,
-  })  : _includePartName = includePartName ?? false,
-        _ignoreForFile = ignoreForFile ?? const <String>{},
-        _preamble = preamble ?? '';
+  }) : _includePartName = includePartName ?? false,
+       _ignoreForFile = ignoreForFile ?? const <String>{},
+       _preamble = preamble ?? '';
 
   @override
   Future<void> build(BuildStep buildStep) async {
@@ -85,8 +87,9 @@ class CombiningBuilder implements Builder {
     final assetPath = buildStep.inputId.path;
     final pattern = '${p.withoutExtension(Glob.quote(assetPath))}.*$_partFiles';
 
-    final inputBaseName =
-        p.basenameWithoutExtension(buildStep.inputId.pathSegments.last);
+    final inputBaseName = p.basenameWithoutExtension(
+      buildStep.inputId.pathSegments.last,
+    );
 
     // Pattern used to ensure items are only considered if they match
     // [file name without extension].[valid part id].[part file extension]
@@ -101,11 +104,12 @@ class CombiningBuilder implements Builder {
       ].join(),
     );
 
-    final assetIds = await buildStep
-        .findAssets(Glob(pattern))
-        .where((id) => restrictedPattern.hasMatch(id.pathSegments.last))
-        .toList()
-      ..sort();
+    final assetIds =
+        await buildStep
+              .findAssets(Glob(pattern))
+              .where((id) => restrictedPattern.hasMatch(id.pathSegments.last))
+              .toList()
+          ..sort();
 
     final assets = await Stream.fromIterable(assetIds)
         .asyncMap((id) async {
@@ -124,8 +128,9 @@ class CombiningBuilder implements Builder {
     final partOfUri = uriOfPartial(inputLibrary, buildStep.inputId, outputId);
 
     // Ensure that the input has a correct `part` statement.
-    final libraryUnit =
-        await buildStep.resolver.compilationUnitFor(buildStep.inputId);
+    final libraryUnit = await buildStep.resolver.compilationUnitFor(
+      buildStep.inputId,
+    );
     final part = computePartUrl(buildStep.inputId, outputId);
     if (!hasExpectedPartDirective(libraryUnit, part)) {
       log.warning(
@@ -135,9 +140,10 @@ class CombiningBuilder implements Builder {
       return;
     }
 
-    final ignoreForFile = _ignoreForFile.isEmpty
-        ? ''
-        : '\n// ignore_for_file: ${_ignoreForFile.join(', ')}\n';
+    final ignoreForFile =
+        _ignoreForFile.isEmpty
+            ? ''
+            : '\n// ignore_for_file: ${_ignoreForFile.join(', ')}\n';
 
     final preamble = _preamble.isEmpty ? '' : '\n$_preamble\n';
 

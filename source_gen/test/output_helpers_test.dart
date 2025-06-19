@@ -11,11 +11,11 @@ void main() {
     _testSimpleValue('String', 'string', ['string']);
     _testSimpleValue('empty List', [], []);
     _testSimpleValue('List', ['a', 'b', 'c'], ['a', 'b', 'c']);
-    _testSimpleValue(
-      'Iterable',
-      Iterable.generate(3, (i) => i.toString()),
-      ['0', '1', '2'],
-    );
+    _testSimpleValue('Iterable', Iterable.generate(3, (i) => i.toString()), [
+      '0',
+      '1',
+      '2',
+    ]);
 
     _testFunction(
       'Future<Stream>',
@@ -26,11 +26,11 @@ void main() {
 
   group('invalid values', () {
     _testSimpleValue('number', 42, throwsArgumentError);
-    _testSimpleValue(
-      'mixed good and bad',
-      ['good', 42, 'also good'],
-      throwsArgumentError,
-    );
+    _testSimpleValue('mixed good and bad', [
+      'good',
+      42,
+      'also good',
+    ], throwsArgumentError);
 
     final badInstance = _ThrowOnToString();
     _testSimpleValue('really bad class', badInstance, throwsArgumentError);

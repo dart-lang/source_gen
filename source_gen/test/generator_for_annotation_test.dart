@@ -17,16 +17,19 @@ import 'package:test/test.dart';
 
 void main() {
   group('skips output if per-annotation output is', () {
-    for (var entry in {
-      '`null`': null,
-      'empty string': '',
-      'only whitespace': '\n \t',
-      'empty list': <Object>[],
-      'list with null, empty, and whitespace items': [null, '', '\n \t'],
-    }.entries) {
+    for (var entry
+        in {
+          '`null`': null,
+          'empty string': '',
+          'only whitespace': '\n \t',
+          'empty list': <Object>[],
+          'list with null, empty, and whitespace items': [null, '', '\n \t'],
+        }.entries) {
       test(entry.key, () async {
-        final generator =
-            _StubGenerator<Deprecated>('Value', (_) => entry.value);
+        final generator = _StubGenerator<Deprecated>(
+          'Value',
+          (_) => entry.value,
+        );
         final builder = LibraryBuilder(generator);
         await testBuilder(builder, _inputMap, outputs: {});
       });
@@ -64,15 +67,18 @@ $dartFormatWidth
   });
 
   group('handles errors correctly', () {
-    for (var entry in {
-      'sync errors': _StubGenerator<Deprecated>('Failing', (_) {
-        throw StateError('not supported!');
-      }),
-      'from iterable': _StubGenerator<Deprecated>('FailingIterable', (_) sync* {
-        yield '// There are deprecated values in this library!';
-        throw StateError('not supported!');
-      }),
-    }.entries) {
+    for (var entry
+        in {
+          'sync errors': _StubGenerator<Deprecated>('Failing', (_) {
+            throw StateError('not supported!');
+          }),
+          'from iterable': _StubGenerator<Deprecated>('FailingIterable', (
+            _,
+          ) sync* {
+            yield '// There are deprecated values in this library!';
+            throw StateError('not supported!');
+          }),
+        }.entries) {
       test(entry.key, () async {
         final builder = LibraryBuilder(entry.value);
 
@@ -90,27 +96,30 @@ $dartFormatWidth
     }
   });
 
-  test('Does not resolve the library if there are no top level annotations',
-      () async {
-    final builder =
-        LibraryBuilder(_StubGenerator<Deprecated>('Deprecated', (_) => null));
-    final input = AssetId('a', 'lib/a.dart');
-    final assets = {input: 'main() {}'};
+  test(
+    'Does not resolve the library if there are no top level annotations',
+    () async {
+      final builder = LibraryBuilder(
+        _StubGenerator<Deprecated>('Deprecated', (_) => null),
+      );
+      final input = AssetId('a', 'lib/a.dart');
+      final assets = {input: 'main() {}'};
 
-    final reader = InMemoryAssetReader(sourceAssets: assets);
-    final resolver = _TestingResolver(assets);
+      final reader = InMemoryAssetReader(sourceAssets: assets);
+      final resolver = _TestingResolver(assets);
 
-    await runBuilder(
-      builder,
-      [input],
-      reader,
-      InMemoryAssetWriter(),
-      _FixedResolvers(resolver),
-    );
+      await runBuilder(
+        builder,
+        [input],
+        reader,
+        InMemoryAssetWriter(),
+        _FixedResolvers(resolver),
+      );
 
-    expect(resolver.parsedUnits, {input});
-    expect(resolver.resolvedLibs, isEmpty);
-  });
+      expect(resolver.parsedUnits, {input});
+      expect(resolver.resolvedLibs, isEmpty);
+    },
+  );
 
   test('applies to annotated libraries', () async {
     final builder = LibraryBuilder(
@@ -192,16 +201,12 @@ $dartFormatWidth
         ),
       );
       expect(
-        testBuilder(
-          builder,
-          {
-            'a|lib/file.dart': '''
+        testBuilder(builder, {
+          'a|lib/file.dart': '''
       @doesNotExist
       library foo;
       ''',
-          },
-          outputs: {},
-        ),
+        }, outputs: {}),
         throwsA(isA<UnresolvedAnnotationException>()),
       );
     });
@@ -215,16 +220,12 @@ $dartFormatWidth
         ),
       );
       expect(
-        testBuilder(
-          builder,
-          {
-            'a|lib/file.dart': '''
+        testBuilder(builder, {
+          'a|lib/file.dart': '''
       @doesNotExist
       library foo;
       ''',
-          },
-          outputs: {},
-        ),
+        }, outputs: {}),
         completes,
       );
     });
@@ -242,8 +243,7 @@ class _StubGenerator<T> extends GeneratorForAnnotation<T> {
     Element element,
     ConstantReader annotation,
     BuildStep buildStep,
-  ) =>
-      _behavior(element);
+  ) => _behavior(element);
 
   @override
   String toString() => _name;
