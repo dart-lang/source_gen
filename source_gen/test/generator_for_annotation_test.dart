@@ -8,7 +8,7 @@ library;
 
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/source_gen.dart';
@@ -28,7 +28,7 @@ void main() {
       test(entry.key, () async {
         final generator = _StubGenerator<Deprecated>(
           'Value',
-          (_) => entry.value,
+          elementBehavior: (_) => entry.value,
         );
         final builder = LibraryBuilder(generator);
         await testBuilder(builder, _inputMap, outputs: {});
@@ -37,10 +37,13 @@ void main() {
   });
 
   test('Supports and dedupes multiple return values', () async {
-    final generator = _StubGenerator<Deprecated>('Repeating', (element) sync* {
-      yield '// There are deprecated values in this library!';
-      yield '// ${element.name}';
-    });
+    final generator = _StubGenerator<Deprecated>(
+      'Repeating',
+      elementBehavior: (element) sync* {
+        yield '// There are deprecated values in this library!';
+        yield '// ${element.name3}';
+      },
+    );
     final builder = LibraryBuilder(generator);
     await testBuilder(
       builder,
@@ -69,29 +72,29 @@ $dartFormatWidth
   group('handles errors correctly', () {
     for (var entry
         in {
-          'sync errors': _StubGenerator<Deprecated>('Failing', (_) {
-            throw StateError('not supported!');
-          }),
-          'from iterable': _StubGenerator<Deprecated>('FailingIterable', (
-            _,
-          ) sync* {
-            yield '// There are deprecated values in this library!';
-            throw StateError('not supported!');
-          }),
+          'sync errors': _StubGenerator<Deprecated>(
+            'Failing',
+            elementBehavior: (_) {
+              throw StateError('not supported!');
+            },
+          ),
+          'from iterable': _StubGenerator<Deprecated>(
+            'FailingIterable',
+            elementBehavior: (_) sync* {
+              yield '// There are deprecated values in this library!';
+              throw StateError('not supported!');
+            },
+          ),
         }.entries) {
       test(entry.key, () async {
         final builder = LibraryBuilder(entry.value);
-
-        await expectLater(
-          () => testBuilder(builder, _inputMap),
-          throwsA(
-            isA<StateError>().having(
-              (source) => source.message,
-              'message',
-              'not supported!',
-            ),
-          ),
+        final logs = <String>[];
+        await testBuilder(
+          builder,
+          _inputMap,
+          onLog: (r) => logs.add(r.toString()),
         );
+        expect(logs, contains(contains('Bad state: not supported!')));
       });
     }
   });
@@ -100,19 +103,21 @@ $dartFormatWidth
     'Does not resolve the library if there are no top level annotations',
     () async {
       final builder = LibraryBuilder(
-        _StubGenerator<Deprecated>('Deprecated', (_) => null),
+        _StubGenerator<Deprecated>('Deprecated', elementBehavior: (_) => null),
       );
       final input = AssetId('a', 'lib/a.dart');
       final assets = {input: 'main() {}'};
 
-      final reader = InMemoryAssetReader(sourceAssets: assets);
+      final readerWriter =
+          TestReaderWriter()..testing.writeString(input, assets[input]!);
+
       final resolver = _TestingResolver(assets);
 
       await runBuilder(
         builder,
         [input],
-        reader,
-        InMemoryAssetWriter(),
+        readerWriter,
+        readerWriter,
         _FixedResolvers(resolver),
       );
 
@@ -125,7 +130,7 @@ $dartFormatWidth
     final builder = LibraryBuilder(
       _StubGenerator<Deprecated>(
         'Deprecated',
-        (element) => '// ${element.displayName}',
+        elementBehavior: (element) => '// ${element.displayName}',
       ),
     );
     await testBuilder(
@@ -155,7 +160,13 @@ $dartFormatWidth
     final builder = LibraryBuilder(
       _StubGenerator<Deprecated>(
         'Deprecated',
-        (element) => '// ${element.runtimeType}',
+        directiveBehavior:
+            (element) => switch (element) {
+              LibraryImport() => '// LibraryImport',
+              LibraryExport() => '// LibraryExport',
+              PartInclude() => '// PartInclude',
+            },
+        elementBehavior: (element) => '// ${element.runtimeType}',
       ),
     );
     await testBuilder(
@@ -182,11 +193,11 @@ $dartFormatWidth
 // Generator: Deprecated
 // **************************************************************************
 
-// LibraryImportElementImpl
+// LibraryImport
 
-// LibraryExportElementImpl
+// LibraryExport
 
-// PartElementImpl
+// PartInclude
 ''',
       },
     );
@@ -197,17 +208,29 @@ $dartFormatWidth
       final builder = LibraryBuilder(
         _StubGenerator<Deprecated>(
           'Deprecated',
-          (element) => '// ${element.displayName}',
+          elementBehavior: (element) => '// ${element.displayName}',
         ),
       );
-      expect(
-        testBuilder(builder, {
+      final logs = <String>[];
+
+      await testBuilder(
+        builder,
+        {
           'a|lib/file.dart': '''
       @doesNotExist
       library foo;
       ''',
-        }, outputs: {}),
-        throwsA(isA<UnresolvedAnnotationException>()),
+        },
+        outputs: {},
+        onLog: (r) => logs.add(r.toString()),
+      );
+      expect(
+        logs,
+        contains(
+          contains(
+            'Could not resolve annotation for `library package:a/file.dart`.',
+          ),
+        ),
       );
     });
 
@@ -215,7 +238,7 @@ $dartFormatWidth
       final builder = LibraryBuilder(
         _StubGenerator<Deprecated>(
           'Deprecated',
-          (element) => '// ${element.displayName}',
+          elementBehavior: (element) => '// ${element.displayName}',
           throwOnUnresolved: false,
         ),
       );
@@ -234,19 +257,34 @@ $dartFormatWidth
 
 class _StubGenerator<T> extends GeneratorForAnnotation<T> {
   final String _name;
-  final Object? Function(Element) _behavior;
+  final Object? Function(ElementDirective) directiveBehavior;
+  final Object? Function(Element2) elementBehavior;
 
-  const _StubGenerator(this._name, this._behavior, {super.throwOnUnresolved});
+  const _StubGenerator(
+    this._name, {
+    this.directiveBehavior = _returnNull,
+    required this.elementBehavior,
+    super.throwOnUnresolved,
+  });
+
+  @override
+  Object? generateForAnnotatedDirective(
+    ElementDirective directive,
+    ConstantReader annotation,
+    BuildStep buildStep,
+  ) => directiveBehavior(directive);
 
   @override
   Object? generateForAnnotatedElement(
-    Element element,
+    Element2 element,
     ConstantReader annotation,
     BuildStep buildStep,
-  ) => _behavior(element);
+  ) => elementBehavior(element);
 
   @override
   String toString() => _name;
+
+  static Null _returnNull(Object _) => null;
 }
 
 const _inputMap = {
@@ -285,7 +323,7 @@ class _TestingResolver implements ReleasableResolver {
   }
 
   @override
-  Future<LibraryElement> libraryFor(
+  Future<LibraryElement2> libraryFor(
     AssetId assetId, {
     bool allowSyntaxErrors = false,
   }) async {

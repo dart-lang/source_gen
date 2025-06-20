@@ -5,7 +5,7 @@
 import 'dart:io';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:path/path.dart' as p;
@@ -20,20 +20,20 @@ import 'package:yaml/yaml.dart';
 /// typedef VoidFunc = void Function();
 /// ```
 ///
-/// This function will return `'VoidFunc'`, unlike [DartType.element]`.name`.
+/// This function will return `'VoidFunc'`, unlike [DartType.element3]`.name3`.
 String typeNameOf(DartType type) {
-  final aliasElement = type.alias?.element;
+  final aliasElement = type.alias?.element2;
   if (aliasElement != null) {
-    return aliasElement.name;
+    return aliasElement.name3!;
   }
   if (type is DynamicType) {
     return 'dynamic';
   }
   if (type is InterfaceType) {
-    return type.element.name;
+    return type.element3.name3!;
   }
   if (type is TypeParameterType) {
-    return type.element.name;
+    return type.element3.name3!;
   }
   throw UnimplementedError('(${type.runtimeType}) $type');
 }
@@ -44,7 +44,7 @@ bool hasExpectedPartDirective(CompilationUnit unit, String part) => unit
     .any((e) => e.uri.stringValue == part);
 
 /// Returns a uri suitable for `part of "..."` when pointing to [element].
-String uriOfPartial(LibraryElement element, AssetId source, AssetId output) {
+String uriOfPartial(LibraryElement2 element, AssetId source, AssetId output) {
   assert(source.package == output.package);
   return p.url.relative(source.path, from: p.url.dirname(output.path));
 }
@@ -57,13 +57,13 @@ String computePartUrl(AssetId input, AssetId output) => p.url.joinAll(
 );
 
 /// Returns a URL representing [element].
-String urlOfElement(Element element) =>
+String urlOfElement(Element2 element) =>
     element.kind == ElementKind.DYNAMIC
         ? 'dart:core#dynamic'
         // using librarySource.uri – in case the element is in a part
         : normalizeUrl(
-          element.librarySource!.uri,
-        ).replace(fragment: element.name).toString();
+          element.library2!.uri,
+        ).replace(fragment: element.name3).toString();
 
 Uri normalizeUrl(Uri url) => switch (url.scheme) {
   'dart' => normalizeDartUrl(url),

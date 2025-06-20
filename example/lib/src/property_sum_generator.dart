@@ -12,7 +12,7 @@ class PropertySumGenerator extends Generator {
   String generate(LibraryReader library, BuildStep buildStep) {
     final sumNames = topLevelNumVariables(
       library,
-    ).map((element) => element.name).join(' + ');
+    ).map((element) => element.name3).join(' + ');
 
     return '''
 num allSum() => $sumNames;
