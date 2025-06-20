@@ -56,7 +56,7 @@ void main() {
         expect(
           checkNonPublic().isExactlyType(staticNonPublic),
           isTrue,
-          reason: '${checkNonPublic()} != ${staticNonPublic.element.name}',
+          reason: '${checkNonPublic()} != ${staticNonPublic.element3.name3}',
         );
       });
 
@@ -66,7 +66,7 @@ void main() {
           isTrue,
           reason:
               '${checkNonPublic()} is not assignable from '
-              '${staticNonPublic.element.name}',
+              '${staticNonPublic.element3.name3}',
         );
       });
     });
