@@ -3,8 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 // Increase timeouts on this test which resolves source code and can be slow.
-import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/source/source.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
@@ -158,24 +157,14 @@ void main() {
   });
 }
 
-class _FakeLibraryElement implements LibraryElement {
-  final Uri _sourceUri;
+class _FakeLibraryElement implements LibraryElement2 {
+  final Uri _uri;
 
-  _FakeLibraryElement(this._sourceUri);
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
-
-  @override
-  Source get source => _FakeSource(_sourceUri);
-}
-
-class _FakeSource implements Source {
-  @override
-  final Uri uri;
-
-  const _FakeSource(this.uri);
+  _FakeLibraryElement(this._uri);
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+
+  @override
+  Uri get uri => _uri;
 }

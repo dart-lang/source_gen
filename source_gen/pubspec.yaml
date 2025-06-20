@@ -27,3 +27,46 @@ dev_dependencies:
   logging: ^1.0.0
   term_glyph: ^1.2.0
   test: ^1.16.0
+
+dependency_overrides:
+  build:
+    git:
+      url: https://github.com/dart-lang/build
+      path: build
+      ref: f3c94b884657a213b7f6872602c900cc8ca471c7
+  build_config:
+    git:
+      url: https://github.com/dart-lang/build
+      path: build_config
+      ref: f3c94b884657a213b7f6872602c900cc8ca471c7
+  build_modules:
+    git:
+      url: https://github.com/dart-lang/build
+      path: build_modules
+      ref: f3c94b884657a213b7f6872602c900cc8ca471c7
+  build_resolvers:
+    git:
+      url: https://github.com/dart-lang/build
+      path: build_resolvers
+      ref: f3c94b884657a213b7f6872602c900cc8ca471c7
+  build_runner:
+    git:
+      url: https://github.com/dart-lang/build
+      path: build_runner
+      ref: f3c94b884657a213b7f6872602c900cc8ca471c7
+  build_runner_core:
+    git:
+      url: https://github.com/dart-lang/build
+      path: build_runner_core
+      ref: f3c94b884657a213b7f6872602c900cc8ca471c7
+  build_test:
+    git:
+      url: https://github.com/dart-lang/build
+      path: build_test
+      ref: f3c94b884657a213b7f6872602c900cc8ca471c7
+  build_web_compilers:
+    git:
+      url: https://github.com/dart-lang/build
+      path: build_web_compilers
+      ref: f3c94b884657a213b7f6872602c900cc8ca471c7
+

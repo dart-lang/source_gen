@@ -5,7 +5,7 @@
 import 'dart:async';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 
 import 'library.dart';
@@ -49,7 +49,7 @@ class InvalidGenerationSource implements Exception {
   ///
   /// May be `null` if the error had no associated element, or if the location
   /// was passed with [node].
-  final Element? element;
+  final Element2? element;
 
   /// The AST Node associated with this error.
   ///

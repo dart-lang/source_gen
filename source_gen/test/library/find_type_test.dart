@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/source_gen.dart';
@@ -44,11 +44,11 @@ void main() {
   });
 
   test('class count', () {
-    expect(library.classes.map((c) => c.name), ['Example', 'PartClass']);
+    expect(library.classes.map((c) => c.name3), ['Example', 'PartClass']);
   });
 
   test('enum count', () {
-    expect(library.enums.map((e) => e.name), ['Enum', 'PartEnum']);
+    expect(library.enums.map((e) => e.name3), ['Enum', 'PartEnum']);
   });
 
   test('should return a type not exported', () {
@@ -72,4 +72,4 @@ void main() {
   });
 }
 
-const _isClassElement = TypeMatcher<ClassElement>();
+const _isClassElement = TypeMatcher<ClassElement2>();

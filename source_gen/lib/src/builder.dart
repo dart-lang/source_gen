@@ -5,7 +5,7 @@
 import 'dart:convert';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:pub_semver/pub_semver.dart';
@@ -109,7 +109,7 @@ class _Builder extends Builder {
   }
 
   Future<void> _generateForLibrary(
-    LibraryElement library,
+    LibraryElement2 library,
     BuildStep buildStep,
   ) async {
     final generatedOutputs =
@@ -355,7 +355,7 @@ class LibraryBuilder extends _Builder {
 }
 
 Stream<GeneratedOutput> _generate(
-  LibraryElement library,
+  LibraryElement2 library,
   List<Generator> generators,
   BuildStep buildStep,
 ) async* {
@@ -426,7 +426,7 @@ const partIdRegExpLiteral = r'[A-Za-z_\d-]+';
 
 final _partIdRegExp = RegExp('^$partIdRegExpLiteral\$');
 
-String languageOverrideForLibrary(LibraryElement library) {
+String languageOverrideForLibrary(LibraryElement2 library) {
   final override = library.languageVersion.override;
   return override == null
       ? ''
