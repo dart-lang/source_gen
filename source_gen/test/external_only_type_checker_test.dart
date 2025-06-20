@@ -35,6 +35,10 @@ void main() {
         );
       },
       inputId: AssetId('source_gen', 'test/example.dart'),
+      nonInputsToReadFromFilesystem: {
+        AssetId('source_gen', 'test/type_checker_test.dart'),
+        AssetId('source_gen', 'test/external_only_type_checker_test.dart'),
+      },
     );
 
     staticNonPublic = thisTest

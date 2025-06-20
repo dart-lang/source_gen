@@ -315,7 +315,10 @@ class UnresolvedAnnotationException implements Exception {
                 annotatedElement.library!,
               )
               as ParsedLibraryResult;
-      final declaration = parsedLibrary.getElementDeclaration(annotatedElement);
+      ElementDeclarationResult? declaration;
+      try {
+        declaration = parsedLibrary.getElementDeclaration(annotatedElement);
+      } catch (_) {}
       if (declaration == null) {
         return null;
       }

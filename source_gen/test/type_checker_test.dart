@@ -67,6 +67,12 @@ void main() {
         );
       },
       inputId: AssetId('source_gen', 'test/example.dart'),
+      nonInputsToReadFromFilesystem: {
+        AssetId('source_gen', 'lib/source_gen.dart'),
+        AssetId('source_gen', 'lib/src/generator.dart'),
+        AssetId('source_gen', 'lib/src/generator_for_annotation.dart'),
+        AssetId('source_gen', 'test/type_checker_test.dart'),
+      },
     );
 
     final staticIterable = core
