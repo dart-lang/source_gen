@@ -23,10 +23,14 @@ void main() {
 
   setUpAll(() async {
     late LibraryReader thisTest;
-    await resolveSource(
-      r'''
+    await resolveSources(
+      {
+        'source_gen|test/example.dart': r'''
       export 'type_checker_test.dart' show NonPublic;
     ''',
+        'source_gen|test/type_checker_test.dart': useAssetReader,
+        'source_gen|test/external_only_type_checker_test.dart': useAssetReader,
+      },
       (resolver) async {
         thisTest = LibraryReader(
           await resolver.libraryFor(
@@ -34,7 +38,6 @@ void main() {
           ),
         );
       },
-      inputId: AssetId('source_gen', 'test/example.dart'),
     );
 
     staticNonPublic = thisTest

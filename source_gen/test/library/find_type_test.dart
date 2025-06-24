@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
@@ -32,10 +33,14 @@ void main() {
   late LibraryReader library;
 
   setUpAll(() async {
-    library = await resolveSources({
-      'a|source.dart': _source,
-      'a|part.dart': _partSource,
-    }, (r) async => LibraryReader((await r.findLibraryByName('test_lib'))!));
+    library = await resolveSources(
+      {'a|source.dart': _source, 'a|part.dart': _partSource},
+      (r) async => LibraryReader((await r.findLibraryByName('test_lib'))!),
+      nonInputsToReadFromFilesystem: {
+        AssetId('source_gen', 'lib/source_gen.dart'),
+        AssetId('source_gen', 'lib/src/generator.dart'),
+      },
+    );
   });
 
   test('class count', () {
