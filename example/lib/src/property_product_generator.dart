@@ -12,7 +12,7 @@ class PropertyProductGenerator extends Generator {
   String generate(LibraryReader library, BuildStep buildStep) {
     final productNames = topLevelNumVariables(
       library,
-    ).map((element) => element.name).join(' * ');
+    ).map((element) => element.name3).join(' * ');
 
     return '''
 num allProduct() => $productNames;

@@ -1,5 +1,9 @@
-## 2.0.1-wip
+## 3.0.0-dev
 
+- **Breaking Change**: use the new `element2` APIs in `analyzer`. Builders that
+  do resolution need to switch to the new API, see
+  https://github.com/dart-lang/sdk/blob/main/pkg/analyzer/doc/element_model_migration_guide.md.
+  For questions please use https://github.com/dart-lang/build/discussions.
 - Require Dart 3.7.0
 
 ## 2.0.0

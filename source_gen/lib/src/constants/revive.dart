@@ -6,7 +6,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 // ignore: implementation_imports
 import 'package:analyzer/src/dart/constant/value.dart' show DartObjectImpl;
@@ -22,35 +22,37 @@ import '../utils.dart';
 /// **NOTE**: Some returned [Revivable] instances are not representable as valid
 /// Dart source code (such as referencing private constructors). It is up to the
 /// build tool(s) using this library to surface error messages to the user.
-Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
+Revivable reviveInstance(DartObject object, [LibraryElement2? origin]) {
   final objectType = object.type;
-  Element? element = objectType!.alias?.element;
+  Element2? element = objectType!.alias?.element2;
   if (element == null) {
     if (objectType is InterfaceType) {
-      element = objectType.element;
+      element = objectType.element3;
     } else {
-      element = object.toFunctionValue();
+      element = object.toFunctionValue2();
     }
   }
-  origin ??= element!.library;
+  origin ??= element!.library2;
   var url = Uri.parse(urlOfElement(element!));
-  if (element is FunctionElement) {
-    return Revivable._(source: url.removeFragment(), accessor: element.name);
+  if (element is TopLevelFunctionElement || element is LocalFunctionElement) {
+    return Revivable._(source: url.removeFragment(), accessor: element.name3!);
   }
-  if (element is MethodElement && element.isStatic) {
+
+  if (element is MethodElement2 && element.isStatic) {
     return Revivable._(
       source: url.removeFragment(),
-      accessor: '${element.enclosingElement3.name}.${element.name}',
+      accessor:
+          '${element.firstFragment.enclosingFragment!.name2}.${element.name3}',
     );
   }
 
-  if (element is InterfaceElement) {
-    for (final e in element.fields.where(
+  if (element is InterfaceElement2) {
+    for (final e in element.fields2.where(
       (f) => f.isPublic && f.isConst && f.computeConstantValue() == object,
     )) {
       return Revivable._(
         source: url.removeFragment(),
-        accessor: '${element.name}.${e.name}',
+        accessor: '${element.name3}.${e.name3}',
       );
     }
   }
@@ -64,13 +66,13 @@ Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
     return !result.isPrivate;
   }
 
-  for (final type in origin!.definingCompilationUnit.classes) {
-    for (final e in type.fields.where(
+  for (final type in origin!.classes) {
+    for (final e in type.fields2.where(
       (f) => f.isConst && f.computeConstantValue() == object,
     )) {
       final result = Revivable._(
         source: url.removeFragment(),
-        accessor: '${type.name}.${e.name}',
+        accessor: '${type.name3}.${e.name3}',
       );
       if (tryResult(result)) {
         return result;
@@ -79,10 +81,11 @@ Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
   }
   final i = (object as DartObjectImpl).getInvocation();
   if (i != null) {
-    url = Uri.parse(urlOfElement(i.constructor.enclosingElement3));
+    url = Uri.parse(urlOfElement(i.constructor2.enclosingElement2));
+    String newToEmpty(String string) => string == 'new' ? '' : string;
     final result = Revivable._(
       source: url,
-      accessor: i.constructor.name,
+      accessor: newToEmpty(i.constructor2.name3!),
       namedArguments: i.namedArguments,
       positionalArguments: i.positionalArguments,
     );
@@ -90,12 +93,12 @@ Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
       return result;
     }
   }
-  for (final e in origin.definingCompilationUnit.topLevelVariables.where(
+  for (final e in origin.topLevelVariables.where(
     (f) => f.isConst && f.computeConstantValue() == object,
   )) {
     final result = Revivable._(
       source: Uri.parse(urlOfElement(origin)).replace(fragment: ''),
-      accessor: e.name,
+      accessor: e.name3!,
     );
     if (tryResult(result)) {
       return result;

@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 
 import '../type_checker.dart';
@@ -268,7 +268,7 @@ class _DartObjectConstant extends ConstantReader {
   ConstantReader read(String field) {
     final reader = peek(field);
     if (reader == null) {
-      assertHasField(objectValue.type!.element as InterfaceElement, field);
+      assertHasField(objectValue.type!.element3 as InterfaceElement2, field);
       return const _NullConstant();
     }
     return reader;
