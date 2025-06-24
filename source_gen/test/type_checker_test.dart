@@ -49,11 +49,18 @@ void main() {
     late LibraryElement collection;
     late LibraryReader sourceGen;
     late LibraryElement testSource;
-    await resolveSource(
-      r'''
+    await resolveSources(
+      {
+        'source_gen|test/example.dart': r'''
       export 'package:source_gen/source_gen.dart';
       export 'type_checker_test.dart' show NonPublic;
     ''',
+        'source_gen|lib/source_gen.dart': useAssetReader,
+        'source_gen|lib/src/generator.dart': useAssetReader,
+        'source_gen|lib/src/generator_for_annotation.dart': useAssetReader,
+        'source_gen|test/type_checker_test.dart': useAssetReader,
+      },
+
       (resolver) async {
         core = (await resolver.findLibraryByName('dart.core'))!;
         collection = (await resolver.findLibraryByName('dart.collection'))!;
@@ -65,13 +72,6 @@ void main() {
         testSource = await resolver.libraryFor(
           AssetId('source_gen', 'test/type_checker_test.dart'),
         );
-      },
-      inputId: AssetId('source_gen', 'test/example.dart'),
-      nonInputsToReadFromFilesystem: {
-        AssetId('source_gen', 'lib/source_gen.dart'),
-        AssetId('source_gen', 'lib/src/generator.dart'),
-        AssetId('source_gen', 'lib/src/generator_for_annotation.dart'),
-        AssetId('source_gen', 'test/type_checker_test.dart'),
       },
     );
 
