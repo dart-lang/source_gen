@@ -6,9 +6,9 @@ environment:
   sdk: ^3.7.0
 
 dependencies:
+  analyzer: ^7.4.0
   build: ^3.0.0-dev
   source_gen: any
-  analyzer: ^7.4.0
 
 dev_dependencies:
   dart_flutter_team_lints: ^3.1.0
