@@ -4,6 +4,7 @@
   do resolution need to switch to the new API, see
   https://github.com/dart-lang/sdk/blob/main/pkg/analyzer/doc/element_model_migration_guide.md.
   For questions please use https://github.com/dart-lang/build/discussions.
+- Updated the minimum package versions for a number of dependencies.
 - Require Dart 3.7.0
 
 ## 2.0.0
