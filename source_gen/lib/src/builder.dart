@@ -189,7 +189,7 @@ class _Builder extends Builder {
       log.severe(
         '''
 An error `${e.runtimeType}` occurred while formatting the generated source for
-  `${library.identifier}`
+  `${library.uri}`
 which was output to
   `${outputId.path}`.
 This may indicate an issue in the generator, the input source code, or in the
