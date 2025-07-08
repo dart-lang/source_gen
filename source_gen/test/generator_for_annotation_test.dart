@@ -99,32 +99,37 @@ $dartFormatWidth
     }
   });
 
-  test(
-    'Does not resolve the library if there are no top level annotations',
-    () async {
-      final builder = LibraryBuilder(
-        _StubGenerator<Deprecated>('Deprecated', elementBehavior: (_) => null),
-      );
-      final input = AssetId('a', 'lib/a.dart');
-      final assets = {input: 'main() {}'};
+  test('Does not resolve the library if there are no interesting top level '
+      'annotations', () async {
+    final builder = LibraryBuilder(
+      _StubGenerator<Deprecated>('Deprecated', elementBehavior: (_) => null),
+    );
+    final input = AssetId('a', 'lib/a.dart');
+    final assets = {
+      input: '''
+@Deprecated()
+@deprecated
+@override
+@pragma('')
+main() {}''',
+    };
 
-      final readerWriter =
-          TestReaderWriter()..testing.writeString(input, assets[input]!);
+    final readerWriter =
+        TestReaderWriter()..testing.writeString(input, assets[input]!);
 
-      final resolver = _TestingResolver(assets);
+    final resolver = _TestingResolver(assets);
 
-      await runBuilder(
-        builder,
-        [input],
-        readerWriter,
-        readerWriter,
-        _FixedResolvers(resolver),
-      );
+    await runBuilder(
+      builder,
+      [input],
+      readerWriter,
+      readerWriter,
+      _FixedResolvers(resolver),
+    );
 
-      expect(resolver.parsedUnits, {input});
-      expect(resolver.resolvedLibs, isEmpty);
-    },
-  );
+    expect(resolver.parsedUnits, {input});
+    expect(resolver.resolvedLibs, isEmpty);
+  });
 
   test('applies to annotated libraries', () async {
     final builder = LibraryBuilder(

@@ -6,6 +6,8 @@
   For questions please use https://github.com/dart-lang/build/discussions.
 - Updated the minimum package versions for a number of dependencies.
 - Require Dart 3.7.0
+- Update the GeneratorForAnnotation optimization to skip files with well known
+  annotation names such as `override`, `Deprecated`, and `pragma`.
 
 ## 2.0.0
 
