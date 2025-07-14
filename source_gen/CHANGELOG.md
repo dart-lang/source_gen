@@ -1,3 +1,8 @@
+## 3.0.0-wip
+
+- Update the GeneratorForAnnotation optimization to skip files with well known
+  annotation names such as `override`, `Deprecated`, and `pragma`.
+
 ## 3.0.0-dev
 
 - **Breaking Change**: use the new `element2` APIs in `analyzer`. Builders that
@@ -6,8 +11,6 @@
   For questions please use https://github.com/dart-lang/build/discussions.
 - Updated the minimum package versions for a number of dependencies.
 - Require Dart 3.7.0
-- Update the GeneratorForAnnotation optimization to skip files with well known
-  annotation names such as `override`, `Deprecated`, and `pragma`.
 
 ## 2.0.0
 
