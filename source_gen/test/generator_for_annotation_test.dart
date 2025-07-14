@@ -294,13 +294,16 @@ class _StubGenerator<T> extends GeneratorForAnnotation<T> {
 
 const _inputMap = {
   'a|lib/file.dart': '''
-     @deprecated
+     // Use this to avoid the short circuit.
+     const deprecated2 = deprecated;
+
+     @deprecated2
      final foo = 'foo';
 
-     @deprecated
+     @deprecated2
      final bar = 'bar';
 
-     @deprecated
+     @deprecated2
      final baz = 'baz';
      ''',
 };
