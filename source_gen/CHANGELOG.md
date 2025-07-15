@@ -1,3 +1,8 @@
+## 3.0.0-wip
+
+- Update the GeneratorForAnnotation optimization to skip files with well known
+  annotation names such as `override`, `Deprecated`, and `pragma`.
+
 ## 3.0.0-dev
 
 - **Breaking Change**: use the new `element2` APIs in `analyzer`. Builders that

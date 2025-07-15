@@ -93,7 +93,7 @@ class _Builder extends Builder {
     if (!await resolver.isLibrary(buildStep.inputId)) return;
 
     if (_generators.every((g) => g is GeneratorForAnnotation) &&
-        !(await _hasAnyTopLevelAnnotations(
+        !(await _hasInterestingTopLevelAnnotations(
           buildStep.inputId,
           resolver,
           buildStep,
@@ -382,7 +382,7 @@ Stream<GeneratedOutput> _generate(
   }
 }
 
-Future<bool> _hasAnyTopLevelAnnotations(
+Future<bool> _hasInterestingTopLevelAnnotations(
   AssetId input,
   Resolver resolver,
   BuildStep buildStep,
@@ -399,14 +399,28 @@ Future<bool> _hasAnyTopLevelAnnotations(
     }
   }
   for (var declaration in parsed.declarations) {
-    if (declaration.metadata.isNotEmpty) return true;
+    if (declaration.metadata.any(_isUnknownAnnotation)) {
+      return true;
+    }
   }
   for (var partId in partIds) {
-    if (await _hasAnyTopLevelAnnotations(partId, resolver, buildStep)) {
+    if (await _hasInterestingTopLevelAnnotations(partId, resolver, buildStep)) {
       return true;
     }
   }
   return false;
+}
+
+bool _isUnknownAnnotation(Annotation annotation) {
+  const knownAnnotationNames = {
+    // Annotations from dart:core, there is an assumption that people are not
+    // overriding these.
+    'deprecated',
+    'Deprecated',
+    'override',
+    'pragma',
+  };
+  return !knownAnnotationNames.contains(annotation.name.name);
 }
 
 const defaultFileHeader = '// GENERATED CODE - DO NOT MODIFY BY HAND';

@@ -889,7 +889,11 @@ foo generated content
     ''',
       testLibPartContent: '''
     part of 'test_lib.dart';
-    @deprecated
+
+    // Use this to avoid the short circuit.
+    const deprecated2 = deprecated;
+
+    @deprecated2
     int x;
     ''',
     );
