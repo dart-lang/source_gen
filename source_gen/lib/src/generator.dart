@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
+import 'package:source_span/source_span.dart';
 
 import 'library.dart';
 import 'span_for_element.dart';
@@ -45,57 +46,90 @@ class InvalidGenerationSource implements Exception {
   /// May be an empty string if unknown.
   final String todo;
 
-  /// The code element associated with this error.
-  ///
-  /// May be `null` if the error had no associated element, or if the location
-  /// was passed with [node].
+  /// The [Element2] associated with this error, if any.
   final Element2? element;
 
-  /// The AST Node associated with this error.
-  ///
-  /// May be `null` if the error has no associated node in the input source
-  /// code, or if the location was passed with [element].
+  /// The [ElementDirective] associated with this error, if any.
+  final ElementDirective? elementDirective;
+
+  /// The [AstNode] associated with this error, if any.
   final AstNode? node;
+
+  /// The [Fragment] associated with this error, if any.
+  final Fragment? fragment;
 
   InvalidGenerationSource(
     this.message, {
+    Annotatable? annotatable,
     this.todo = '',
-    this.element,
+    Element2? element,
+    ElementDirective? elementDirective,
+    Fragment? fragment,
     this.node,
-  });
+  }) : element =
+           element ??
+           (annotatable is Element2 ? annotatable : null) as Element2?,
+       elementDirective =
+           elementDirective ??
+           (annotatable is ElementDirective ? annotatable : null),
+       fragment =
+           fragment ??
+           (annotatable is Fragment ? annotatable : null) as Fragment?;
 
   @override
   String toString() {
     final buffer = StringBuffer(message);
 
+    // If possible render a span, if a span can't be computed show any cause
+    // object.
+    SourceSpan? span;
+    Object? cause;
+
     if (element case final element?) {
       try {
-        final span = spanForElement(element);
-        buffer
-          ..writeln()
-          ..writeln(span.start.toolString)
-          ..write(span.highlight());
+        span = spanForElement(element);
       } catch (_) {
-        // Source for `element` wasn't found, it must be in a summary with no
-        // associated source. We can still give the name.
-        buffer
-          ..writeln()
-          ..writeln('Cause: $element');
+        cause = element;
       }
     }
 
-    if (node case final node?) {
+    if (elementDirective case final elementDirective?) {
       try {
-        final span = spanForNode(node);
-        buffer
-          ..writeln()
-          ..writeln(span.start.toolString)
-          ..write(span.highlight());
+        span = spanForElementDirective(elementDirective);
       } catch (_) {
-        buffer
-          ..writeln()
-          ..writeln('Cause: $node');
+        cause = elementDirective;
       }
+    }
+
+    if (span == null) {
+      if (node case final node?) {
+        try {
+          span = spanForNode(node);
+        } catch (_) {
+          cause = node;
+        }
+      }
+    }
+
+    if (span == null) {
+      if (fragment case final fragment?) {
+        try {
+          span = spanForFragment(fragment);
+        } catch (_) {
+          cause = fragment;
+        }
+      }
+    }
+
+    if (span != null) {
+      buffer
+        ..writeln()
+        ..writeln(span.start.toolString)
+        ..write(span.highlight());
+    } else if (cause != null) {
+      buffer
+        ..writeln()
+        ..writeln('Cause: $cause');
     }
 
     return buffer.toString();

@@ -1,5 +1,7 @@
-## 3.0.1-wip
+## 3.1.0-wip
 
+- `InvalidGenerationSource` support for `Fragment`, `ElementDirective` and
+  `Annotatable`.
 - Allow `analyzer: '>=7.4.0 <9.0.0'`.
 
 ## 3.0.0

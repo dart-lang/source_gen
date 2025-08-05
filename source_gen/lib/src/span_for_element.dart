@@ -54,6 +54,24 @@ SourceSpan spanForElement(Element2 element, [SourceFile? file]) {
   );
 }
 
+/// Returns a source span for the start character of [elementDirective].
+SourceSpan spanForElementDirective(ElementDirective elementDirective) {
+  final libraryFragment = elementDirective.libraryFragment;
+  final contents = libraryFragment.source.contents.data;
+  final url = assetToPackageUrl(libraryFragment.source.uri);
+  final file = SourceFile.fromString(contents, url: url);
+  var offset = 0;
+  if (elementDirective is LibraryExport) {
+    offset = elementDirective.exportKeywordOffset;
+  } else if (elementDirective is LibraryImport) {
+    offset = elementDirective.importKeywordOffset;
+  } else if (elementDirective is PartInclude) {
+    // TODO(davidmorgan): no way to get this yet, see
+    // https://github.com/dart-lang/source_gen/issues/769#issuecomment-3157032889
+  }
+  return file.span(offset, offset);
+}
+
 /// Returns a source span that spans the location where [node] is written.
 SourceSpan spanForNode(AstNode node) {
   final unit = node.thisOrAncestorOfType<CompilationUnit>()!;
@@ -62,4 +80,15 @@ SourceSpan spanForNode(AstNode node) {
   final url = assetToPackageUrl(unitFragment.source.uri);
   final file = SourceFile.fromString(contents, url: url);
   return file.span(node.offset, node.offset + node.length);
+}
+
+/// Returns a source span for the start character of [fragment].
+///
+/// If the fragment has a name, the start character is the start of the name.
+SourceSpan spanForFragment(Fragment fragment) {
+  final libraryFragment = fragment.libraryFragment!;
+  final contents = libraryFragment.source.contents.data;
+  final url = assetToPackageUrl(libraryFragment.source.uri);
+  final file = SourceFile.fromString(contents, url: url);
+  return file.span(fragment.offset, fragment.offset);
 }
