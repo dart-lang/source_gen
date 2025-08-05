@@ -19,4 +19,15 @@ class MultiplierGenerator extends GeneratorForAnnotation<Multiplier> {
 
     return 'num ${element.name3}Multiplied() => ${element.name3} * $numValue;';
   }
+
+  // Override this method to respond to annotations on directives: `import`,
+  // `export`, `library` and/or `part`.
+  //
+  // This generator doesn't respond to such annotations, so do nothing.
+  @override
+  dynamic generateForAnnotatedDirective(
+    ElementDirective directive,
+    ConstantReader annotation,
+    BuildStep buildStep,
+  );
 }
