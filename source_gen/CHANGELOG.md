@@ -6,6 +6,7 @@
 - Prepare to stop using `dart:mirrors`: add `inPackage` and `inSdk` parameters
   to `GenerateForAnnotation`. These will start being used in version `4.0.0`
   when it switches to `TypeChecker.typeNamed`.
+- Allow `analyzer: '>=7.4.0 <9.0.0'`.
 
 ## 3.0.0
 
@@ -13,6 +14,10 @@
   do resolution need to switch to the new API, see
   https://github.com/dart-lang/sdk/blob/main/pkg/analyzer/doc/element_model_migration_guide.md.
   For questions please use https://github.com/dart-lang/build/discussions.
+- **Breaking Change**: annotations are now reported separately for elements
+  and directives. If you use `TypeChecker().annotatedWith()`, see also
+  the new `TypeChecker().libraryDirectivesAnnotatedWith()`. If you use
+  `GeneratorForAnnotation` see the new `generateForAnnotatedDirective`.
 - Require `build: ^3.0.0`
 - Updated the minimum package versions for a number of dependencies.
 - Require Dart 3.7.0
