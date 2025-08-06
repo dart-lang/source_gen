@@ -1,3 +1,7 @@
+## 3.0.1-wip
+
+- Allow `analyzer: '>=7.4.0 <9.0.0'`.
+
 ## 3.0.0
 
 - **Breaking Change**: use the new `element2` APIs in `analyzer`. Builders that
