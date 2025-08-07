@@ -5,6 +5,7 @@
 import 'dart:async';
 
 import 'package:analyzer/dart/ast/ast.dart';
+// ignore: deprecated_member_use until analyzer 7 support is dropped.
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:source_span/source_span.dart';
@@ -46,7 +47,8 @@ class InvalidGenerationSource implements Exception {
   /// May be an empty string if unknown.
   final String todo;
 
-  /// The [Element2] associated with this error, if any.
+  /// The `Element2` associated with this error, if any.
+  /// ignore: deprecated_member_use until analyzer 7 support is dropped.
   final Element2? element;
 
   /// The [ElementDirective] associated with this error, if any.
@@ -62,12 +64,14 @@ class InvalidGenerationSource implements Exception {
     this.message, {
     Annotatable? annotatable,
     this.todo = '',
+    // ignore: deprecated_member_use until analyzer 7 support is dropped.
     Element2? element,
     ElementDirective? elementDirective,
     Fragment? fragment,
     this.node,
   }) : element =
            element ??
+           // ignore: deprecated_member_use until analyzer 7 support is dropped.
            (annotatable is Element2 ? annotatable : null) as Element2?,
        elementDirective =
            elementDirective ??
