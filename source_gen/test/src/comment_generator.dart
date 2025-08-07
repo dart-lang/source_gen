@@ -30,6 +30,23 @@ class CommentGenerator extends Generator {
             element: classElement,
           );
         }
+        if (classElement.displayName.contains('FragmentError')) {
+          throw InvalidGenerationSourceError(
+            "Don't use classes with the word 'Error' in the name",
+            todo: 'Rename ${classElement.displayName} to something else.',
+            fragment: classElement.firstFragment,
+          );
+        }
+        if (classElement.displayName.contains('ElementDirectiveError')) {
+          throw InvalidGenerationSourceError(
+            "Don't use classes with the word 'Error' in the name",
+            todo: 'Rename ${classElement.displayName} to something else.',
+            // No directive relates to the class, just throw with the first
+            // export.
+            elementDirective:
+                classElement.library2.firstFragment.libraryExports2.first,
+          );
+        }
         output.add('// Code for "$classElement"');
       }
     }

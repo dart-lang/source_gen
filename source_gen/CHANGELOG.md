@@ -6,6 +6,8 @@
 - Prepare to stop using `dart:mirrors`: add `inPackage` and `inSdk` parameters
   to `GenerateForAnnotation`. These will start being used in version `4.0.0`
   when it switches to `TypeChecker.typeNamed`.
+- `InvalidGenerationSource` support for `Fragment`, `ElementDirective` and
+  `Annotatable`.
 - Allow `analyzer: '>=7.4.0 <9.0.0'`.
 
 ## 3.0.0

@@ -207,6 +207,38 @@ $dartFormatWidth
       logs,
       contains(contains("Don't use classes with the word 'Error' in the name")),
     );
+    // The class name starts at line 4, column 7.
+    expect(logs, contains(contains(':4:7\n')));
+  });
+
+  test('handle generator errors reported using fragments', () async {
+    final srcs = _createPackageStub(
+      testLibContent: _testLibContentWithErrorFragment,
+    );
+    final builder = PartBuilder([const CommentGenerator()], '.foo.dart');
+    final logs = <String>[];
+    await testBuilder(builder, srcs, onLog: (r) => logs.add(r.toString()));
+    expect(
+      logs,
+      contains(contains("Don't use classes with the word 'Error' in the name")),
+    );
+    // The class name starts at line 3, column 7.
+    expect(logs, contains(contains(':3:7\n')));
+  });
+
+  test('handle generator errors reported using element directives', () async {
+    final srcs = _createPackageStub(
+      testLibContent: _testLibContentWithErrorElementDirective,
+    );
+    final builder = PartBuilder([const CommentGenerator()], '.foo.dart');
+    final logs = <String>[];
+    await testBuilder(builder, srcs, onLog: (r) => logs.add(r.toString()));
+    expect(
+      logs,
+      contains(contains("Don't use classes with the word 'Error' in the name")),
+    );
+    // The export directive starts at line 2, column 1.
+    expect(logs, contains(contains(':2:1\n')));
   });
 
   test('throws when input library has syntax errors and allowSyntaxErrors '
@@ -994,6 +1026,19 @@ library test_lib;
 part 'test_lib.foo.dart';
 class MyError { }
 class MyGoodError { }
+''';
+
+const _testLibContentWithErrorFragment = r'''
+library test_lib;
+part 'test_lib.foo.dart';
+class MyFragmentError { }
+''';
+
+const _testLibContentWithErrorElementDirective = r'''
+library test_lib;
+export 'foo.dart';
+part 'test_lib.foo.dart';
+class MyElementDirectiveError { }
 ''';
 
 const _testLibPartContent = r'''
