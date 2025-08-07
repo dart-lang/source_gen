@@ -1,5 +1,11 @@
 ## 3.1.0-wip
 
+- Prepare to stop using `dart:mirrors`: deprecate `TypeChecker.fromRuntime`.
+  It will be removed in version `4.0.0`. Add `TypeChecker.typeNamed` which is
+  the recommended replacement.
+- Prepare to stop using `dart:mirrors`: add `inPackage` and `inSdk` parameters
+  to `GenerateForAnnotation`. These will start being used in version `4.0.0`
+  when it switches to `TypeChecker.typeNamed`.
 - `InvalidGenerationSource` support for `Fragment`, `ElementDirective` and
   `Annotatable`.
 - Allow `analyzer: '>=7.4.0 <9.0.0'`.
