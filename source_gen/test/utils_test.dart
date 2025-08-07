@@ -6,6 +6,8 @@
 @Timeout.factor(2.0)
 library;
 
+// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
+
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/src/utils.dart';

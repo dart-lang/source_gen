@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
+
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/source_gen.dart';

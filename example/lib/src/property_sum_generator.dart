@@ -12,6 +12,7 @@ class PropertySumGenerator extends Generator {
   String generate(LibraryReader library, BuildStep buildStep) {
     final sumNames = topLevelNumVariables(
       library,
+      // ignore: deprecated_member_use until analyzer 7 support is dropped.
     ).map((element) => element.name3).join(' + ');
 
     return '''
