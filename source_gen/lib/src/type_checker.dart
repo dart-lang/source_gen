@@ -35,7 +35,26 @@ abstract class TypeChecker {
   /// Create a new [TypeChecker] backed by a runtime [type].
   ///
   /// This implementation uses `dart:mirrors` (runtime reflection).
+  @Deprecated('''
+Will be removed in 4.0.0 to drop `dart:mirrors` dependency.
+
+Recommended: replace `fromRuntime(Foo)` with
+`typeNamed(Foo, inPackage: 'foo_package')`. This is a slighly weaker check than
+`fromRuntime(Foo)` as it matches any annotation named `Foo` in
+`package:foo_package`.
+
+If you need an exact match, use `fromUrl`.''')
   const factory TypeChecker.fromRuntime(Type type) = _MirrorTypeChecker;
+
+  /// Create a new [TypeChecker] for types matching the name of [type].
+  ///
+  /// Optionally, also pass [inPackage] to restrict to a specific package by
+  /// name. Set [inSdk] if it's a `dart` package.
+  const factory TypeChecker.typeNamed(
+    Type type, {
+    String? inPackage,
+    bool? inSdk,
+  }) = _NameTypeChecker;
 
   /// Create a new [TypeChecker] backed by a static [type].
   const factory TypeChecker.fromStatic(DartType type) = _LibraryTypeChecker;
@@ -267,6 +286,38 @@ class _MirrorTypeChecker extends TypeChecker {
 
   @override
   String toString() => _computed.toString();
+}
+
+// Checks a runtime type name and optional package against a static type.
+class _NameTypeChecker extends TypeChecker {
+  final Type _type;
+
+  final String? _inPackage;
+  final bool _inSdk;
+
+  const _NameTypeChecker(this._type, {String? inPackage, bool? inSdk})
+    : _inPackage = inPackage,
+      _inSdk = inSdk ?? false,
+      super._();
+
+  String get _typeName {
+    final result = _type.toString();
+    return result.contains('<')
+        ? result.substring(0, result.indexOf('<'))
+        : result;
+  }
+
+  @override
+  bool isExactly(Element2 element) {
+    final uri = element.library2!.uri;
+    return element.name3 == _typeName &&
+        (_inPackage == null ||
+            (((uri.scheme == 'dart') == _inSdk) &&
+                uri.pathSegments.first == _inPackage));
+  }
+
+  @override
+  String toString() => _inPackage == null ? '$_type' : '$_inPackage#$_type';
 }
 
 // Checks a runtime type against an Uri and Symbol.

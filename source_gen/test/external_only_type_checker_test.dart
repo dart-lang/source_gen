@@ -76,7 +76,9 @@ void main() {
     'TypeChecker.forRuntime',
     () {
       commonTests(
-        checkNonPublic: () => const TypeChecker.fromRuntime(NonPublic),
+        checkNonPublic:
+            () =>
+                const TypeChecker.typeNamed(NonPublic, inPackage: 'source_gen'),
       );
     },
     onPlatform: const {

@@ -335,15 +335,77 @@ void main() {
 
   group('TypeChecker.forRuntime', () {
     commonTests(
+      // ignore: deprecated_member_use_from_same_package
       checkIterable: () => const TypeChecker.fromRuntime(Iterable),
+      // ignore: deprecated_member_use_from_same_package
       checkEnum: () => const TypeChecker.fromRuntime(Enum),
+      // ignore: deprecated_member_use_from_same_package
       checkEnumMixin: () => const TypeChecker.fromRuntime(MyEnumMixin),
+      // ignore: deprecated_member_use_from_same_package
       checkMap: () => const TypeChecker.fromRuntime(Map),
+      // ignore: deprecated_member_use_from_same_package
       checkMapMixin: () => const TypeChecker.fromRuntime(MyMapMixin),
+      // ignore: deprecated_member_use_from_same_package
       checkHashMap: () => const TypeChecker.fromRuntime(HashMap),
+      // ignore: deprecated_member_use_from_same_package
       checkGenerator: () => const TypeChecker.fromRuntime(Generator),
+
       checkGeneratorForAnnotation:
-          () => const TypeChecker.fromRuntime(GeneratorForAnnotation),
+          // ignore: deprecated_member_use_from_same_packages
+          () => const TypeChecker.typeNamed(
+            GeneratorForAnnotation,
+            inPackage: 'source_gen',
+          ),
+    );
+  });
+
+  group('TypeChecker.typeNamed without package', () {
+    commonTests(
+      checkIterable: () => const TypeChecker.typeNamed(Iterable),
+      checkEnum: () => const TypeChecker.typeNamed(Enum),
+      checkEnumMixin: () => const TypeChecker.typeNamed(MyEnumMixin),
+      checkMap: () => const TypeChecker.typeNamed(Map),
+      checkMapMixin: () => const TypeChecker.typeNamed(MyMapMixin),
+      checkHashMap: () => const TypeChecker.typeNamed(HashMap),
+      checkGenerator: () => const TypeChecker.typeNamed(Generator),
+      checkGeneratorForAnnotation:
+          () => const TypeChecker.typeNamed(GeneratorForAnnotation),
+    );
+  });
+
+  group('TypeChecker.typeNamed with package', () {
+    commonTests(
+      checkIterable:
+          () => const TypeChecker.typeNamed(
+            Iterable,
+            inPackage: 'core',
+            inSdk: true,
+          ),
+      checkEnum:
+          () =>
+              const TypeChecker.typeNamed(Enum, inPackage: 'core', inSdk: true),
+      checkEnumMixin:
+          () =>
+              const TypeChecker.typeNamed(MyEnumMixin, inPackage: 'source_gen'),
+      checkMap:
+          () =>
+              const TypeChecker.typeNamed(Map, inPackage: 'core', inSdk: true),
+      checkMapMixin:
+          () =>
+              const TypeChecker.typeNamed(MyMapMixin, inPackage: 'source_gen'),
+      checkHashMap:
+          () => const TypeChecker.typeNamed(
+            HashMap,
+            inPackage: 'collection',
+            inSdk: true,
+          ),
+      checkGenerator:
+          () => const TypeChecker.typeNamed(Generator, inPackage: 'source_gen'),
+      checkGeneratorForAnnotation:
+          () => const TypeChecker.typeNamed(
+            GeneratorForAnnotation,
+            inPackage: 'source_gen',
+          ),
     );
   });
 
@@ -393,7 +455,11 @@ void main() {
       class X {}
     ''', (resolver) async => (await resolver.findLibraryByName('_test'))!);
     final classX = library.getClass2('X')!;
-    const $deprecated = TypeChecker.fromRuntime(Deprecated);
+    const $deprecated = TypeChecker.typeNamed(
+      Deprecated,
+      inPackage: 'core',
+      inSdk: true,
+    );
 
     expect(
       () => $deprecated.annotationsOf(classX),
@@ -412,8 +478,8 @@ void main() {
 
   test('should check multiple checkers', () {
     const listOrMap = TypeChecker.any([
-      TypeChecker.fromRuntime(List),
-      TypeChecker.fromRuntime(Map),
+      TypeChecker.typeNamed(List, inPackage: 'core', inSdk: true),
+      TypeChecker.typeNamed(Map, inPackage: 'core', inSdk: true),
     ]);
     expect(listOrMap.isExactlyType(staticMap), isTrue);
   });
