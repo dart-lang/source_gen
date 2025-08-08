@@ -1,4 +1,4 @@
-## 3.1.0-wip
+## 3.1.0
 
 - Prepare to stop using `dart:mirrors`: deprecate `TypeChecker.fromRuntime`.
   It will be removed in version `4.0.0`. Add `TypeChecker.typeNamed` which is

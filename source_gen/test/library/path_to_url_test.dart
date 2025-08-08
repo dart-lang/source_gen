@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
+
 // Increase timeouts on this test which resolves source code and can be slow.
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:source_gen/source_gen.dart';

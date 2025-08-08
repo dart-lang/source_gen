@@ -6,6 +6,8 @@
 @Timeout.factor(3)
 library;
 
+// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
+
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element2.dart';
@@ -170,6 +172,8 @@ $dartFormatWidth
               LibraryImport() => '// LibraryImport',
               LibraryExport() => '// LibraryExport',
               PartInclude() => '// PartInclude',
+              // ignore: unreachable_switch_case on analyzer 7, needed on 8.
+              ElementDirective() => '// ElementDirective',
             },
         elementBehavior: (element) => '// ${element.runtimeType}',
       ),

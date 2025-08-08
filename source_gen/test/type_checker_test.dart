@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 // ignore_for_file: unreachable_from_main
+// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
 
 // Increase timeouts on this test which resolves source code and can be slow.
 @Timeout.factor(2.0)
