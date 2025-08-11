@@ -62,23 +62,12 @@ class InvalidGenerationSource implements Exception {
 
   InvalidGenerationSource(
     this.message, {
-    Annotatable? annotatable,
     this.todo = '',
-    // ignore: deprecated_member_use until analyzer 7 support is dropped.
-    Element2? element,
-    ElementDirective? elementDirective,
-    Fragment? fragment,
+    this.element,
+    this.elementDirective,
+    this.fragment,
     this.node,
-  }) : element =
-           element ??
-           // ignore: deprecated_member_use until analyzer 7 support is dropped.
-           (annotatable is Element2 ? annotatable : null) as Element2?,
-       elementDirective =
-           elementDirective ??
-           (annotatable is ElementDirective ? annotatable : null),
-       fragment =
-           fragment ??
-           (annotatable is Fragment ? annotatable : null) as Fragment?;
+  });
 
   @override
   String toString() {
