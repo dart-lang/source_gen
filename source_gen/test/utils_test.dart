@@ -6,15 +6,13 @@
 @Timeout.factor(2.0)
 library;
 
-// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
-
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/src/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
-  late ClassElement2 example;
+  late ClassElement example;
 
   setUpAll(() async {
     const source = r'''
@@ -32,17 +30,17 @@ void main() {
       source,
       (resolver) => resolver
           .findLibraryByName('example')
-          .then((e) => e!.getClass2('Example')!),
+          .then((e) => e!.getClass('Example')!),
     );
   });
 
   test('should return the name of a class type', () {
-    final classType = example.methods2.first.returnType;
+    final classType = example.methods.first.returnType;
     expect(typeNameOf(classType), 'ClassType');
   });
 
   test('should return the name of a function type', () {
-    final functionType = example.methods2.last.returnType;
+    final functionType = example.methods.last.returnType;
     expect(typeNameOf(functionType), 'FunctionType');
   });
 

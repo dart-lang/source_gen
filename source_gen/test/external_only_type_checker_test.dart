@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
-
 // The tests in this file are only ran externally, as the behavior only works
 // externally. Internally this test is skipped.
 
@@ -58,7 +56,7 @@ void main() {
         expect(
           checkNonPublic().isExactlyType(staticNonPublic),
           isTrue,
-          reason: '${checkNonPublic()} != ${staticNonPublic.element3.name3}',
+          reason: '${checkNonPublic()} != ${staticNonPublic.element.name}',
         );
       });
 
@@ -68,7 +66,7 @@ void main() {
           isTrue,
           reason:
               '${checkNonPublic()} is not assignable from '
-              '${staticNonPublic.element3.name3}',
+              '${staticNonPublic.element.name}',
         );
       });
     });
