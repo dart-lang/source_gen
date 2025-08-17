@@ -4,10 +4,8 @@
 
 import 'dart:io';
 
-// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
-
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:path/path.dart' as p;
@@ -22,20 +20,20 @@ import 'package:yaml/yaml.dart';
 /// typedef VoidFunc = void Function();
 /// ```
 ///
-/// This function will return `'VoidFunc'`, unlike [DartType.element3]`.name3`.
+/// This function will return `'VoidFunc'`, unlike [DartType.element]`.name`.
 String typeNameOf(DartType type) {
-  final aliasElement = type.alias?.element2;
+  final aliasElement = type.alias?.element;
   if (aliasElement != null) {
-    return aliasElement.name3!;
+    return aliasElement.name!;
   }
   if (type is DynamicType) {
     return 'dynamic';
   }
   if (type is InterfaceType) {
-    return type.element3.name3!;
+    return type.element.name!;
   }
   if (type is TypeParameterType) {
-    return type.element3.name3!;
+    return type.element.name!;
   }
   throw UnimplementedError('(${type.runtimeType}) $type');
 }
@@ -46,7 +44,7 @@ bool hasExpectedPartDirective(CompilationUnit unit, String part) => unit
     .any((e) => e.uri.stringValue == part);
 
 /// Returns a uri suitable for `part of "..."` when pointing to [element].
-String uriOfPartial(LibraryElement2 element, AssetId source, AssetId output) {
+String uriOfPartial(LibraryElement element, AssetId source, AssetId output) {
   assert(source.package == output.package);
   return p.url.relative(source.path, from: p.url.dirname(output.path));
 }
@@ -59,13 +57,13 @@ String computePartUrl(AssetId input, AssetId output) => p.url.joinAll(
 );
 
 /// Returns a URL representing [element].
-String urlOfElement(Element2 element) =>
+String urlOfElement(Element element) =>
     element.kind == ElementKind.DYNAMIC
         ? 'dart:core#dynamic'
         // using librarySource.uri – in case the element is in a part
         : normalizeUrl(
-          element.library2!.uri,
-        ).replace(fragment: element.name3).toString();
+          element.library!.uri,
+        ).replace(fragment: element.name).toString();
 
 Uri normalizeUrl(Uri url) => switch (url.scheme) {
   'dart' => normalizeDartUrl(url),

@@ -5,8 +5,7 @@
 import 'dart:convert';
 
 import 'package:analyzer/dart/ast/ast.dart';
-// ignore: deprecated_member_use until analyzer 7 support is dropped.
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:pub_semver/pub_semver.dart';
@@ -110,8 +109,7 @@ class _Builder extends Builder {
   }
 
   Future<void> _generateForLibrary(
-    // ignore: deprecated_member_use until analyzer 7 support is dropped.
-    LibraryElement2 library,
+    LibraryElement library,
     BuildStep buildStep,
   ) async {
     final generatedOutputs =
@@ -357,8 +355,7 @@ class LibraryBuilder extends _Builder {
 }
 
 Stream<GeneratedOutput> _generate(
-  // ignore: deprecated_member_use until analyzer 7 support is dropped.
-  LibraryElement2 library,
+  LibraryElement library,
   List<Generator> generators,
   BuildStep buildStep,
 ) async* {
@@ -443,8 +440,7 @@ const partIdRegExpLiteral = r'[A-Za-z_\d-]+';
 
 final _partIdRegExp = RegExp('^$partIdRegExpLiteral\$');
 
-// ignore: deprecated_member_use until analyzer 7 support is dropped.
-String languageOverrideForLibrary(LibraryElement2 library) {
+String languageOverrideForLibrary(LibraryElement library) {
   final override = library.languageVersion.override;
   return override == null
       ? ''

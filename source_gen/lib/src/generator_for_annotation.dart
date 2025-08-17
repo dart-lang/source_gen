@@ -4,8 +4,7 @@
 
 import 'dart:async';
 
-// ignore: deprecated_member_use until analyzer 7 support is dropped.
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 
 import 'constants/reader.dart';
@@ -68,9 +67,7 @@ abstract class GeneratorForAnnotation<T> extends Generator {
     this.inSdk,
   });
 
-  // This will switch to `typeNamed` in 4.0.0.
-  // ignore: deprecated_member_use_from_same_package
-  TypeChecker get typeChecker => TypeChecker.fromRuntime(T);
+  TypeChecker get typeChecker => TypeChecker.typeNamed(T);
 
   @override
   FutureOr<String> generate(LibraryReader library, BuildStep buildStep) async {
@@ -127,8 +124,7 @@ abstract class GeneratorForAnnotation<T> extends Generator {
   /// Implementations should return `null` when no content is generated. Empty
   /// or whitespace-only [String] instances are also ignored.
   dynamic generateForAnnotatedElement(
-    // ignore: deprecated_member_use until analyzer 7 support is dropped.
-    Element2 element,
+    Element element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) {}

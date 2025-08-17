@@ -2,10 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
-
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:source_span/source_span.dart';
 
 import 'utils.dart';
@@ -21,38 +19,38 @@ import 'utils.dart';
 ///
 /// Not all results from the analyzer API may return source information as part
 /// of the element, so [file] may need to be manually provided in those cases.
-SourceSpan spanForElement(Element2 element, [SourceFile? file]) {
+SourceSpan spanForElement(Element element, [SourceFile? file]) {
   final fragment = element.firstFragment;
   final url = assetToPackageUrl(fragment.libraryFragment!.source.uri);
   if (file == null) {
     final contents = fragment.libraryFragment?.source.contents;
     if (contents == null) {
       return SourceSpan(
-        SourceLocation(fragment.nameOffset2!, sourceUrl: url),
+        SourceLocation(fragment.nameOffset!, sourceUrl: url),
         SourceLocation(
-          fragment.nameOffset2! + fragment.name2!.length,
+          fragment.nameOffset! + fragment.name!.length,
           sourceUrl: url,
         ),
-        fragment.name2!,
+        fragment.name!,
       );
     }
     file = SourceFile.fromString(contents.data, url: url);
   }
-  if (fragment.nameOffset2 == null) {
-    if (element is PropertyInducingElement2) {
-      if (element.getter2 != null) {
-        return spanForElement(element.getter2!);
+  if (fragment.nameOffset == null) {
+    if (element is PropertyInducingElement) {
+      if (element.getter != null) {
+        return spanForElement(element.getter!);
       }
 
-      if (element.setter2 != null) {
-        return spanForElement(element.setter2!);
+      if (element.setter != null) {
+        return spanForElement(element.setter!);
       }
     }
   }
 
   return file.span(
-    fragment.nameOffset2!,
-    fragment.nameOffset2! + fragment.name2!.length,
+    fragment.nameOffset!,
+    fragment.nameOffset! + fragment.name!.length,
   );
 }
 

@@ -3,11 +3,11 @@
 // BSD-style license that can be found in the LICENSE file.
 
 // TODO(kevmoo): migrate analyzer APIs when we can get latest with a stable SDK
-// ignore_for_file: deprecated_member_use
 
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+
 // ignore: implementation_imports
 import 'package:analyzer/src/dart/constant/value.dart' show DartObjectImpl;
 
@@ -22,37 +22,37 @@ import '../utils.dart';
 /// **NOTE**: Some returned [Revivable] instances are not representable as valid
 /// Dart source code (such as referencing private constructors). It is up to the
 /// build tool(s) using this library to surface error messages to the user.
-Revivable reviveInstance(DartObject object, [LibraryElement2? origin]) {
+Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
   final objectType = object.type;
-  Element2? element = objectType!.alias?.element2;
+  Element? element = objectType!.alias?.element;
   if (element == null) {
     if (objectType is InterfaceType) {
-      element = objectType.element3;
+      element = objectType.element;
     } else {
-      element = object.toFunctionValue2();
+      element = object.toFunctionValue();
     }
   }
-  origin ??= element!.library2;
+  origin ??= element!.library;
   var url = Uri.parse(urlOfElement(element!));
   if (element is TopLevelFunctionElement || element is LocalFunctionElement) {
-    return Revivable._(source: url.removeFragment(), accessor: element.name3!);
+    return Revivable._(source: url.removeFragment(), accessor: element.name!);
   }
 
-  if (element is MethodElement2 && element.isStatic) {
+  if (element is MethodElement && element.isStatic) {
     return Revivable._(
       source: url.removeFragment(),
       accessor:
-          '${element.firstFragment.enclosingFragment!.name2}.${element.name3}',
+          '${element.firstFragment.enclosingFragment!.name}.${element.name}',
     );
   }
 
-  if (element is InterfaceElement2) {
-    for (final e in element.fields2.where(
+  if (element is InterfaceElement) {
+    for (final e in element.fields.where(
       (f) => f.isPublic && f.isConst && f.computeConstantValue() == object,
     )) {
       return Revivable._(
         source: url.removeFragment(),
-        accessor: '${element.name3}.${e.name3}',
+        accessor: '${element.name}.${e.name}',
       );
     }
   }
@@ -67,25 +67,25 @@ Revivable reviveInstance(DartObject object, [LibraryElement2? origin]) {
   }
 
   for (final type in origin!.classes) {
-    for (final e in type.fields2.where(
+    for (final e in type.fields.where(
       (f) => f.isConst && f.computeConstantValue() == object,
     )) {
       final result = Revivable._(
         source: url.removeFragment(),
-        accessor: '${type.name3}.${e.name3}',
+        accessor: '${type.name}.${e.name}',
       );
       if (tryResult(result)) {
         return result;
       }
     }
   }
-  final i = (object as DartObjectImpl).getInvocation();
+  final i = (object as DartObjectImpl).constructorInvocation;
   if (i != null) {
-    url = Uri.parse(urlOfElement(i.constructor2.enclosingElement2));
+    url = Uri.parse(urlOfElement(i.constructor.enclosingElement));
     String newToEmpty(String string) => string == 'new' ? '' : string;
     final result = Revivable._(
       source: url,
-      accessor: newToEmpty(i.constructor2.name3!),
+      accessor: newToEmpty(i.constructor.name!),
       namedArguments: i.namedArguments,
       positionalArguments: i.positionalArguments,
     );
@@ -98,7 +98,7 @@ Revivable reviveInstance(DartObject object, [LibraryElement2? origin]) {
   )) {
     final result = Revivable._(
       source: Uri.parse(urlOfElement(origin)).replace(fragment: ''),
-      accessor: e.name3!,
+      accessor: e.name!,
     );
     if (tryResult(result)) {
       return result;

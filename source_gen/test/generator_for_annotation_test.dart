@@ -6,11 +6,9 @@
 @Timeout.factor(3)
 library;
 
-// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
-
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/source_gen.dart';
@@ -43,7 +41,7 @@ void main() {
       'Repeating',
       elementBehavior: (element) sync* {
         yield '// There are deprecated values in this library!';
-        yield '// ${element.name3}';
+        yield '// ${element.name}';
       },
     );
     final builder = LibraryBuilder(generator);
@@ -172,7 +170,6 @@ $dartFormatWidth
               LibraryImport() => '// LibraryImport',
               LibraryExport() => '// LibraryExport',
               PartInclude() => '// PartInclude',
-              // ignore: unreachable_switch_case on analyzer 7, needed on 8.
               ElementDirective() => '// ElementDirective',
             },
         elementBehavior: (element) => '// ${element.runtimeType}',
@@ -267,7 +264,7 @@ $dartFormatWidth
 class _StubGenerator<T> extends GeneratorForAnnotation<T> {
   final String _name;
   final Object? Function(ElementDirective) directiveBehavior;
-  final Object? Function(Element2) elementBehavior;
+  final Object? Function(Element) elementBehavior;
 
   const _StubGenerator(
     this._name, {
@@ -285,7 +282,7 @@ class _StubGenerator<T> extends GeneratorForAnnotation<T> {
 
   @override
   Object? generateForAnnotatedElement(
-    Element2 element,
+    Element element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) => elementBehavior(element);
@@ -335,7 +332,7 @@ class _TestingResolver implements ReleasableResolver {
   }
 
   @override
-  Future<LibraryElement2> libraryFor(
+  Future<LibraryElement> libraryFor(
     AssetId assetId, {
     bool allowSyntaxErrors = false,
   }) async {
