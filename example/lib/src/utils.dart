@@ -2,15 +2,13 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
-
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:source_gen/source_gen.dart';
 
-/// Returns all [TopLevelVariableElement2] members in [reader]'s library that
+/// Returns all [TopLevelVariableElement] members in [reader]'s library that
 /// have a type of [num].
-Iterable<TopLevelVariableElement2> topLevelNumVariables(LibraryReader reader) =>
-    reader.allElements.whereType<TopLevelVariableElement2>().where(
+Iterable<TopLevelVariableElement> topLevelNumVariables(LibraryReader reader) =>
+    reader.allElements.whereType<TopLevelVariableElement>().where(
       (element) =>
           element.type.isDartCoreNum ||
           element.type.isDartCoreInt ||

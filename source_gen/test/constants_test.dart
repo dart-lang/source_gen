@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
-
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/source_gen.dart';
@@ -61,8 +59,8 @@ void main() {
       ''', (resolver) async => (await resolver.findLibraryByName('test_lib'))!);
       constants =
           library
-              .getClass2('Example')!
-              .metadata2
+              .getClass('Example')!
+              .metadata
               .annotations
               .map((e) => ConstantReader(e.computeConstantValue()!))
               .toList();
@@ -157,7 +155,7 @@ void main() {
 
     test('should read a Type', () {
       expect(constants[11].isType, isTrue);
-      expect(constants[11].typeValue.element3!.name3, 'DateTime');
+      expect(constants[11].typeValue.element!.name, 'DateTime');
       expect(constants[11].isLiteral, isFalse);
       expect(() => constants[11].literalValue, throwsFormatException);
     });
@@ -304,8 +302,8 @@ void main() {
       ''', (resolver) async => (await resolver.findLibraryByName('test_lib'))!);
       constants =
           library
-              .getClass2('Example')!
-              .metadata2
+              .getClass('Example')!
+              .metadata
               .annotations
               .map((e) => ConstantReader(e.computeConstantValue()))
               .toList();

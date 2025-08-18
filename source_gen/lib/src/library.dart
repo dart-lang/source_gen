@@ -2,9 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
-
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:path/path.dart' as p;
 
@@ -19,34 +17,34 @@ class AnnotatedDirective {
 
   const AnnotatedDirective(this.annotation, this.directive);
 
-  Metadata? get metadata2 => directive.metadata2;
+  Metadata? get metadata2 => directive.metadata;
 }
 
 /// Result of finding an [annotation] on [element] through [LibraryReader].
 class AnnotatedElement {
   final ConstantReader annotation;
-  final Element2 element;
+  final Element element;
 
   const AnnotatedElement(this.annotation, this.element);
 }
 
-/// A high-level wrapper API with common functionality for [LibraryElement2].
+/// A high-level wrapper API with common functionality for [LibraryElement].
 class LibraryReader {
-  final LibraryElement2 element;
+  final LibraryElement element;
 
   LibraryReader(this.element);
 
-  /// Returns a top-level [ClassElement2] publicly visible in by [name].
+  /// Returns a top-level [ClassElement] publicly visible in by [name].
   ///
-  /// Unlike [LibraryElement2.getClass2], this also correctly traverses
+  /// Unlike [LibraryElement.getClass], this also correctly traverses
   /// identifiers that are accessible via one or more `export` directives.
-  ClassElement2? findType(String name) {
+  ClassElement? findType(String name) {
     final type = element.exportNamespace.get2(name);
-    return type is ClassElement2 ? type : null;
+    return type is ClassElement ? type : null;
   }
 
   /// All of the declarations in this library.
-  Iterable<Element2> get allElements => [element, ...element.children2];
+  Iterable<Element> get allElements => [element, ...element.children];
 
   /// All of the declarations in this library annotated with [checker].
   Iterable<AnnotatedElement> annotatedWith(
@@ -71,8 +69,8 @@ class LibraryReader {
   }) sync* {
     final firstFragment = element.firstFragment;
     final directives = [
-      ...firstFragment.libraryImports2,
-      ...firstFragment.libraryExports2,
+      ...firstFragment.libraryImports,
+      ...firstFragment.libraryExports,
       ...firstFragment.partIncludes,
     ];
 
@@ -114,7 +112,7 @@ class LibraryReader {
   ///
   /// This is a typed convenience function for using [pathToUrl], and the same
   /// API restrictions hold around supported schemes and relative paths.
-  Uri pathToElement(Element2 element) => pathToUrl(element.library2!.uri);
+  Uri pathToElement(Element element) => pathToUrl(element.library!.uri);
 
   /// Returns a [Uri] from the current library to the one provided.
   ///
@@ -190,8 +188,8 @@ class LibraryReader {
   }
 
   /// All of the elements representing classes in this library.
-  Iterable<ClassElement2> get classes => element.classes;
+  Iterable<ClassElement> get classes => element.classes;
 
   /// All of the elements representing enums in this library.
-  Iterable<EnumElement2> get enums => element.enums;
+  Iterable<EnumElement> get enums => element.enums;
 }

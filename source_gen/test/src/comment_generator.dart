@@ -2,9 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
-
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Generates a single-line comment for each class
@@ -17,7 +15,7 @@ class CommentGenerator extends Generator {
   Future<String> generate(LibraryReader library, _) async {
     final output = <String>[];
     if (forLibrary) {
-      var name = library.element.name3!;
+      var name = library.element.name!;
       if (name.isEmpty) {
         name = library.element.uri.pathSegments.last;
       }
@@ -46,7 +44,7 @@ class CommentGenerator extends Generator {
             // No directive relates to the class, just throw with the first
             // export.
             elementDirective:
-                classElement.library2.firstFragment.libraryExports2.first,
+                classElement.library.firstFragment.libraryExports.first,
           );
         }
         output.add('// Code for "$classElement"');
@@ -60,6 +58,6 @@ class CommentGenerator extends Generator {
 class DeprecatedGeneratorForAnnotation
     extends GeneratorForAnnotation<Deprecated> {
   @override
-  String generateForAnnotatedElement(Element2 element, _, _) =>
+  String generateForAnnotatedElement(Element element, _, _) =>
       '// "$element" is deprecated!';
 }
