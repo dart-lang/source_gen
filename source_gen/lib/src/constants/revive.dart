@@ -8,9 +8,6 @@ import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 
-// ignore: implementation_imports
-import 'package:analyzer/src/dart/constant/value.dart' show DartObjectImpl;
-
 import '../utils.dart';
 
 /// Attempts to extract what source code could be used to represent [object].
@@ -79,7 +76,7 @@ Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
       }
     }
   }
-  final i = (object as DartObjectImpl).constructorInvocation;
+  final i = object.constructorInvocation;
   if (i != null) {
     url = Uri.parse(urlOfElement(i.constructor.enclosingElement));
     String newToEmpty(String string) => string == 'new' ? '' : string;
