@@ -434,7 +434,8 @@ String _defaultFormatOutput(String code, Version version) =>
 /// Prefixes a dart format width and formats [code].
 String _defaultFormatUnit(String code, Version version) {
   if (code.startsWith('$defaultFileHeader\n')) {
-    code = '$defaultFileHeader\n'
+    code =
+        '$defaultFileHeader\n'
         '$dartFormatWidth\n'
         '${code.substring(defaultFileHeader.length)}';
   } else {
