@@ -2,7 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:analyzer/dart/element/element.dart';
+// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
+
+import 'package:analyzer/dart/element/element2.dart';
+import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
@@ -35,15 +38,19 @@ void main() {
     library = await resolveSources(
       {'a|source.dart': _source, 'a|part.dart': _partSource},
       (r) async => LibraryReader((await r.findLibraryByName('test_lib'))!),
+      nonInputsToReadFromFilesystem: {
+        AssetId('source_gen', 'lib/source_gen.dart'),
+        AssetId('source_gen', 'lib/src/generator.dart'),
+      },
     );
   });
 
   test('class count', () {
-    expect(library.classes.map((c) => c.name), ['Example', 'PartClass']);
+    expect(library.classes.map((c) => c.name3), ['Example', 'PartClass']);
   });
 
   test('enum count', () {
-    expect(library.enums.map((e) => e.name), ['Enum', 'PartEnum']);
+    expect(library.enums.map((e) => e.name3), ['Enum', 'PartEnum']);
   });
 
   test('should return a type not exported', () {
@@ -67,4 +74,4 @@ void main() {
   });
 }
 
-const _isClassElement = TypeMatcher<ClassElement>();
+const _isClassElement = TypeMatcher<ClassElement2>();

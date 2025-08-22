@@ -2,7 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:analyzer/dart/element/element.dart';
+// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
+
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -11,12 +13,23 @@ import '../annotations.dart';
 class MultiplierGenerator extends GeneratorForAnnotation<Multiplier> {
   @override
   String generateForAnnotatedElement(
-    Element element,
+    Element2 element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) {
     final numValue = annotation.read('value').literalValue as num;
 
-    return 'num ${element.name}Multiplied() => ${element.name} * $numValue;';
+    return 'num ${element.name3}Multiplied() => ${element.name3} * $numValue;';
   }
+
+  // Override this method to respond to annotations on directives: `import`,
+  // `export`, `library` and/or `part`.
+  //
+  // This generator doesn't respond to such annotations, so do nothing.
+  @override
+  dynamic generateForAnnotatedDirective(
+    ElementDirective directive,
+    ConstantReader annotation,
+    BuildStep buildStep,
+  );
 }

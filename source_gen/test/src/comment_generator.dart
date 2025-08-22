@@ -2,7 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:analyzer/dart/element/element.dart';
+// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
+
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Generates a single-line comment for each class
@@ -15,19 +17,36 @@ class CommentGenerator extends Generator {
   Future<String> generate(LibraryReader library, _) async {
     final output = <String>[];
     if (forLibrary) {
-      var name = library.element.name;
+      var name = library.element.name3!;
       if (name.isEmpty) {
-        name = library.element.source.uri.pathSegments.last;
+        name = library.element.uri.pathSegments.last;
       }
       output.add('// Code for "$name"');
     }
     if (forClasses) {
-      for (var classElement in library.allElements.whereType<ClassElement>()) {
+      for (var classElement in library.classes) {
         if (classElement.displayName.contains('GoodError')) {
           throw InvalidGenerationSourceError(
             "Don't use classes with the word 'Error' in the name",
             todo: 'Rename ${classElement.displayName} to something else.',
             element: classElement,
+          );
+        }
+        if (classElement.displayName.contains('FragmentError')) {
+          throw InvalidGenerationSourceError(
+            "Don't use classes with the word 'Error' in the name",
+            todo: 'Rename ${classElement.displayName} to something else.',
+            fragment: classElement.firstFragment,
+          );
+        }
+        if (classElement.displayName.contains('ElementDirectiveError')) {
+          throw InvalidGenerationSourceError(
+            "Don't use classes with the word 'Error' in the name",
+            todo: 'Rename ${classElement.displayName} to something else.',
+            // No directive relates to the class, just throw with the first
+            // export.
+            elementDirective:
+                classElement.library2.firstFragment.libraryExports2.first,
           );
         }
         output.add('// Code for "$classElement"');
@@ -41,6 +60,6 @@ class CommentGenerator extends Generator {
 class DeprecatedGeneratorForAnnotation
     extends GeneratorForAnnotation<Deprecated> {
   @override
-  String generateForAnnotatedElement(Element element, _, __) =>
+  String generateForAnnotatedElement(Element2 element, _, _) =>
       '// "$element" is deprecated!';
 }

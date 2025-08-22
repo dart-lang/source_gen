@@ -10,9 +10,10 @@ import 'utils.dart';
 class PropertySumGenerator extends Generator {
   @override
   String generate(LibraryReader library, BuildStep buildStep) {
-    final sumNames = topLevelNumVariables(library)
-        .map((element) => element.name)
-        .join(' + ');
+    final sumNames = topLevelNumVariables(
+      library,
+      // ignore: deprecated_member_use until analyzer 7 support is dropped.
+    ).map((element) => element.name3).join(' + ');
 
     return '''
 num allSum() => $sumNames;

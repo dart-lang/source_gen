@@ -5,9 +5,6 @@ analyzer:
     strict-casts: true
     strict-inference: true
     strict-raw-types: true
-  errors:
-    # analyzer deprecations
-    deprecated_member_use: ignore
 
 linter:
   rules:
@@ -29,7 +26,6 @@ linter:
     - prefer_const_declarations
     - prefer_expression_function_bodies
     - prefer_final_locals
-    - require_trailing_commas
     - sort_child_properties_last
     - unnecessary_await_in_return
     - use_full_hex_values_for_flutter_colors

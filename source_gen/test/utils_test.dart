@@ -6,13 +6,15 @@
 @Timeout.factor(2.0)
 library;
 
-import 'package:analyzer/dart/element/element.dart';
+// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
+
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/src/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
-  late ClassElement example;
+  late ClassElement2 example;
 
   setUpAll(() async {
     const source = r'''
@@ -30,17 +32,17 @@ void main() {
       source,
       (resolver) => resolver
           .findLibraryByName('example')
-          .then((e) => e!.getClass('Example')!),
+          .then((e) => e!.getClass2('Example')!),
     );
   });
 
   test('should return the name of a class type', () {
-    final classType = example.methods.first.returnType;
+    final classType = example.methods2.first.returnType;
     expect(typeNameOf(classType), 'ClassType');
   });
 
   test('should return the name of a function type', () {
-    final functionType = example.methods.last.returnType;
+    final functionType = example.methods2.last.returnType;
     expect(typeNameOf(functionType), 'FunctionType');
   });
 
@@ -55,28 +57,22 @@ void main() {
     });
 
     test('allows multiple output extensions', () {
-      final buildExtensions = validatedBuildExtensionsFrom(
-        {
-          'build_extensions': {
-            '.dart': ['.g.dart', '.h.dart'],
-          },
+      final buildExtensions = validatedBuildExtensionsFrom({
+        'build_extensions': {
+          '.dart': ['.g.dart', '.h.dart'],
         },
-        {},
-      );
+      }, {});
       expect(buildExtensions, {
         '.dart': ['.g.dart', '.h.dart'],
       });
     });
 
     test('allows multiple output extensions of various types ', () {
-      final buildExtensions = validatedBuildExtensionsFrom(
-        {
-          'build_extensions': {
-            '.dart': ['.g.dart', '.swagger.json'],
-          },
+      final buildExtensions = validatedBuildExtensionsFrom({
+        'build_extensions': {
+          '.dart': ['.g.dart', '.swagger.json'],
         },
-        {},
-      );
+      }, {});
       expect(buildExtensions, {
         '.dart': ['.g.dart', '.swagger.json'],
       });
@@ -91,24 +87,20 @@ void main() {
 
     test('disallows empty options', () {
       expect(
-        () => validatedBuildExtensionsFrom(
-          {'build_extensions': <String, Object?>{}},
-          {},
-        ),
+        () => validatedBuildExtensionsFrom({
+          'build_extensions': <String, Object?>{},
+        }, {}),
         throwsArgumentError,
       );
     });
 
     test('disallows inputs not ending with .dart', () {
       expect(
-        () => validatedBuildExtensionsFrom(
-          {
-            'build_extensions': {
-              '.txt': ['.dart'],
-            },
+        () => validatedBuildExtensionsFrom({
+          'build_extensions': {
+            '.txt': ['.dart'],
           },
-          {},
-        ),
+        }, {}),
         throwsA(
           isArgumentError.having(
             (e) => e.message,
@@ -122,12 +114,9 @@ void main() {
 
     test('disallows outputs not ending with .dart', () {
       expect(
-        () => validatedBuildExtensionsFrom(
-          {
-            'build_extensions': {'.dart': '.out'},
-          },
-          {},
-        ),
+        () => validatedBuildExtensionsFrom({
+          'build_extensions': {'.dart': '.out'},
+        }, {}),
         throwsA(
           isArgumentError.having(
             (e) => e.message,
@@ -139,14 +128,11 @@ void main() {
       );
 
       expect(
-        () => validatedBuildExtensionsFrom(
-          {
-            'build_extensions': {
-              '.dart': ['.out', '.g.dart'],
-            },
+        () => validatedBuildExtensionsFrom({
+          'build_extensions': {
+            '.dart': ['.out', '.g.dart'],
           },
-          {},
-        ),
+        }, {}),
         throwsA(
           isArgumentError.having(
             (e) => e.message,

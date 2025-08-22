@@ -23,39 +23,39 @@ class PublicAnnotationClass {
   final PublicAnnotationClass? child2;
 
   const PublicAnnotationClass()
-      : anInt = 0,
-        aString = 'str',
-        aList = const [1, 2, 3],
-        aBool = false,
-        child1 = null,
-        child2 = null;
+    : anInt = 0,
+      aString = 'str',
+      aList = const [1, 2, 3],
+      aBool = false,
+      child1 = null,
+      child2 = null;
 
   const PublicAnnotationClass.withAnIntAsOne()
-      : anInt = 1,
-        aString = 'str',
-        aList = const [1, 2, 3],
-        aBool = false,
-        child1 = null,
-        child2 = null;
+    : anInt = 1,
+      aString = 'str',
+      aList = const [1, 2, 3],
+      aBool = false,
+      child1 = null,
+      child2 = null;
 
   const PublicAnnotationClass.withPositionalArgs(
     int intArg,
     this.aString, {
     bool boolArg = false,
     List<int> listArg = const [2, 3, 4],
-  })  : anInt = intArg,
-        aList = listArg,
-        aBool = boolArg,
-        child1 = null,
-        child2 = null;
+  }) : anInt = intArg,
+       aList = listArg,
+       aBool = boolArg,
+       child1 = null,
+       child2 = null;
 
   const PublicAnnotationClass.withKids()
-      : anInt = 0,
-        aList = const [1, 2, 3],
-        aBool = false,
-        aString = 'withKids',
-        child1 = const PublicAnnotationClass(),
-        child2 = const PublicAnnotationClass.withAnIntAsOne();
+    : anInt = 0,
+      aList = const [1, 2, 3],
+      aBool = false,
+      aString = 'withKids',
+      child1 = const PublicAnnotationClass(),
+      child2 = const PublicAnnotationClass.withAnIntAsOne();
 }
 
 class OtherPublicAnnotationClass {

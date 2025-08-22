@@ -4,8 +4,10 @@
 
 import 'dart:io';
 
+// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
+
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:path/path.dart' as p;
@@ -20,31 +22,31 @@ import 'package:yaml/yaml.dart';
 /// typedef VoidFunc = void Function();
 /// ```
 ///
-/// This function will return `'VoidFunc'`, unlike [DartType.element]`.name`.
+/// This function will return `'VoidFunc'`, unlike [DartType.element3]`.name3`.
 String typeNameOf(DartType type) {
-  final aliasElement = type.alias?.element;
+  final aliasElement = type.alias?.element2;
   if (aliasElement != null) {
-    return aliasElement.name;
+    return aliasElement.name3!;
   }
   if (type is DynamicType) {
     return 'dynamic';
   }
   if (type is InterfaceType) {
-    return type.element.name;
+    return type.element3.name3!;
   }
   if (type is TypeParameterType) {
-    return type.element.name;
+    return type.element3.name3!;
   }
   throw UnimplementedError('(${type.runtimeType}) $type');
 }
 
-bool hasExpectedPartDirective(CompilationUnit unit, String part) =>
-    unit.directives
-        .whereType<PartDirective>()
-        .any((e) => e.uri.stringValue == part);
+bool hasExpectedPartDirective(CompilationUnit unit, String part) => unit
+    .directives
+    .whereType<PartDirective>()
+    .any((e) => e.uri.stringValue == part);
 
 /// Returns a uri suitable for `part of "..."` when pointing to [element].
-String uriOfPartial(LibraryElement element, AssetId source, AssetId output) {
+String uriOfPartial(LibraryElement2 element, AssetId source, AssetId output) {
   assert(source.package == output.package);
   return p.url.relative(source.path, from: p.url.dirname(output.path));
 }
@@ -53,23 +55,24 @@ String uriOfPartial(LibraryElement element, AssetId source, AssetId output) {
 ///
 /// For example, will return `test_lib.g.dart` for `test_lib.dart`.
 String computePartUrl(AssetId input, AssetId output) => p.url.joinAll(
-      p.url.split(p.url.relative(output.path, from: input.path)).skip(1),
-    );
+  p.url.split(p.url.relative(output.path, from: input.path)).skip(1),
+);
 
 /// Returns a URL representing [element].
-String urlOfElement(Element element) => element.kind == ElementKind.DYNAMIC
-    ? 'dart:core#dynamic'
-    // using librarySource.uri – in case the element is in a part
-    : normalizeUrl(element.librarySource!.uri)
-        .replace(fragment: element.name)
-        .toString();
+String urlOfElement(Element2 element) =>
+    element.kind == ElementKind.DYNAMIC
+        ? 'dart:core#dynamic'
+        // using librarySource.uri – in case the element is in a part
+        : normalizeUrl(
+          element.library2!.uri,
+        ).replace(fragment: element.name3).toString();
 
 Uri normalizeUrl(Uri url) => switch (url.scheme) {
-      'dart' => normalizeDartUrl(url),
-      'package' => _packageToAssetUrl(url),
-      'file' => _fileToAssetUrl(url),
-      _ => url
-    };
+  'dart' => normalizeDartUrl(url),
+  'package' => _packageToAssetUrl(url),
+  'file' => _fileToAssetUrl(url),
+  _ => url,
+};
 
 /// Make `dart:`-type URLs look like a user-knowable path.
 ///
@@ -77,9 +80,10 @@ Uri normalizeUrl(Uri url) => switch (url.scheme) {
 ///
 /// This isn't a user-knowable path, so we strip out extra path segments
 /// and only expose `dart:core`.
-Uri normalizeDartUrl(Uri url) => url.pathSegments.isNotEmpty
-    ? url.replace(pathSegments: url.pathSegments.take(1))
-    : url;
+Uri normalizeDartUrl(Uri url) =>
+    url.pathSegments.isNotEmpty
+        ? url.replace(pathSegments: url.pathSegments.take(1))
+        : url;
 
 Uri _fileToAssetUrl(Uri url) {
   if (!p.isWithin(p.url.current, url.path)) return url;
@@ -97,16 +101,17 @@ Uri _fileToAssetUrl(Uri url) {
 ///
 /// For example, this transforms `package:source_gen/source_gen.dart` into:
 /// `asset:source_gen/lib/source_gen.dart`.
-Uri _packageToAssetUrl(Uri url) => url.scheme == 'package'
-    ? url.replace(
-        scheme: 'asset',
-        pathSegments: <String>[
-          url.pathSegments.first,
-          'lib',
-          ...url.pathSegments.skip(1),
-        ],
-      )
-    : url;
+Uri _packageToAssetUrl(Uri url) =>
+    url.scheme == 'package'
+        ? url.replace(
+          scheme: 'asset',
+          pathSegments: <String>[
+            url.pathSegments.first,
+            'lib',
+            ...url.pathSegments.skip(1),
+          ],
+        )
+        : url;
 
 /// Returns a `asset:` URL converted to a `package:` URL.
 ///
@@ -117,17 +122,15 @@ Uri _packageToAssetUrl(Uri url) => url.scheme == 'package'
 /// Asset URLs come from `package:build`, as they are able to describe URLs that
 /// are not describable using `package:...`, such as files in the `bin`, `tool`,
 /// `web`, or even root directory of a package - `asset:some_lib/web/main.dart`.
-Uri assetToPackageUrl(Uri url) => url.scheme == 'asset' &&
-        url.pathSegments.isNotEmpty &&
-        url.pathSegments[1] == 'lib'
-    ? url.replace(
-        scheme: 'package',
-        pathSegments: [
-          url.pathSegments.first,
-          ...url.pathSegments.skip(2),
-        ],
-      )
-    : url;
+Uri assetToPackageUrl(Uri url) =>
+    url.scheme == 'asset' &&
+            url.pathSegments.isNotEmpty &&
+            url.pathSegments[1] == 'lib'
+        ? url.replace(
+          scheme: 'package',
+          pathSegments: [url.pathSegments.first, ...url.pathSegments.skip(2)],
+        )
+        : url;
 
 final String rootPackageName = () {
   final name =

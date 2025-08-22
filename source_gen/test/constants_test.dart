@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
+
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/source_gen.dart';
@@ -12,8 +14,7 @@ void main() {
     late List<ConstantReader> constants;
 
     setUpAll(() async {
-      final library = await resolveSource(
-        r'''
+      final library = await resolveSource(r'''
         library test_lib;
 
         const aString = 'Hello';
@@ -57,14 +58,14 @@ void main() {
         class Super extends Example {
           const Super() : super(aString: 'Super Hello');
         }
-      ''',
-        (resolver) async => (await resolver.findLibraryByName('test_lib'))!,
-      );
-      constants = library
-          .getClass('Example')!
-          .metadata
-          .map((e) => ConstantReader(e.computeConstantValue()!))
-          .toList();
+      ''', (resolver) async => (await resolver.findLibraryByName('test_lib'))!);
+      constants =
+          library
+              .getClass2('Example')!
+              .metadata2
+              .annotations
+              .map((e) => ConstantReader(e.computeConstantValue()!))
+              .toList();
     });
 
     test('should read a String', () {
@@ -119,10 +120,11 @@ void main() {
     test('should read a list', () {
       expect(constants[6].isList, isTrue, reason: '${constants[6]}');
       expect(constants[6].isLiteral, isTrue);
-      expect(
-        constants[6].listValue.map((c) => ConstantReader(c).intValue),
-        [1, 2, 3],
-      );
+      expect(constants[6].listValue.map((c) => ConstantReader(c).intValue), [
+        1,
+        2,
+        3,
+      ]);
     });
 
     test('should read a map', () {
@@ -130,11 +132,11 @@ void main() {
       expect(constants[7].isLiteral, isTrue);
       expect(
         constants[7].mapValue.map(
-              (k, v) => MapEntry(
-                ConstantReader(k!).intValue,
-                ConstantReader(v!).stringValue,
-              ),
-            ),
+          (k, v) => MapEntry(
+            ConstantReader(k!).intValue,
+            ConstantReader(v!).stringValue,
+          ),
+        ),
         {1: 'A', 2: 'B'},
       );
     });
@@ -155,21 +157,21 @@ void main() {
 
     test('should read a Type', () {
       expect(constants[11].isType, isTrue);
-      expect(constants[11].typeValue.element!.name, 'DateTime');
+      expect(constants[11].typeValue.element3!.name3, 'DateTime');
       expect(constants[11].isLiteral, isFalse);
       expect(() => constants[11].literalValue, throwsFormatException);
     });
 
     test('should read a Set', () {
       expect(constants[12].isSet, isTrue);
-      expect(
-        constants[12].setValue.map((c) => ConstantReader(c).intValue),
-        {1},
-      );
+      expect(constants[12].setValue.map((c) => ConstantReader(c).intValue), {
+        1,
+      });
       expect(constants[12].isLiteral, isTrue);
       expect(
-        (constants[12].literalValue as Set<DartObject>)
-            .map((c) => ConstantReader(c).intValue),
+        (constants[12].literalValue as Set<DartObject>).map(
+          (c) => ConstantReader(c).intValue,
+        ),
         {1},
       );
     });
@@ -199,7 +201,11 @@ void main() {
 
     test('should compare using TypeChecker', () {
       final $deprecated = constants[8];
-      const check = TypeChecker.fromRuntime(Deprecated);
+      const check = TypeChecker.typeNamed(
+        Deprecated,
+        inPackage: 'core',
+        inSdk: true,
+      );
       expect($deprecated.instanceOf(check), isTrue, reason: '$deprecated');
     });
   });
@@ -208,8 +214,7 @@ void main() {
     late List<ConstantReader> constants;
 
     setUpAll(() async {
-      final library = await resolveSource(
-        r'''
+      final library = await resolveSource(r'''
         library test_lib;
         import 'dart:io';
 
@@ -296,14 +301,14 @@ void main() {
         }
 
         void _privateFunction() {}
-      ''',
-        (resolver) async => (await resolver.findLibraryByName('test_lib'))!,
-      );
-      constants = library
-          .getClass('Example')!
-          .metadata
-          .map((e) => ConstantReader(e.computeConstantValue()))
-          .toList();
+      ''', (resolver) async => (await resolver.findLibraryByName('test_lib'))!);
+      constants =
+          library
+              .getClass2('Example')!
+              .metadata2
+              .annotations
+              .map((e) => ConstantReader(e.computeConstantValue()))
+              .toList();
     });
 
     test('should decode Int64Like.ZERO', () {
@@ -317,11 +322,11 @@ void main() {
       expect(duration30s.source.toString(), 'dart:core#Duration');
       expect(duration30s.accessor, isEmpty);
       expect(
-          duration30s.namedArguments
-              .map((k, v) => MapEntry(k, ConstantReader(v).literalValue)),
-          {
-            'seconds': 30,
-          });
+        duration30s.namedArguments.map(
+          (k, v) => MapEntry(k, ConstantReader(v).literalValue),
+        ),
+        {'seconds': 30},
+      );
     });
 
     test('should decode enums', () {
@@ -386,12 +391,14 @@ void main() {
       expect(function.accessor, '_privateFunction');
     });
 
-    test('should decode public static fields backed by private constructors',
-        () {
-      final staticFieldWithPrivateImpl = constants[13].revive();
-      expect(staticFieldWithPrivateImpl.accessor, 'ProcessStartMode.normal');
-      expect(staticFieldWithPrivateImpl.isPrivate, isFalse);
-      expect(staticFieldWithPrivateImpl.source.fragment, isEmpty);
-    });
+    test(
+      'should decode public static fields backed by private constructors',
+      () {
+        final staticFieldWithPrivateImpl = constants[13].revive();
+        expect(staticFieldWithPrivateImpl.accessor, 'ProcessStartMode.normal');
+        expect(staticFieldWithPrivateImpl.isPrivate, isFalse);
+        expect(staticFieldWithPrivateImpl.source.fragment, isEmpty);
+      },
+    );
   });
 }

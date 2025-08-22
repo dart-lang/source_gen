@@ -10,9 +10,10 @@ import 'utils.dart';
 class PropertyProductGenerator extends Generator {
   @override
   String generate(LibraryReader library, BuildStep buildStep) {
-    final productNames = topLevelNumVariables(library)
-        .map((element) => element.name)
-        .join(' * ');
+    final productNames = topLevelNumVariables(
+      library,
+      // ignore: deprecated_member_use until analyzer 7 support is dropped.
+    ).map((element) => element.name3).join(' * ');
 
     return '''
 num allProduct() => $productNames;

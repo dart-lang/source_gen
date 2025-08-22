@@ -1,6 +1,43 @@
-## 2.0.1-WIP
+## 3.1.1-wip
 
 - Keep `// GENERATED FILE` comments on the first line.
+
+## 3.1.0
+
+- Prepare to stop using `dart:mirrors`: deprecate `TypeChecker.fromRuntime`.
+  It will be removed in version `4.0.0`. Add `TypeChecker.typeNamed` which is
+  the recommended replacement.
+- Prepare to stop using `dart:mirrors`: add `inPackage` and `inSdk` parameters
+  to `GenerateForAnnotation`. These will start being used in version `4.0.0`
+  when it switches to `TypeChecker.typeNamed`.
+- `InvalidGenerationSource` support for `Fragment`, `ElementDirective` and
+  `Annotatable`.
+- Allow `analyzer: '>=7.4.0 <9.0.0'`.
+
+## 3.0.0
+
+- **Breaking Change**: use the new `element2` APIs in `analyzer`. Builders that
+  do resolution need to switch to the new API, see
+  https://github.com/dart-lang/sdk/blob/main/pkg/analyzer/doc/element_model_migration_guide.md.
+  For questions please use https://github.com/dart-lang/build/discussions.
+- **Breaking Change**: annotations are now reported separately for elements
+  and directives. If you use `TypeChecker().annotatedWith()`, see also
+  the new `TypeChecker().libraryDirectivesAnnotatedWith()`. If you use
+  `GeneratorForAnnotation` see the new `generateForAnnotatedDirective`.
+- Require `build: ^3.0.0`
+- Updated the minimum package versions for a number of dependencies.
+- Require Dart 3.7.0
+- Update the GeneratorForAnnotation optimization to skip files with well known
+  annotation names such as `override`, `Deprecated`, and `pragma`.
+
+## 3.0.0-dev
+
+- **Breaking Change**: use the new `element2` APIs in `analyzer`. Builders that
+  do resolution need to switch to the new API, see
+  https://github.com/dart-lang/sdk/blob/main/pkg/analyzer/doc/element_model_migration_guide.md.
+  For questions please use https://github.com/dart-lang/build/discussions.
+- Updated the minimum package versions for a number of dependencies.
+- Require Dart 3.7.0
 
 ## 2.0.0
 

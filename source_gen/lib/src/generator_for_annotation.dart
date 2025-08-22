@@ -4,7 +4,8 @@
 
 import 'dart:async';
 
-import 'package:analyzer/dart/element/element.dart';
+// ignore: deprecated_member_use until analyzer 7 support is dropped.
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 
 import 'constants/reader.dart';
@@ -38,21 +39,57 @@ import 'type_checker.dart';
 /// Elements which are not at the top level, such as the members of a class or
 /// extension, are not searched for annotations. To operate on, for instance,
 /// annotated fields of a class ensure that the class itself is annotated with
-/// [T] and use the [Element] to iterate over fields. The [TypeChecker] utility
+/// [T] and use the `Element2` to iterate over fields. The [TypeChecker] utility
 /// may be helpful to check which elements have a given annotation.
 abstract class GeneratorForAnnotation<T> extends Generator {
   final bool throwOnUnresolved;
 
+  /// Annotation package for [TypeChecker.typeNamed].
+  ///
+  /// Currently unused, will be used from `source_gen` 4.0.0.
+  final String? inPackage;
+
+  /// Annotation package type for [TypeChecker.typeNamed].
+  ///
+  /// Currently unused, will be used from `source_gen` 4.0.0.
+  final bool? inSdk;
+
   /// By default, this generator will throw if it encounters unresolved
   /// annotations. You can override this by setting [throwOnUnresolved] to
   /// `false`.
-  const GeneratorForAnnotation({this.throwOnUnresolved = true});
+  ///
+  /// With `source_gen` 4.0.0 this class will stop using mirrors for matching
+  /// annotations and will fall back to comparing the name of `T`. Pass
+  /// [inPackage] and [inSdk] to tighten the check; see [TypeChecker.typeNamed].
+  /// To use a custom annotation check, override [typeChecker].
+  const GeneratorForAnnotation({
+    this.throwOnUnresolved = true,
+    this.inPackage,
+    this.inSdk,
+  });
 
+  // This will switch to `typeNamed` in 4.0.0.
+  // ignore: deprecated_member_use_from_same_package
   TypeChecker get typeChecker => TypeChecker.fromRuntime(T);
 
   @override
   FutureOr<String> generate(LibraryReader library, BuildStep buildStep) async {
     final values = <String>{};
+
+    for (var annotatedDirective in library.libraryDirectivesAnnotatedWith(
+      typeChecker,
+      throwOnUnresolved: throwOnUnresolved,
+    )) {
+      final generatedValue = generateForAnnotatedDirective(
+        annotatedDirective.directive,
+        annotatedDirective.annotation,
+        buildStep,
+      );
+      await for (var value in normalizeGeneratorOutput(generatedValue)) {
+        assert(value.length == value.trim().length);
+        values.add(value);
+      }
+    }
 
     for (var annotatedElement in library.annotatedWith(
       typeChecker,
@@ -90,8 +127,35 @@ abstract class GeneratorForAnnotation<T> extends Generator {
   /// Implementations should return `null` when no content is generated. Empty
   /// or whitespace-only [String] instances are also ignored.
   dynamic generateForAnnotatedElement(
-    Element element,
+    // ignore: deprecated_member_use until analyzer 7 support is dropped.
+    Element2 element,
     ConstantReader annotation,
     BuildStep buildStep,
-  );
+  ) {}
+
+  /// Implement to return source code to generate for [directive]:
+  ///   - [LibraryImport]
+  ///   - [LibraryExport]
+  ///   - [PartInclude]
+  ///
+  /// This method is invoked based on finding directives annotated with an
+  /// instance of [T]. The [annotation] is provided as a [ConstantReader].
+  ///
+  /// Supported return values include a single [String] or multiple [String]
+  /// instances within an [Iterable] or [Stream]. It is also valid to return a
+  /// [Future] of [String], [Iterable], or [Stream]. When multiple values are
+  /// returned through an iterable or stream they will be deduplicated.
+  /// Typically each value will be an independent unit of code and the
+  /// deduplication prevents re-defining the same member multiple times. For
+  /// example if multiple annotated elements may need a specific utility method
+  /// available it can be output for each one, and the single deduplicated
+  /// definition can be shared.
+  ///
+  /// Implementations should return `null` when no content is generated. Empty
+  /// or whitespace-only [String] instances are also ignored.
+  dynamic generateForAnnotatedDirective(
+    ElementDirective directive,
+    ConstantReader annotation,
+    BuildStep buildStep,
+  ) {}
 }

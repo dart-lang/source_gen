@@ -5,7 +5,8 @@
 import 'dart:convert';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
+// ignore: deprecated_member_use until analyzer 7 support is dropped.
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:pub_semver/pub_semver.dart';
@@ -57,16 +58,15 @@ class _Builder extends Builder {
     bool? writeDescriptions,
     this.allowSyntaxErrors = false,
     BuilderOptions? options,
-  })  : _generatedExtension = generatedExtension,
-        buildExtensions = validatedBuildExtensionsFrom(
-            options != null ? Map.of(options.config) : null, {
-          '.dart': [
-            generatedExtension,
-            ...additionalOutputExtensions,
-          ],
-        }),
-        _writeDescriptions = writeDescriptions ?? true,
-        _header = (header ?? defaultFileHeader).trim() {
+  }) : _generatedExtension = generatedExtension,
+       buildExtensions = validatedBuildExtensionsFrom(
+         options != null ? Map.of(options.config) : null,
+         {
+           '.dart': [generatedExtension, ...additionalOutputExtensions],
+         },
+       ),
+       _writeDescriptions = writeDescriptions ?? true,
+       _header = (header ?? defaultFileHeader).trim() {
     if (_generatedExtension.isEmpty || !_generatedExtension.startsWith('.')) {
       throw ArgumentError.value(
         _generatedExtension,
@@ -94,7 +94,7 @@ class _Builder extends Builder {
     if (!await resolver.isLibrary(buildStep.inputId)) return;
 
     if (_generators.every((g) => g is GeneratorForAnnotation) &&
-        !(await _hasAnyTopLevelAnnotations(
+        !(await _hasInterestingTopLevelAnnotations(
           buildStep.inputId,
           resolver,
           buildStep,
@@ -102,13 +102,16 @@ class _Builder extends Builder {
       return;
     }
 
-    final lib = await buildStep.resolver
-        .libraryFor(buildStep.inputId, allowSyntaxErrors: allowSyntaxErrors);
+    final lib = await buildStep.resolver.libraryFor(
+      buildStep.inputId,
+      allowSyntaxErrors: allowSyntaxErrors,
+    );
     await _generateForLibrary(lib, buildStep);
   }
 
   Future<void> _generateForLibrary(
-    LibraryElement library,
+    // ignore: deprecated_member_use until analyzer 7 support is dropped.
+    LibraryElement2 library,
     BuildStep buildStep,
   ) async {
     final generatedOutputs =
@@ -138,10 +141,13 @@ class _Builder extends Builder {
           ..writeln('part of \'$partOfUri\';');
         final part = computePartUrl(buildStep.inputId, outputId);
 
-        final libraryUnit =
-            await buildStep.resolver.compilationUnitFor(buildStep.inputId);
-        final hasLibraryPartDirectiveWithOutputUri =
-            hasExpectedPartDirective(libraryUnit, part);
+        final libraryUnit = await buildStep.resolver.compilationUnitFor(
+          buildStep.inputId,
+        );
+        final hasLibraryPartDirectiveWithOutputUri = hasExpectedPartDirective(
+          libraryUnit,
+          part,
+        );
         if (!hasLibraryPartDirectiveWithOutputUri) {
           // TODO: Upgrade to error in a future breaking change?
           log.warning(
@@ -163,8 +169,9 @@ class _Builder extends Builder {
           ..writeln()
           ..writeln(_headerLine)
           ..writeAll(
-            LineSplitter.split(item.generatorDescription)
-                .map((line) => '// $line\n'),
+            LineSplitter.split(
+              item.generatorDescription,
+            ).map((line) => '// $line\n'),
           )
           ..writeln(_headerLine)
           ..writeln();
@@ -176,13 +183,15 @@ class _Builder extends Builder {
     var genPartContent = contentBuffer.toString();
 
     try {
-      genPartContent =
-          formatOutput(genPartContent, library.languageVersion.effective);
+      genPartContent = formatOutput(
+        genPartContent,
+        library.languageVersion.effective,
+      );
     } catch (e, stack) {
       log.severe(
         '''
 An error `${e.runtimeType}` occurred while formatting the generated source for
-  `${library.identifier}`
+  `${library.uri}`
 which was output to
   `${outputId.path}`.
 This may indicate an issue in the generator, the input source code, or in the
@@ -240,10 +249,7 @@ class SharedPartBuilder extends _Builder {
     super.additionalOutputExtensions,
     super.allowSyntaxErrors,
     super.writeDescriptions,
-  }) : super(
-          generatedExtension: '.$partId.g.part',
-          header: '',
-        ) {
+  }) : super(generatedExtension: '.$partId.g.part', header: '') {
     if (!_partIdRegExp.hasMatch(partId)) {
       throw ArgumentError.value(
         partId,
@@ -304,9 +310,7 @@ class PartBuilder extends _Builder {
     super.header,
     super.allowSyntaxErrors,
     super.options,
-  }) : super(
-          generatedExtension: generatedExtension,
-        );
+  }) : super(generatedExtension: generatedExtension);
 }
 
 /// A [Builder] which generates standalone Dart library files.
@@ -353,7 +357,8 @@ class LibraryBuilder extends _Builder {
 }
 
 Stream<GeneratedOutput> _generate(
-  LibraryElement library,
+  // ignore: deprecated_member_use until analyzer 7 support is dropped.
+  LibraryElement2 library,
   List<Generator> generators,
   BuildStep buildStep,
 ) async* {
@@ -380,7 +385,7 @@ Stream<GeneratedOutput> _generate(
   }
 }
 
-Future<bool> _hasAnyTopLevelAnnotations(
+Future<bool> _hasInterestingTopLevelAnnotations(
   AssetId input,
   Resolver resolver,
   BuildStep buildStep,
@@ -397,14 +402,28 @@ Future<bool> _hasAnyTopLevelAnnotations(
     }
   }
   for (var declaration in parsed.declarations) {
-    if (declaration.metadata.isNotEmpty) return true;
+    if (declaration.metadata.any(_isUnknownAnnotation)) {
+      return true;
+    }
   }
   for (var partId in partIds) {
-    if (await _hasAnyTopLevelAnnotations(partId, resolver, buildStep)) {
+    if (await _hasInterestingTopLevelAnnotations(partId, resolver, buildStep)) {
       return true;
     }
   }
   return false;
+}
+
+bool _isUnknownAnnotation(Annotation annotation) {
+  const knownAnnotationNames = {
+    // Annotations from dart:core, there is an assumption that people are not
+    // overriding these.
+    'deprecated',
+    'Deprecated',
+    'override',
+    'pragma',
+  };
+  return !knownAnnotationNames.contains(annotation.name.name);
 }
 
 const defaultFileHeader = '// GENERATED CODE - DO NOT MODIFY BY HAND';
@@ -430,7 +449,8 @@ const partIdRegExpLiteral = r'[A-Za-z_\d-]+';
 
 final _partIdRegExp = RegExp('^$partIdRegExpLiteral\$');
 
-String languageOverrideForLibrary(LibraryElement library) {
+// ignore: deprecated_member_use until analyzer 7 support is dropped.
+String languageOverrideForLibrary(LibraryElement2 library) {
   final override = library.languageVersion.override;
   return override == null
       ? ''

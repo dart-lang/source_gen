@@ -9,10 +9,10 @@ class GeneratedOutput {
   final String generatorDescription;
 
   GeneratedOutput(Generator generator, this.output)
-      : assert(output.isNotEmpty),
-        // assuming length check is cheaper than simple string equality
-        assert(output.length == output.trim().length),
-        generatorDescription = _toString(generator);
+    : assert(output.isNotEmpty),
+      // assuming length check is cheaper than simple string equality
+      assert(output.length == output.trim().length),
+      generatorDescription = _toString(generator);
 
   static String _toString(Generator generator) {
     final output = generator.toString();

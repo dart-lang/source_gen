@@ -2,15 +2,17 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
+
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/src/constants/utils.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('assertHasField', () {
-    late LibraryElement testLib;
+    late LibraryElement2 testLib;
 
     setUpAll(() async {
       testLib = await resolveSource(
@@ -34,17 +36,17 @@ void main() {
     });
 
     test('should not throw when a class contains a field', () {
-      final $A = testLib.getClass('A')!;
+      final $A = testLib.getClass2('A')!;
       expect(() => assertHasField($A, 'a'), returnsNormally);
     });
 
     test('should not throw when a super class contains a field', () {
-      final $B = testLib.getClass('B')!;
+      final $B = testLib.getClass2('B')!;
       expect(() => assertHasField($B, 'a'), returnsNormally);
     });
 
     test('should throw when a class does not contain a field', () {
-      final $C = testLib.getClass('C')!;
+      final $C = testLib.getClass2('C')!;
       expect(() => assertHasField($C, 'a'), throwsFormatException);
     });
   });
@@ -82,11 +84,13 @@ void main() {
           ''',
         (resolver) async => (await resolver.findLibraryByName('test_lib'))!,
       );
-      objects = testLib
-          .getClass('Example')!
-          .metadata
-          .map((e) => e.computeConstantValue()!)
-          .toList();
+      objects =
+          testLib
+              .getClass2('Example')!
+              .metadata2
+              .annotations
+              .map((e) => e.computeConstantValue()!)
+              .toList();
     });
 
     test('should find a field directly on an object', () {
