@@ -52,8 +52,8 @@ void main() {
       _inputMap,
       outputs: {
         'a|lib/file.g.dart': '''
-$dartFormatWidth
 // GENERATED CODE - DO NOT MODIFY BY HAND
+$dartFormatWidth
 
 // **************************************************************************
 // Generator: Repeating
@@ -150,8 +150,8 @@ main() {}''',
       },
       outputs: {
         'a|lib/file.g.dart': '''
-$dartFormatWidth
 // GENERATED CODE - DO NOT MODIFY BY HAND
+$dartFormatWidth
 
 // **************************************************************************
 // Generator: Deprecated
@@ -195,8 +195,8 @@ $dartFormatWidth
       },
       outputs: {
         'a|lib/file.g.dart': '''
-$dartFormatWidth
 // GENERATED CODE - DO NOT MODIFY BY HAND
+$dartFormatWidth
 
 // **************************************************************************
 // Generator: Deprecated
