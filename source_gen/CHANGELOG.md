@@ -1,3 +1,7 @@
+## 3.1.1-wip
+
+- Keep `// GENERATED FILE` comments on the first line.
+
 ## 3.1.0
 
 - Prepare to stop using `dart:mirrors`: deprecate `TypeChecker.fromRuntime`.
