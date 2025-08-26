@@ -4,8 +4,6 @@
 
 // ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
 
-import 'dart:mirrors' hide SourceLocation;
-
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/constant/value.dart';
@@ -33,20 +31,6 @@ abstract class TypeChecker {
   /// const $FooOrBar = const TypeChecker.forAny(const [$Foo, $Bar]);
   /// ```
   const factory TypeChecker.any(Iterable<TypeChecker> checkers) = _AnyChecker;
-
-  /// Create a new [TypeChecker] backed by a runtime [type].
-  ///
-  /// This implementation uses `dart:mirrors` (runtime reflection).
-  @Deprecated('''
-Will be removed in 4.0.0 to drop `dart:mirrors` dependency.
-
-Recommended: replace `fromRuntime(Foo)` with
-`typeNamed(Foo, inPackage: 'foo_package')`. This is a slighly weaker check than
-`fromRuntime(Foo)` as it matches any annotation named `Foo` in
-`package:foo_package`.
-
-If you need an exact match, use `fromUrl`.''')
-  const factory TypeChecker.fromRuntime(Type type) = _MirrorTypeChecker;
 
   /// Create a new [TypeChecker] for types matching the name of [type].
   ///
@@ -265,29 +249,6 @@ class _LibraryTypeChecker extends TypeChecker {
 
   @override
   String toString() => urlOfElement(_type.element3!);
-}
-
-// Checks a runtime type against a static type.
-class _MirrorTypeChecker extends TypeChecker {
-  static Uri _uriOf(ClassMirror mirror) => normalizeUrl(
-    (mirror.owner as LibraryMirror).uri,
-  ).replace(fragment: MirrorSystem.getName(mirror.simpleName));
-
-  // Precomputed type checker for types that already have been used.
-  static final _cache = Expando<TypeChecker>();
-
-  final Type _type;
-
-  const _MirrorTypeChecker(this._type) : super._();
-
-  TypeChecker get _computed =>
-      _cache[this] ??= TypeChecker.fromUrl(_uriOf(reflectClass(_type)));
-
-  @override
-  bool isExactly(Element2 element) => _computed.isExactly(element);
-
-  @override
-  String toString() => _computed.toString();
 }
 
 // Checks a runtime type name and optional package against a static type.

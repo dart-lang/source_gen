@@ -58,9 +58,10 @@ abstract class GeneratorForAnnotation<T> extends Generator {
   /// annotations. You can override this by setting [throwOnUnresolved] to
   /// `false`.
   ///
-  /// With `source_gen` 4.0.0 this class will stop using mirrors for matching
-  /// annotations and will fall back to comparing the name of `T`. Pass
-  /// [inPackage] and [inSdk] to tighten the check; see [TypeChecker.typeNamed].
+  /// [TypeChecker.typeNamed] on `T` is used to match the annotation. By default
+  /// it matches any annotation with the same name. Pass [inPackage] and [inSdk]
+  /// to tighten the check; see [TypeChecker.typeNamed] for details.
+  ///
   /// To use a custom annotation check, override [typeChecker].
   const GeneratorForAnnotation({
     this.throwOnUnresolved = true,
@@ -68,9 +69,8 @@ abstract class GeneratorForAnnotation<T> extends Generator {
     this.inSdk,
   });
 
-  // This will switch to `typeNamed` in 4.0.0.
-  // ignore: deprecated_member_use_from_same_package
-  TypeChecker get typeChecker => TypeChecker.fromRuntime(T);
+  TypeChecker get typeChecker =>
+      TypeChecker.typeNamed(T, inPackage: inPackage, inSdk: inSdk);
 
   @override
   FutureOr<String> generate(LibraryReader library, BuildStep buildStep) async {
