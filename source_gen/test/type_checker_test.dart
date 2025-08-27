@@ -332,24 +332,6 @@ void main() {
     });
   }
 
-  group('TypeChecker.forRuntime', () {
-    commonTests(
-      checkIterable: () => const TypeChecker.typeNamed(Iterable),
-      checkEnum: () => const TypeChecker.typeNamed(Enum),
-      checkEnumMixin: () => const TypeChecker.typeNamed(MyEnumMixin),
-      checkMap: () => const TypeChecker.typeNamed(Map),
-      checkMapMixin: () => const TypeChecker.typeNamed(MyMapMixin),
-      checkHashMap: () => const TypeChecker.typeNamed(HashMap),
-      checkGenerator: () => const TypeChecker.typeNamed(Generator),
-
-      checkGeneratorForAnnotation:
-          () => const TypeChecker.typeNamed(
-            GeneratorForAnnotation,
-            inPackage: 'source_gen',
-          ),
-    );
-  });
-
   group('TypeChecker.typeNamed without package', () {
     commonTests(
       checkIterable: () => const TypeChecker.typeNamed(Iterable),

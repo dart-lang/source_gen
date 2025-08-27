@@ -1,3 +1,10 @@
+## 4.0.0
+
+- **Breaking Change**: remove `TypeChecker.fromRuntime`, use
+  `TypeChecker.typeNamed` instead. This removes all use of `dart:mirror`, so
+  builders using `source_gen` can be AOT compiled for better performance.
+- Keep `// GENERATED FILE` comments on the first line.
+
 ## 3.1.0
 
 - Prepare to stop using `dart:mirrors`: deprecate `TypeChecker.fromRuntime`.
