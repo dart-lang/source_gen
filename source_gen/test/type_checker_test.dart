@@ -334,32 +334,6 @@ void main() {
     });
   }
 
-  group('TypeChecker.forRuntime', () {
-    commonTests(
-      // ignore: deprecated_member_use_from_same_package
-      checkIterable: () => const TypeChecker.fromRuntime(Iterable),
-      // ignore: deprecated_member_use_from_same_package
-      checkEnum: () => const TypeChecker.fromRuntime(Enum),
-      // ignore: deprecated_member_use_from_same_package
-      checkEnumMixin: () => const TypeChecker.fromRuntime(MyEnumMixin),
-      // ignore: deprecated_member_use_from_same_package
-      checkMap: () => const TypeChecker.fromRuntime(Map),
-      // ignore: deprecated_member_use_from_same_package
-      checkMapMixin: () => const TypeChecker.fromRuntime(MyMapMixin),
-      // ignore: deprecated_member_use_from_same_package
-      checkHashMap: () => const TypeChecker.fromRuntime(HashMap),
-      // ignore: deprecated_member_use_from_same_package
-      checkGenerator: () => const TypeChecker.fromRuntime(Generator),
-
-      checkGeneratorForAnnotation:
-          // ignore: deprecated_member_use_from_same_packages
-          () => const TypeChecker.typeNamed(
-            GeneratorForAnnotation,
-            inPackage: 'source_gen',
-          ),
-    );
-  });
-
   group('TypeChecker.typeNamed without package', () {
     commonTests(
       checkIterable: () => const TypeChecker.typeNamed(Iterable),
