@@ -4,8 +4,7 @@
 
 import 'dart:async';
 
-// ignore: deprecated_member_use until analyzer 7 support is dropped.
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 
 import 'constants/reader.dart';
@@ -127,8 +126,7 @@ abstract class GeneratorForAnnotation<T> extends Generator {
   /// Implementations should return `null` when no content is generated. Empty
   /// or whitespace-only [String] instances are also ignored.
   dynamic generateForAnnotatedElement(
-    // ignore: deprecated_member_use until analyzer 7 support is dropped.
-    Element2 element,
+    Element element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) {}

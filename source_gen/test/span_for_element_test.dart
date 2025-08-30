@@ -2,9 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
-
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:source_gen/src/span_for_element.dart';
@@ -13,7 +11,7 @@ import 'package:test/test.dart';
 
 void main() {
   glyph.ascii = true;
-  late LibraryElement2 library;
+  late LibraryElement library;
   late Resolver resolver;
 
   setUpAll(() async {
@@ -41,7 +39,7 @@ abstract class Example implements List {
 
   test('should highlight the use of "class Example"', () async {
     expect(
-      spanForElement(library.getClass2('Example')!).message('Here it is'),
+      spanForElement(library.getClass('Example')!).message('Here it is'),
       r"""
 line 3, column 16 of package:test_lib/test_lib.dart: Here it is
   ,
@@ -54,7 +52,7 @@ line 3, column 16 of package:test_lib/test_lib.dart: Here it is
   test('should correctly highlight getter', () async {
     expect(
       spanForElement(
-        library.getClass2('Example')!.getField2('getter')!,
+        library.getClass('Example')!.getField('getter')!,
       ).message('Here it is'),
       r"""
 line 4, column 15 of package:test_lib/test_lib.dart: Here it is
@@ -68,7 +66,7 @@ line 4, column 15 of package:test_lib/test_lib.dart: Here it is
   test('should correctly highlight setter', () async {
     expect(
       spanForElement(
-        library.getClass2('Example')!.getField2('setter')!,
+        library.getClass('Example')!.getField('setter')!,
       ).message('Here it is'),
       r"""
 line 5, column 7 of package:test_lib/test_lib.dart: Here it is
@@ -82,7 +80,7 @@ line 5, column 7 of package:test_lib/test_lib.dart: Here it is
   test('should correctly highlight field', () async {
     expect(
       spanForElement(
-        library.getClass2('Example')!.getField2('field')!,
+        library.getClass('Example')!.getField('field')!,
       ).message('Here it is'),
       r"""
 line 6, column 7 of package:test_lib/test_lib.dart: Here it is
@@ -96,7 +94,7 @@ line 6, column 7 of package:test_lib/test_lib.dart: Here it is
   test('highlight getter with getter/setter property', () async {
     expect(
       spanForElement(
-        library.getClass2('Example')!.getField2('fieldProp')!,
+        library.getClass('Example')!.getField('fieldProp')!,
       ).message('Here it is'),
       r"""
 line 7, column 11 of package:test_lib/test_lib.dart: Here it is
@@ -109,7 +107,7 @@ line 7, column 11 of package:test_lib/test_lib.dart: Here it is
 
   test('highlights based on AstNode source location', () async {
     final element =
-        library.getClass2('Example')!.getField2('field')!.firstFragment;
+        library.getClass('Example')!.getField('field')!.firstFragment;
     final node = (await resolver.astNodeFor(element, resolve: true))!;
     expect(spanForNode(node).message('Here it is'), r"""
 line 6, column 7 of package:test_lib/test_lib.dart: Here it is

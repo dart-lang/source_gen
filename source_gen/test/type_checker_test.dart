@@ -3,15 +3,13 @@
 // BSD-style license that can be found in the LICENSE file.
 
 // ignore_for_file: unreachable_from_main
-// ignore_for_file: deprecated_member_use until analyzer 7 support is dropped.
-
 // Increase timeouts on this test which resolves source code and can be slow.
 @Timeout.factor(2.0)
 library;
 
 import 'dart:collection';
 
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
@@ -32,7 +30,7 @@ void main() {
   late TypeChecker staticMapMixinChecker;
   late TypeChecker staticHashMapChecker;
   late TypeChecker staticEnumChecker;
-  late LibraryElement2 core;
+  late LibraryElement core;
 
   // Resolved top-level types from package:source_gen.
   late InterfaceType staticGenerator;
@@ -47,9 +45,9 @@ void main() {
   late InterfaceType staticMyEnumWithMixin;
 
   setUpAll(() async {
-    late LibraryElement2 collection;
+    late LibraryElement collection;
     late LibraryReader sourceGen;
-    late LibraryElement2 testSource;
+    late LibraryElement testSource;
     await resolveSources(
       {
         'source_gen|test/example.dart': r'''
@@ -77,20 +75,20 @@ void main() {
     );
 
     final staticIterable = core
-        .getClass2('Iterable')!
+        .getClass('Iterable')!
         .instantiate(
           typeArguments: [core.typeProvider.dynamicType],
           nullabilitySuffix: NullabilitySuffix.none,
         );
     staticIterableChecker = TypeChecker.fromStatic(staticIterable);
     staticUri = core
-        .getClass2('Uri')!
+        .getClass('Uri')!
         .instantiate(
           typeArguments: [],
           nullabilitySuffix: NullabilitySuffix.none,
         );
     staticMap = core
-        .getClass2('Map')!
+        .getClass('Map')!
         .instantiate(
           typeArguments: [
             core.typeProvider.dynamicType,
@@ -100,41 +98,41 @@ void main() {
         );
     staticMapChecker = TypeChecker.fromStatic(staticMap);
     staticEnum = core
-        .getClass2('Enum')!
+        .getClass('Enum')!
         .instantiate(
           typeArguments: [],
           nullabilitySuffix: NullabilitySuffix.none,
         );
     staticEnumChecker = TypeChecker.fromStatic(staticEnum);
     staticEnumMixin = (testSource.exportNamespace.get2('MyEnumMixin')!
-            as InterfaceElement2)
+            as InterfaceElement)
         .instantiate(
           typeArguments: [],
           nullabilitySuffix: NullabilitySuffix.none,
         );
     staticEnumMixinChecker = TypeChecker.fromStatic(staticEnumMixin);
     staticMapMixin = (testSource.exportNamespace.get2('MyMapMixin')!
-            as InterfaceElement2)
+            as InterfaceElement)
         .instantiate(
           typeArguments: [],
           nullabilitySuffix: NullabilitySuffix.none,
         );
     staticMapMixinChecker = TypeChecker.fromStatic(staticMapMixin);
     staticMyEnum = (testSource.exportNamespace.get2('MyEnum')!
-            as InterfaceElement2)
+            as InterfaceElement)
         .instantiate(
           typeArguments: [],
           nullabilitySuffix: NullabilitySuffix.none,
         );
     staticMyEnumWithMixin = (testSource.exportNamespace.get2('MyEnumWithMixin')!
-            as InterfaceElement2)
+            as InterfaceElement)
         .instantiate(
           typeArguments: [],
           nullabilitySuffix: NullabilitySuffix.none,
         );
 
     staticHashMap = collection
-        .getClass2('HashMap')!
+        .getClass('HashMap')!
         .instantiate(
           typeArguments: [
             core.typeProvider.dynamicType,
@@ -144,7 +142,7 @@ void main() {
         );
     staticHashMapChecker = TypeChecker.fromStatic(staticHashMap);
     staticUnmodifiableListView = collection
-        .getClass2('UnmodifiableListView')!
+        .getClass('UnmodifiableListView')!
         .instantiate(
           typeArguments: [core.typeProvider.dynamicType],
           nullabilitySuffix: NullabilitySuffix.none,
@@ -223,7 +221,7 @@ void main() {
       () {
         test('should equal MapMixin class', () {
           expect(checkMapMixin().isExactlyType(staticMapMixin), isTrue);
-          expect(checkMapMixin().isExactly(staticMapMixin.element3), isTrue);
+          expect(checkMapMixin().isExactly(staticMapMixin.element), isTrue);
         });
       },
       onPlatform: const {
@@ -236,7 +234,7 @@ void main() {
         expect(
           checkMap().isExactlyType(staticMap),
           isTrue,
-          reason: '${checkMap()} != ${staticMap.element3.name3}',
+          reason: '${checkMap()} != ${staticMap.element.name}',
         );
       });
 
@@ -268,7 +266,7 @@ void main() {
       test('should be assignable from Map<String, String>', () {
         // Using Uri.queryParameters to get a Map<String, String>
         final stringStringMapType =
-            staticUri.getGetter2('queryParameters')!.returnType;
+            staticUri.getGetter('queryParameters')!.returnType;
 
         expect(checkMap().isAssignableFromType(stringStringMapType), isTrue);
         expect(checkMap().isExactlyType(stringStringMapType), isTrue);
@@ -298,7 +296,7 @@ void main() {
         expect(
           checkGenerator().isExactlyType(staticGenerator),
           isTrue,
-          reason: '${checkGenerator()} != ${staticGenerator.element3.name3}',
+          reason: '${checkGenerator()} != ${staticGenerator.element.name}',
         );
       });
 
@@ -308,7 +306,7 @@ void main() {
           isFalse,
           reason:
               '${checkGenerator()} is super of '
-              '${staticGenerator.element3.name3}',
+              '${staticGenerator.element.name}',
         );
       });
 
@@ -318,7 +316,7 @@ void main() {
           isTrue,
           reason:
               '${checkGenerator()} is not super of '
-              '${staticGeneratorForAnnotation.element3.name3}',
+              '${staticGeneratorForAnnotation.element.name}',
         );
       });
 
@@ -328,7 +326,7 @@ void main() {
           isTrue,
           reason:
               '${checkGenerator()} is not assignable from '
-              '${staticGeneratorForAnnotation.element3.name3}',
+              '${staticGeneratorForAnnotation.element.name}',
         );
       });
     });
@@ -429,7 +427,7 @@ void main() {
       @depracated // Intentionally mispelled.
       class X {}
     ''', (resolver) async => (await resolver.findLibraryByName('_test'))!);
-    final classX = library.getClass2('X')!;
+    final classX = library.getClass('X')!;
     const $deprecated = TypeChecker.typeNamed(
       Deprecated,
       inPackage: 'core',
@@ -464,10 +462,10 @@ void main() {
     late TypeChecker $B;
     late TypeChecker $C;
 
-    late ClassElement2 $ExampleOfA;
-    late ClassElement2 $ExampleOfMultiA;
-    late ClassElement2 $ExampleOfAPlusB;
-    late ClassElement2 $ExampleOfBPlusC;
+    late ClassElement $ExampleOfA;
+    late ClassElement $ExampleOfMultiA;
+    late ClassElement $ExampleOfAPlusB;
+    late ClassElement $ExampleOfBPlusC;
 
     setUpAll(() async {
       final library = await resolveSource(r'''
@@ -503,7 +501,7 @@ void main() {
 
       $A = TypeChecker.fromStatic(
         library
-            .getClass2('A')!
+            .getClass('A')!
             .instantiate(
               typeArguments: [],
               nullabilitySuffix: NullabilitySuffix.none,
@@ -511,7 +509,7 @@ void main() {
       );
       $B = TypeChecker.fromStatic(
         library
-            .getClass2('B')!
+            .getClass('B')!
             .instantiate(
               typeArguments: [],
               nullabilitySuffix: NullabilitySuffix.none,
@@ -519,55 +517,55 @@ void main() {
       );
       $C = TypeChecker.fromStatic(
         library
-            .getClass2('C')!
+            .getClass('C')!
             .instantiate(
               typeArguments: [],
               nullabilitySuffix: NullabilitySuffix.none,
             ),
       );
-      $ExampleOfA = library.getClass2('ExampleOfA')!;
-      $ExampleOfMultiA = library.getClass2('ExampleOfMultiA')!;
-      $ExampleOfAPlusB = library.getClass2('ExampleOfAPlusB')!;
-      $ExampleOfBPlusC = library.getClass2('ExampleOfBPlusC')!;
+      $ExampleOfA = library.getClass('ExampleOfA')!;
+      $ExampleOfMultiA = library.getClass('ExampleOfMultiA')!;
+      $ExampleOfAPlusB = library.getClass('ExampleOfAPlusB')!;
+      $ExampleOfBPlusC = library.getClass('ExampleOfBPlusC')!;
     });
 
     test('of a single @A', () {
       expect($A.hasAnnotationOf($ExampleOfA), isTrue);
       final aAnnotation = $A.firstAnnotationOf($ExampleOfA)!;
-      expect(aAnnotation.type!.element3!.name3, 'A');
+      expect(aAnnotation.type!.element!.name, 'A');
       expect($B.annotationsOf($ExampleOfA), isEmpty);
       expect($C.annotationsOf($ExampleOfA), isEmpty);
     });
 
     test('of a multiple @A', () {
       final aAnnotations = $A.annotationsOf($ExampleOfMultiA);
-      expect(aAnnotations.map((a) => a.type!.element3!.name3), ['A', 'A']);
+      expect(aAnnotations.map((a) => a.type!.element!.name), ['A', 'A']);
       expect($B.annotationsOf($ExampleOfA), isEmpty);
       expect($C.annotationsOf($ExampleOfA), isEmpty);
     });
 
     test('of a single @A + single @B', () {
       final aAnnotations = $A.annotationsOf($ExampleOfAPlusB);
-      expect(aAnnotations.map((a) => a.type!.element3!.name3), ['A']);
+      expect(aAnnotations.map((a) => a.type!.element!.name), ['A']);
       final bAnnotations = $B.annotationsOf($ExampleOfAPlusB);
-      expect(bAnnotations.map((a) => a.type!.element3!.name3), ['B']);
+      expect(bAnnotations.map((a) => a.type!.element!.name), ['B']);
       expect($C.annotationsOf($ExampleOfAPlusB), isEmpty);
     });
 
     test('of a single @B + single @C', () {
       final cAnnotations = $C.annotationsOf($ExampleOfBPlusC);
-      expect(cAnnotations.map((a) => a.type!.element3!.name3), ['C']);
+      expect(cAnnotations.map((a) => a.type!.element!.name), ['C']);
       final bAnnotations = $B.annotationsOf($ExampleOfBPlusC);
-      expect(bAnnotations.map((a) => a.type!.element3!.name3), ['B', 'C']);
+      expect(bAnnotations.map((a) => a.type!.element!.name), ['B', 'C']);
       expect($B.hasAnnotationOfExact($ExampleOfBPlusC), isTrue);
       final bExact = $B.annotationsOfExact($ExampleOfBPlusC);
-      expect(bExact.map((a) => a.type!.element3!.name3), ['B']);
+      expect(bExact.map((a) => a.type!.element!.name), ['B']);
     });
   });
 
   group('unresolved annotations', () {
     late TypeChecker $A;
-    late ClassElement2 $ExampleOfA;
+    late ClassElement $ExampleOfA;
     late FormalParameterElement $annotatedParameter;
 
     setUpAll(() async {
@@ -587,16 +585,16 @@ void main() {
     ''', (resolver) async => (await resolver.findLibraryByName('_test'))!);
       $A = TypeChecker.fromStatic(
         library
-            .getClass2('A')!
+            .getClass('A')!
             .instantiate(
               typeArguments: [],
               nullabilitySuffix: NullabilitySuffix.none,
             ),
       );
-      $ExampleOfA = library.getClass2('ExampleOfA')!;
+      $ExampleOfA = library.getClass('ExampleOfA')!;
       $annotatedParameter =
           library.topLevelFunctions
-              .firstWhere((f) => f.name3 == 'annotatedParameter')
+              .firstWhere((f) => f.name == 'annotatedParameter')
               .formalParameters
               .single;
     });
@@ -641,28 +639,28 @@ void main() {
         $A
             .firstAnnotationOf($ExampleOfA, throwOnUnresolved: false)!
             .type!
-            .element3!
-            .name3,
+            .element!
+            .name,
         'A',
       );
       expect(
         $A
             .annotationsOf($ExampleOfA, throwOnUnresolved: false)
-            .map((a) => a.type!.element3!.name3),
+            .map((a) => a.type!.element!.name),
         ['A'],
       );
       expect(
         $A
             .firstAnnotationOfExact($ExampleOfA, throwOnUnresolved: false)!
             .type!
-            .element3!
-            .name3,
+            .element!
+            .name,
         'A',
       );
       expect(
         $A
             .annotationsOfExact($ExampleOfA, throwOnUnresolved: false)
-            .map((a) => a.type!.element3!.name3),
+            .map((a) => a.type!.element!.name),
         ['A'],
       );
     });
