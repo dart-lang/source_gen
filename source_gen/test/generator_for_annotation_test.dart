@@ -6,8 +6,6 @@
 @Timeout.factor(3)
 library;
 
-import 'package:analyzer/dart/analysis/utilities.dart';
-import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
@@ -104,32 +102,36 @@ $dartFormatWidth
     final builder = LibraryBuilder(
       _StubGenerator<Deprecated>('Deprecated', elementBehavior: (_) => null),
     );
-    final input = AssetId('a', 'lib/a.dart');
-    final assets = {
-      input: '''
+    final result = await testBuilder(builder, {
+      'a|lib/a.dart': '''
 @Deprecated()
 @deprecated
 @override
 @pragma('')
 main() {}''',
-    };
+    });
 
-    final readerWriter =
-        TestReaderWriter()..testing.writeString(input, assets[input]!);
-
-    final resolver = _TestingResolver(assets);
-
-    await runBuilder(
-      builder,
-      [input],
-      readerWriter,
-      readerWriter,
-      _FixedResolvers(resolver),
-    );
-
-    expect(resolver.parsedUnits, {input});
-    expect(resolver.resolvedLibs, isEmpty);
+    expect(result.readerWriter.testing.resolverEntrypointsTracked, isEmpty);
   });
+
+  test(
+    'Does resolve the library if there is an interesting top level annotation',
+    () async {
+      final builder = LibraryBuilder(
+        _StubGenerator<Deprecated>('Deprecated', elementBehavior: (_) => null),
+      );
+      final result = await testBuilder(builder, {
+        'a|lib/a.dart': '''
+@override
+@someInterestingAnnotation
+main() {}''',
+      });
+
+      expect(result.readerWriter.testing.resolverEntrypointsTracked, {
+        AssetId('a', 'lib/a.dart'),
+      });
+    },
+  );
 
   test('applies to annotated libraries', () async {
     final builder = LibraryBuilder(
@@ -308,54 +310,3 @@ const _inputMap = {
      final baz = 'baz';
      ''',
 };
-
-class _TestingResolver implements ReleasableResolver {
-  final Map<AssetId, String> assets;
-  final parsedUnits = <AssetId>{};
-  final resolvedLibs = <AssetId>{};
-
-  _TestingResolver(this.assets);
-
-  @override
-  Future<CompilationUnit> compilationUnitFor(
-    AssetId assetId, {
-    bool allowSyntaxErrors = false,
-  }) async {
-    parsedUnits.add(assetId);
-    return parseString(content: assets[assetId]!).unit;
-  }
-
-  @override
-  Future<bool> isLibrary(AssetId assetId) async {
-    final unit = await compilationUnitFor(assetId);
-    return unit.directives.every((d) => d is! PartOfDirective);
-  }
-
-  @override
-  Future<LibraryElement> libraryFor(
-    AssetId assetId, {
-    bool allowSyntaxErrors = false,
-  }) async {
-    resolvedLibs.add(assetId);
-    throw StateError('This method intentionally throws');
-  }
-
-  @override
-  void release() {}
-
-  @override
-  void noSuchMethod(_) => throw UnimplementedError();
-}
-
-class _FixedResolvers implements Resolvers {
-  final ReleasableResolver _resolver;
-
-  _FixedResolvers(this._resolver);
-
-  @override
-  Future<ReleasableResolver> get(BuildStep buildStep) =>
-      Future.value(_resolver);
-
-  @override
-  void reset() {}
-}

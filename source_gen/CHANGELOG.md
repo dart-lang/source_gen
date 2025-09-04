@@ -1,3 +1,8 @@
+## 4.0.1
+
+- Require `analyzer: '>=8.1.1 <9.0.0'`.
+- Allow `build: '>=3.0.0 <5.0.0'`.
+
 ## 4.0.0
 
 - **Breaking Change**: remove `TypeChecker.fromRuntime`, use
