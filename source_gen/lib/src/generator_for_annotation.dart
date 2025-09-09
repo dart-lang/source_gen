@@ -44,13 +44,9 @@ abstract class GeneratorForAnnotation<T> extends Generator {
   final bool throwOnUnresolved;
 
   /// Annotation package for [TypeChecker.typeNamed].
-  ///
-  /// Currently unused, will be used from `source_gen` 4.0.0.
   final String? inPackage;
 
   /// Annotation package type for [TypeChecker.typeNamed].
-  ///
-  /// Currently unused, will be used from `source_gen` 4.0.0.
   final bool? inSdk;
 
   /// By default, this generator will throw if it encounters unresolved
