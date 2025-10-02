@@ -1,3 +1,8 @@
+## 4.0.2-wip
+
+- Bug fix: fix possible null pointer exception in `TypeChecker.typeNamed` on
+  invalid code.
+
 ## 4.0.1
 
 - Require `analyzer: '>=8.1.1 <9.0.0'`.
