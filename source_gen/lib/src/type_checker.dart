@@ -257,7 +257,9 @@ class _NameTypeChecker extends TypeChecker {
 
   @override
   bool isExactly(Element element) {
-    final uri = element.library!.uri;
+    final library = element.library;
+    if (library == null) return false;
+    final uri = library.uri;
     return element.name == _typeName &&
         (_inPackage == null ||
             (((uri.scheme == 'dart') == _inSdk) &&
