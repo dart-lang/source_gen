@@ -208,6 +208,14 @@ void main() {
       );
     });
 
+    group('isExactly', () {
+      test('should not crash with null library', () {
+        final element = core.typeProvider.dynamicType.element!;
+        expect(element.library, isNull);
+        expect(checkMapMixin().isExactly(element), isFalse);
+      });
+    });
+
     group('isExactlyType', () {
       test('should not crash with null element', () {
         final voidType = core.typeProvider.voidType;
