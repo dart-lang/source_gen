@@ -1,4 +1,4 @@
-## 4.0.2-wip
+## 4.0.2
 
 - Bug fix: fix possible null pointer exception in `TypeChecker.typeNamed` on
   invalid code.
