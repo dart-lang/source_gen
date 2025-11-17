@@ -40,6 +40,16 @@ abstract class TypeChecker {
     bool? inSdk,
   }) = _NameTypeChecker;
 
+  /// Create a new [TypeChecker] for types with name exactly [name].
+  ///
+  /// Optionally, also pass [inPackage] to restrict to a specific package by
+  /// name. Set [inSdk] if it's a `dart` package.
+  const factory TypeChecker.typeNamedLiterally(
+    String name, {
+    String? inPackage,
+    bool? inSdk,
+  }) = _LiteralNameTypeChecker;
+
   /// Create a new [TypeChecker] backed by a static [type].
   const factory TypeChecker.fromStatic(DartType type) = _LibraryTypeChecker;
 
@@ -268,6 +278,21 @@ class _NameTypeChecker extends TypeChecker {
 
   @override
   String toString() => _inPackage == null ? '$_type' : '$_inPackage#$_type';
+}
+
+// [_NameTypeChecker] that ignores the `Type` and uses a `String` name.
+class _LiteralNameTypeChecker extends _NameTypeChecker {
+  @override
+  final String _typeName;
+
+  const _LiteralNameTypeChecker(
+    this._typeName, {
+    String? inPackage,
+    bool? inSdk,
+  }) : super(Object, inPackage: inPackage, inSdk: inSdk);
+
+  @override
+  String toString() => _inPackage == null ? '$_type' : '$_inPackage#$_typeName';
 }
 
 // Checks a runtime type against an Uri and Symbol.
