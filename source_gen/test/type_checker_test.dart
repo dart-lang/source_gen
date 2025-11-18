@@ -390,6 +390,69 @@ void main() {
     );
   });
 
+  group('TypeChecker.typeNamedLiterally without package', () {
+    commonTests(
+      checkIterable: () => const TypeChecker.typeNamedLiterally('Iterable'),
+      checkEnum: () => const TypeChecker.typeNamedLiterally('Enum'),
+      checkEnumMixin: () => const TypeChecker.typeNamedLiterally('MyEnumMixin'),
+      checkMap: () => const TypeChecker.typeNamedLiterally('Map'),
+      checkMapMixin: () => const TypeChecker.typeNamedLiterally('MyMapMixin'),
+      checkHashMap: () => const TypeChecker.typeNamedLiterally('HashMap'),
+      checkGenerator: () => const TypeChecker.typeNamedLiterally('Generator'),
+      checkGeneratorForAnnotation:
+          () => const TypeChecker.typeNamedLiterally('GeneratorForAnnotation'),
+    );
+  });
+
+  group('TypeChecker.typeNamedLiterally with package', () {
+    commonTests(
+      checkIterable:
+          () => const TypeChecker.typeNamedLiterally(
+            'Iterable',
+            inPackage: 'core',
+            inSdk: true,
+          ),
+      checkEnum:
+          () => const TypeChecker.typeNamedLiterally(
+            'Enum',
+            inPackage: 'core',
+            inSdk: true,
+          ),
+      checkEnumMixin:
+          () => const TypeChecker.typeNamedLiterally(
+            'MyEnumMixin',
+            inPackage: 'source_gen',
+          ),
+      checkMap:
+          () => const TypeChecker.typeNamedLiterally(
+            'Map',
+            inPackage: 'core',
+            inSdk: true,
+          ),
+      checkMapMixin:
+          () => const TypeChecker.typeNamedLiterally(
+            'MyMapMixin',
+            inPackage: 'source_gen',
+          ),
+      checkHashMap:
+          () => const TypeChecker.typeNamedLiterally(
+            'HashMap',
+            inPackage: 'collection',
+            inSdk: true,
+          ),
+      checkGenerator:
+          () => const TypeChecker.typeNamedLiterally(
+            'Generator',
+            inPackage: 'source_gen',
+          ),
+      checkGeneratorForAnnotation:
+          () => const TypeChecker.typeNamedLiterally(
+            'GeneratorForAnnotation',
+            inPackage: 'source_gen',
+          ),
+    );
+  });
+
   group('TypeChecker.forStatic', () {
     commonTests(
       checkIterable: () => staticIterableChecker,

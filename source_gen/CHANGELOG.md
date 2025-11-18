@@ -1,3 +1,8 @@
+## 4.1.0
+
+- Add `TypeChecker.typeNamedLiterally`. It's like `TypeChecker.typeNamed`,
+  but takes a `String` instead of a `Type`.
+
 ## 4.0.2
 
 - Bug fix: fix possible null pointer exception in `TypeChecker.typeNamed` on
