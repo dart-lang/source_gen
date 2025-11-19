@@ -1,3 +1,7 @@
+## 4.1.1
+
+- Allow `analyzer: '>=8.1.1 <10.0.0'`.
+
 ## 4.1.0
 
 - Add `TypeChecker.typeNamedLiterally`. It's like `TypeChecker.typeNamed`,
