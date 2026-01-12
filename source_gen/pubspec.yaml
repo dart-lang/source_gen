@@ -27,11 +27,3 @@ dev_dependencies:
   logging: ^1.2.0
   term_glyph: ^1.2.0
   test: ^1.25.9
-
-dependency_overrides:
-  _fe_analyzer_shared: ^93.0.0
-  analyzer: ^10.0.0
-  dart_style:
-    git:
-      url: https://github.com/dart-lang/dart_style.git
-      ref: bdae98cead73a436920f890626aa81cf3f2f8904
