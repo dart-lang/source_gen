@@ -29,6 +29,7 @@ dev_dependencies:
   test: ^1.25.9
 
 dependency_overrides:
+  _fe_analyzer_shared: ^93.0.0
   analyzer: ^10.0.0
   dart_style:
     git:
