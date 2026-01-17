@@ -178,26 +178,12 @@ class _Builder extends Builder {
       contentBuffer.writeln(item.output);
     }
 
-    var genPartContent = contentBuffer.toString();
-
-    try {
-      genPartContent = formatOutput(
-        genPartContent,
-        library.languageVersion.effective,
-      );
-    } catch (e, stack) {
-      log.severe(
-        '''
-An error `${e.runtimeType}` occurred while formatting the generated source for
-  `${library.uri}`
-which was output to
-  `${outputId.path}`.
-This may indicate an issue in the generator, the input source code, or in the
-source formatter.''',
-        e,
-        stack,
-      );
-    }
+    final genPartContent = loggingFormat(
+      contentBuffer.toString(),
+      library,
+      outputId.path,
+      formatOutput: formatOutput,
+    );
 
     await buildStep.writeAsString(outputId, genPartContent);
   }
@@ -243,7 +229,7 @@ class SharedPartBuilder extends _Builder {
   SharedPartBuilder(
     super.generators,
     String partId, {
-    super.formatOutput = _defaultFormatOutput,
+    super.formatOutput = defaultFormatOutput,
     super.additionalOutputExtensions,
     super.allowSyntaxErrors,
     super.writeDescriptions,
@@ -425,9 +411,6 @@ bool _isUnknownAnnotation(Annotation annotation) {
 
 const defaultFileHeader = '// GENERATED CODE - DO NOT MODIFY BY HAND';
 
-String _defaultFormatOutput(String code, Version version) =>
-    DartFormatter(languageVersion: version).format(code);
-
 /// Prefixes a dart format width and formats [code].
 String _defaultFormatUnit(String code, Version version) {
   if (code.startsWith('$defaultFileHeader\n')) {
@@ -438,7 +421,7 @@ String _defaultFormatUnit(String code, Version version) {
   } else {
     code = '$dartFormatWidth\n$code';
   }
-  return _defaultFormatOutput(code, version);
+  return defaultFormatOutput(code, version);
 }
 
 final _headerLine = '// '.padRight(77, '*');
