@@ -37,12 +37,14 @@ Builder combiningBuilder([BuilderOptions options = BuilderOptions.empty]) {
     optionsMap,
     _defaultExtensions,
   );
+  final header = optionsMap.remove('header') as String?;
 
   final builder = CombiningBuilder(
     includePartName: includePartName,
     ignoreForFile: ignoreForFile,
     preamble: preamble,
     buildExtensions: buildExtensions,
+    header: header,
   );
 
   if (optionsMap.isNotEmpty) {
@@ -67,16 +69,22 @@ class CombiningBuilder implements Builder {
   @override
   final Map<String, List<String>> buildExtensions;
 
+  final String? header;
+
   /// Returns a new [CombiningBuilder].
   ///
   /// If [includePartName] is `true`, the name of each source part file
   /// is output as a comment before its content. This can be useful when
   /// debugging build issues.
+  ///
+  /// If [header] is provided, it will be output as a comment before the
+  /// generated code.
   const CombiningBuilder({
     bool? includePartName,
     Set<String>? ignoreForFile,
     String? preamble,
     this.buildExtensions = _defaultExtensions,
+    this.header,
   }) : _includePartName = includePartName ?? false,
        _ignoreForFile = ignoreForFile ?? const <String>{},
        _preamble = preamble ?? '';
@@ -148,12 +156,15 @@ class CombiningBuilder implements Builder {
     final preamble = _preamble.isEmpty ? '' : '\n$_preamble\n';
 
     final output = '''
-$defaultFileHeader
+${header ?? defaultFileHeader}
 ${languageOverrideForLibrary(inputLibrary)}$ignoreForFile$preamble
 part of '$partOfUri';
 
 $assets
 ''';
-    await buildStep.writeAsString(outputId, output);
+
+    final formattedOutput = loggingFormat(output, inputLibrary, outputId.path);
+
+    await buildStep.writeAsString(outputId, formattedOutput);
   }
 }

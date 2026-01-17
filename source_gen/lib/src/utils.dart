@@ -8,7 +8,9 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
+import 'package:dart_style/dart_style.dart';
 import 'package:path/path.dart' as p;
+import 'package:pub_semver/pub_semver.dart';
 import 'package:yaml/yaml.dart';
 
 /// Returns a non-null name for the provided [type].
@@ -195,4 +197,34 @@ Map<String, List<String>> validatedBuildExtensionsFrom(
   }
 
   return result;
+}
+
+String defaultFormatOutput(String code, Version version) =>
+    DartFormatter(languageVersion: version).format(code);
+
+String loggingFormat(
+  String code,
+  LibraryElement library,
+  String outputIdPath, {
+  String Function(String code, Version languageVersion)? formatOutput,
+}) {
+  formatOutput ??= defaultFormatOutput;
+
+  try {
+    code = formatOutput(code, library.languageVersion.effective);
+  } catch (e, stack) {
+    log.severe(
+      '''
+An error `${e.runtimeType}` occurred while formatting the generated source for
+  `${library.uri}`
+which was output to
+  `$outputIdPath`.
+This may indicate an issue in the generator, the input source code, or in the
+source formatter.''',
+      e,
+      stack,
+    );
+  }
+
+  return code;
 }
