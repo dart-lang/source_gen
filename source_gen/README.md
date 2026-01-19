@@ -140,7 +140,9 @@ targets:
 
 When using a `Builder` based on `package:source_gen` which applies
 `combining_builder`, set the `preamble` option to a string you
-wish to be prepended to all generated libraries.
+wish to be prepended to all generated libraries, but after the default header
+(`// GENERATED CODE - DO NOT MODIFY BY HAND`) or the `header` option if it's
+set.
 
 _Example `build.yaml` configuration:_
 
