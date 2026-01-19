@@ -37,12 +37,14 @@ Builder combiningBuilder([BuilderOptions options = BuilderOptions.empty]) {
     optionsMap,
     _defaultExtensions,
   );
+  final header = optionsMap.remove('header') as String?;
 
   final builder = CombiningBuilder(
     includePartName: includePartName,
     ignoreForFile: ignoreForFile,
     preamble: preamble,
     buildExtensions: buildExtensions,
+    header: header,
   );
 
   if (optionsMap.isNotEmpty) {
@@ -67,16 +69,22 @@ class CombiningBuilder implements Builder {
   @override
   final Map<String, List<String>> buildExtensions;
 
+  final String? header;
+
   /// Returns a new [CombiningBuilder].
   ///
   /// If [includePartName] is `true`, the name of each source part file
   /// is output as a comment before its content. This can be useful when
   /// debugging build issues.
+  ///
+  /// If [header] is provided, it will be output as a comment before the
+  /// generated code.
   const CombiningBuilder({
     bool? includePartName,
     Set<String>? ignoreForFile,
     String? preamble,
     this.buildExtensions = _defaultExtensions,
+    this.header,
   }) : _includePartName = includePartName ?? false,
        _ignoreForFile = ignoreForFile ?? const <String>{},
        _preamble = preamble ?? '';
@@ -140,17 +148,28 @@ class CombiningBuilder implements Builder {
       return;
     }
 
+    final headerBit = (header ?? defaultFileHeader).trim();
+    final headerContent =
+        headerBit.isEmpty
+            ? languageOverrideForLibrary(inputLibrary)
+            : '$headerBit\n${languageOverrideForLibrary(inputLibrary)}';
+
     final ignoreForFile =
         _ignoreForFile.isEmpty
             ? ''
-            : '\n// ignore_for_file: ${_ignoreForFile.join(', ')}\n';
+            : '// ignore_for_file: ${_ignoreForFile.join(', ')}\n';
 
-    final preamble = _preamble.isEmpty ? '' : '\n$_preamble\n';
+    final preamble = _preamble.isEmpty ? '' : '$_preamble\n';
+
+    final optionalBits =
+        [headerContent, ignoreForFile, preamble]
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .map((e) => '$e\n\n')
+            .toList();
 
     final output = '''
-$defaultFileHeader
-${languageOverrideForLibrary(inputLibrary)}$ignoreForFile$preamble
-part of '$partOfUri';
+${optionalBits.join()}part of '$partOfUri';
 
 $assets
 ''';

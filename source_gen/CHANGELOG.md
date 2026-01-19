@@ -1,3 +1,7 @@
+## 4.2.0
+
+- Add `header` configuration to `CombiningBuilder`.
+
 ## 4.1.2
 
 - Allow `analyzer: '>=8.1.1 <11.0.0'`.
