@@ -556,12 +556,52 @@ part "a.foo.dart";''',
         const CombiningBuilder(),
         {
           '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
-          '$_pkgName|lib/a.foo.g.part': 'some generated content',
+          '$_pkgName|lib/a.foo.g.part': 'class A {}',
         },
+        onLog: _failOnSevereLog,
         outputs: {
           '$_pkgName|lib/a.g.dart': decodedMatches(
             startsWith('// GENERATED CODE - DO NOT MODIFY BY HAND'),
           ),
+        },
+      );
+    });
+
+    test('uses a custom header when provided', () async {
+      await testBuilder(
+        const CombiningBuilder(header: _customHeader),
+        {
+          '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
+          '$_pkgName|lib/a.foo.g.part': 'class C {}',
+        },
+        onLog: _failOnSevereLog,
+
+        outputs: {
+          '$_pkgName|lib/a.g.dart': decodedMatches('''
+$_customHeader
+
+part of 'a.dart';
+
+class C {}
+'''),
+        },
+      );
+    });
+
+    test('includes no header when `header` is empty', () async {
+      await testBuilder(
+        const CombiningBuilder(header: ''),
+        {
+          '$_pkgName|lib/a.dart': 'library a; part "a.g.dart";',
+          '$_pkgName|lib/a.foo.g.part': 'class A {}',
+        },
+        onLog: _failOnSevereLog,
+        outputs: {
+          '$_pkgName|lib/a.g.dart': decodedMatches('''
+part of 'a.dart';
+
+class A {}
+'''),
         },
       );
     });
@@ -941,10 +981,7 @@ foo generated content
           contains('// "int x" is deprecated!'),
         ),
       },
-      onLog: (log) {
-        if (log.level < Level.SEVERE) return;
-        fail('Unexpected log message: ${log.message}');
-      },
+      onLog: _failOnSevereLog,
     );
   });
 }
@@ -959,10 +996,7 @@ Future<void> _generateTest(CommentGenerator gen, String expectedContent) async {
     outputs: {
       '$_pkgName|lib/test_lib.foo.dart': decodedMatches(expectedContent),
     },
-    onLog: (log) {
-      if (log.level < Level.SEVERE) return;
-      fail('Unexpected log message: ${log.message}');
-    },
+    onLog: _failOnSevereLog,
   );
 }
 
@@ -1136,3 +1170,10 @@ part of 'test_lib.dart';
 
 // hello
 ''';
+
+void _failOnSevereLog(LogRecord log) {
+  if (log.level < Level.SEVERE) return;
+  addTearDown(() {
+    fail('Unexpected log message: ${log.message}');
+  });
+}
