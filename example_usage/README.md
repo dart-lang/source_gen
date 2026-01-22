@@ -9,5 +9,5 @@ In this directory, run:
 ```console
 $ pub get
 ...
-$ pub run build_runner build
+$ dart run build_runner build
 ```
