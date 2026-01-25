@@ -7,7 +7,7 @@ See also the `example` directory containing the builders used in this package.
 In this directory, run:
 
 ```console
-$ pub get
+$ dart pub get
 ...
-$ pub run build_runner build
+$ dart run build_runner build
 ```
