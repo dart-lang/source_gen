@@ -617,6 +617,7 @@ void main() {
   group('unresolved annotations', () {
     late TypeChecker $A;
     late ClassElement $ExampleOfA;
+    late ClassElement $ExampleWithInvalid;
     late FormalParameterElement $annotatedParameter;
 
     setUpAll(() async {
@@ -633,6 +634,16 @@ void main() {
       class A {
         const A();
       }
+
+      final notAConstant = 42;
+
+      class D {
+        final int value;
+        const D(this.value);
+      }
+
+      @D(notAConstant)
+      class ExampleWithInvalid {}
     ''', (resolver) async => (await resolver.findLibraryByName('_test'))!);
       $A = TypeChecker.fromStatic(
         library
@@ -643,6 +654,7 @@ void main() {
             ),
       );
       $ExampleOfA = library.getClass('ExampleOfA')!;
+      $ExampleWithInvalid = library.getClass('ExampleWithInvalid')!;
       $annotatedParameter = library.topLevelFunctions
           .firstWhere((f) => f.name == 'annotatedParameter')
           .formalParameters
@@ -681,6 +693,27 @@ void main() {
       expect(
         () => $A.annotationsOfExact($annotatedParameter),
         throwsUnresolvedAnnotationException,
+      );
+    });
+
+    test('should include evaluation errors for invalid constants', () {
+      final $D = TypeChecker.fromStatic(
+        $ExampleWithInvalid.library
+            .getClass('D')!
+            .instantiate(
+              typeArguments: [],
+              nullabilitySuffix: NullabilitySuffix.none,
+            ),
+      );
+      expect(
+        () => $D.annotationsOf($ExampleWithInvalid),
+        throwsA(
+          const TypeMatcher<UnresolvedAnnotationException>().having(
+            (e) => e.toString(),
+            'toString',
+            allOf(contains('Error:'), contains('Invalid constant value.')),
+          ),
+        ),
       );
     });
 
