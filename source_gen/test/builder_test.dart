@@ -98,7 +98,8 @@ void main() {
         writeDescriptions: false,
       );
 
-      const expected = '''
+      const expected =
+          '''
 $dartFormatWidth
 // Code for "class Person"
 // Code for "class Customer"
@@ -529,15 +530,14 @@ part "a.foo.dart";''',
     });
 
     group('constructor', () {
-      for (var entry
-          in {
-            'starts with `.`': '.foo',
-            'ends with `.`': 'foo.',
-            'is empty': '',
-            'contains whitespace': 'coo bob',
-            'contains symbols': '%oops',
-            'contains . in the middle': 'cool.thing',
-          }.entries) {
+      for (var entry in {
+        'starts with `.`': '.foo',
+        'ends with `.`': 'foo.',
+        'is empty': '',
+        'contains whitespace': 'coo bob',
+        'contains symbols': '%oops',
+        'contains . in the middle': 'cool.thing',
+      }.entries) {
         test('throws if the partId ${entry.key}', () async {
           expect(
             () => SharedPartBuilder([
@@ -1091,7 +1091,8 @@ const _testLibContentSyntaxError = r'''
 final int foo = 42
 ''';
 
-const _testGenPartContent = '''
+const _testGenPartContent =
+    '''
 // GENERATED CODE - DO NOT MODIFY BY HAND
 $dartFormatWidth
 
@@ -1105,32 +1106,8 @@ part of 'test_lib.dart';
 // Code for "class Customer"
 ''';
 
-const _testGenPartContentForLibrary = '''
-// GENERATED CODE - DO NOT MODIFY BY HAND
-$dartFormatWidth
-
-part of 'test_lib.dart';
-
-// **************************************************************************
-// CommentGenerator
-// **************************************************************************
-
-// Code for "test_lib"
-''';
-
-const _testGenStandaloneContent = '''
-// GENERATED CODE - DO NOT MODIFY BY HAND
-$dartFormatWidth
-
-// **************************************************************************
-// CommentGenerator
-// **************************************************************************
-
-// Code for "class Person"
-// Code for "class Customer"
-''';
-
-const _testGenPartContentForClassesAndLibrary = '''
+const _testGenPartContentForLibrary =
+    '''
 // GENERATED CODE - DO NOT MODIFY BY HAND
 $dartFormatWidth
 
@@ -1141,11 +1118,39 @@ part of 'test_lib.dart';
 // **************************************************************************
 
 // Code for "test_lib"
+''';
+
+const _testGenStandaloneContent =
+    '''
+// GENERATED CODE - DO NOT MODIFY BY HAND
+$dartFormatWidth
+
+// **************************************************************************
+// CommentGenerator
+// **************************************************************************
+
 // Code for "class Person"
 // Code for "class Customer"
 ''';
 
-const _testGenNoLibrary = '''
+const _testGenPartContentForClassesAndLibrary =
+    '''
+// GENERATED CODE - DO NOT MODIFY BY HAND
+$dartFormatWidth
+
+part of 'test_lib.dart';
+
+// **************************************************************************
+// CommentGenerator
+// **************************************************************************
+
+// Code for "test_lib"
+// Code for "class Person"
+// Code for "class Customer"
+''';
+
+const _testGenNoLibrary =
+    '''
 // GENERATED CODE - DO NOT MODIFY BY HAND
 $dartFormatWidth
 

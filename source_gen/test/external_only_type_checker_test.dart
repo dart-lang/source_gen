@@ -76,9 +76,8 @@ void main() {
     'TypeChecker.forRuntime',
     () {
       commonTests(
-        checkNonPublic:
-            () =>
-                const TypeChecker.typeNamed(NonPublic, inPackage: 'source_gen'),
+        checkNonPublic: () =>
+            const TypeChecker.typeNamed(NonPublic, inPackage: 'source_gen'),
       );
     },
     onPlatform: const {
@@ -92,10 +91,9 @@ void main() {
 
   group('TypeChecker.fromUrl', () {
     commonTests(
-      checkNonPublic:
-          () => const TypeChecker.fromUrl(
-            'asset:source_gen/test/external_only_type_checker_test.dart#NonPublic',
-          ),
+      checkNonPublic: () => const TypeChecker.fromUrl(
+        'asset:source_gen/test/external_only_type_checker_test.dart#NonPublic',
+      ),
     );
   });
 }

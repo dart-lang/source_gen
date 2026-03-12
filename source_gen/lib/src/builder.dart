@@ -112,8 +112,11 @@ class _Builder extends Builder {
     LibraryElement library,
     BuildStep buildStep,
   ) async {
-    final generatedOutputs =
-        await _generate(library, _generators, buildStep).toList();
+    final generatedOutputs = await _generate(
+      library,
+      _generators,
+      buildStep,
+    ).toList();
 
     // Don't output useless files.
     //

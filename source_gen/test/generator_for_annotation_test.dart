@@ -15,14 +15,13 @@ import 'package:test/test.dart';
 
 void main() {
   group('skips output if per-annotation output is', () {
-    for (var entry
-        in {
-          '`null`': null,
-          'empty string': '',
-          'only whitespace': '\n \t',
-          'empty list': <Object>[],
-          'list with null, empty, and whitespace items': [null, '', '\n \t'],
-        }.entries) {
+    for (var entry in {
+      '`null`': null,
+      'empty string': '',
+      'only whitespace': '\n \t',
+      'empty list': <Object>[],
+      'list with null, empty, and whitespace items': [null, '', '\n \t'],
+    }.entries) {
       test(entry.key, () async {
         final generator = _StubGenerator<Deprecated>(
           'Value',
@@ -47,7 +46,8 @@ void main() {
       builder,
       _inputMap,
       outputs: {
-        'a|lib/file.g.dart': '''
+        'a|lib/file.g.dart':
+            '''
 // GENERATED CODE - DO NOT MODIFY BY HAND
 $dartFormatWidth
 
@@ -68,22 +68,21 @@ $dartFormatWidth
   });
 
   group('handles errors correctly', () {
-    for (var entry
-        in {
-          'sync errors': _StubGenerator<Deprecated>(
-            'Failing',
-            elementBehavior: (_) {
-              throw StateError('not supported!');
-            },
-          ),
-          'from iterable': _StubGenerator<Deprecated>(
-            'FailingIterable',
-            elementBehavior: (_) sync* {
-              yield '// There are deprecated values in this library!';
-              throw StateError('not supported!');
-            },
-          ),
-        }.entries) {
+    for (var entry in {
+      'sync errors': _StubGenerator<Deprecated>(
+        'Failing',
+        elementBehavior: (_) {
+          throw StateError('not supported!');
+        },
+      ),
+      'from iterable': _StubGenerator<Deprecated>(
+        'FailingIterable',
+        elementBehavior: (_) sync* {
+          yield '// There are deprecated values in this library!';
+          throw StateError('not supported!');
+        },
+      ),
+    }.entries) {
       test(entry.key, () async {
         final builder = LibraryBuilder(entry.value);
         final logs = <String>[];
@@ -149,7 +148,8 @@ main() {}''',
       ''',
       },
       outputs: {
-        'a|lib/file.g.dart': '''
+        'a|lib/file.g.dart':
+            '''
 // GENERATED CODE - DO NOT MODIFY BY HAND
 $dartFormatWidth
 
@@ -167,13 +167,12 @@ $dartFormatWidth
     final builder = LibraryBuilder(
       _StubGenerator<Deprecated>(
         'Deprecated',
-        directiveBehavior:
-            (element) => switch (element) {
-              LibraryImport() => '// LibraryImport',
-              LibraryExport() => '// LibraryExport',
-              PartInclude() => '// PartInclude',
-              ElementDirective() => '// ElementDirective',
-            },
+        directiveBehavior: (element) => switch (element) {
+          LibraryImport() => '// LibraryImport',
+          LibraryExport() => '// LibraryExport',
+          PartInclude() => '// PartInclude',
+          ElementDirective() => '// ElementDirective',
+        },
         elementBehavior: (element) => '// ${element.runtimeType}',
       ),
     );
@@ -193,7 +192,8 @@ $dartFormatWidth
       ''',
       },
       outputs: {
-        'a|lib/file.g.dart': '''
+        'a|lib/file.g.dart':
+            '''
 // GENERATED CODE - DO NOT MODIFY BY HAND
 $dartFormatWidth
 

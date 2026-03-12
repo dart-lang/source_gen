@@ -129,10 +129,9 @@ class LibraryReader {
   Uri pathToUrl(dynamic toUrlOrString) {
     // TODO: https://github.com/dart-lang/source_gen/issues/672 - Take Object
     ArgumentError.checkNotNull(toUrlOrString, 'toUrlOrString');
-    final to =
-        toUrlOrString is Uri
-            ? toUrlOrString
-            : Uri.parse(toUrlOrString as String);
+    final to = toUrlOrString is Uri
+        ? toUrlOrString
+        : Uri.parse(toUrlOrString as String);
     if (to.scheme == 'dart') {
       // Convert dart:core/map.dart to dart:core.
       return normalizeDartUrl(to);

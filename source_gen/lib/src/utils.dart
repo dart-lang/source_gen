@@ -57,13 +57,12 @@ String computePartUrl(AssetId input, AssetId output) => p.url.joinAll(
 );
 
 /// Returns a URL representing [element].
-String urlOfElement(Element element) =>
-    element.kind == ElementKind.DYNAMIC
-        ? 'dart:core#dynamic'
-        // using librarySource.uri – in case the element is in a part
-        : normalizeUrl(
-          element.library!.uri,
-        ).replace(fragment: element.name).toString();
+String urlOfElement(Element element) => element.kind == ElementKind.DYNAMIC
+    ? 'dart:core#dynamic'
+    // using librarySource.uri – in case the element is in a part
+    : normalizeUrl(
+        element.library!.uri,
+      ).replace(fragment: element.name).toString();
 
 Uri normalizeUrl(Uri url) => switch (url.scheme) {
   'dart' => normalizeDartUrl(url),
@@ -78,10 +77,9 @@ Uri normalizeUrl(Uri url) => switch (url.scheme) {
 ///
 /// This isn't a user-knowable path, so we strip out extra path segments
 /// and only expose `dart:core`.
-Uri normalizeDartUrl(Uri url) =>
-    url.pathSegments.isNotEmpty
-        ? url.replace(pathSegments: url.pathSegments.take(1))
-        : url;
+Uri normalizeDartUrl(Uri url) => url.pathSegments.isNotEmpty
+    ? url.replace(pathSegments: url.pathSegments.take(1))
+    : url;
 
 Uri _fileToAssetUrl(Uri url) {
   if (!p.isWithin(p.url.current, url.path)) return url;
@@ -99,17 +97,16 @@ Uri _fileToAssetUrl(Uri url) {
 ///
 /// For example, this transforms `package:source_gen/source_gen.dart` into:
 /// `asset:source_gen/lib/source_gen.dart`.
-Uri _packageToAssetUrl(Uri url) =>
-    url.scheme == 'package'
-        ? url.replace(
-          scheme: 'asset',
-          pathSegments: <String>[
-            url.pathSegments.first,
-            'lib',
-            ...url.pathSegments.skip(1),
-          ],
-        )
-        : url;
+Uri _packageToAssetUrl(Uri url) => url.scheme == 'package'
+    ? url.replace(
+        scheme: 'asset',
+        pathSegments: <String>[
+          url.pathSegments.first,
+          'lib',
+          ...url.pathSegments.skip(1),
+        ],
+      )
+    : url;
 
 /// Returns a `asset:` URL converted to a `package:` URL.
 ///
@@ -122,13 +119,13 @@ Uri _packageToAssetUrl(Uri url) =>
 /// `web`, or even root directory of a package - `asset:some_lib/web/main.dart`.
 Uri assetToPackageUrl(Uri url) =>
     url.scheme == 'asset' &&
-            url.pathSegments.isNotEmpty &&
-            url.pathSegments[1] == 'lib'
-        ? url.replace(
-          scheme: 'package',
-          pathSegments: [url.pathSegments.first, ...url.pathSegments.skip(2)],
-        )
-        : url;
+        url.pathSegments.isNotEmpty &&
+        url.pathSegments[1] == 'lib'
+    ? url.replace(
+        scheme: 'package',
+        pathSegments: [url.pathSegments.first, ...url.pathSegments.skip(2)],
+      )
+    : url;
 
 final String rootPackageName = () {
   final name =

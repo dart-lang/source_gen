@@ -106,8 +106,10 @@ line 7, column 11 of package:test_lib/test_lib.dart: Here it is
   });
 
   test('highlights based on AstNode source location', () async {
-    final element =
-        library.getClass('Example')!.getField('field')!.firstFragment;
+    final element = library
+        .getClass('Example')!
+        .getField('field')!
+        .firstFragment;
     final node = (await resolver.astNodeFor(element, resolve: true))!;
     expect(spanForNode(node).message('Here it is'), r"""
 line 6, column 7 of package:test_lib/test_lib.dart: Here it is
