@@ -711,7 +711,13 @@ void main() {
           const TypeMatcher<UnresolvedAnnotationException>().having(
             (e) => e.toString(),
             'toString',
-            allOf(contains('Error:'), contains('Invalid constant value.')),
+            allOf([
+              contains(
+                'Could not resolve annotation for `class ExampleWithInvalid`.',
+              ),
+              contains('Error: Invalid constant value.'),
+              contains('@D(notAConstant)'),
+            ]),
           ),
         ),
       );
