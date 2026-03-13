@@ -7,6 +7,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:build/build.dart';
 import 'package:source_span/source_span.dart';
 
@@ -125,7 +126,11 @@ abstract class TypeChecker {
   }) {
     final result = annotation.computeConstantValue();
     if (result == null && throwOnUnresolved && element is Element) {
-      throw UnresolvedAnnotationException._from(element, annotationIndex);
+      throw UnresolvedAnnotationException._from(
+        element,
+        annotationIndex,
+        annotation,
+      );
     }
     return result;
   }
@@ -349,6 +354,9 @@ class UnresolvedAnnotationException implements Exception {
   /// May be `null` if the import library was not found.
   final SourceSpan? annotationSource;
 
+  /// The constant evaluation errors associated with this annotation, if any.
+  final List<Diagnostic>? _constantEvaluationErrors;
+
   static SourceSpan? _findSpan(Element annotatedElement, int annotationIndex) {
     try {
       final parsedLibrary =
@@ -403,20 +411,36 @@ the version of `package:source_gen`, `package:analyzer` from `pubspec.lock`.
   /// resolvable while traversing `metadata2` on [annotatedElement].
   factory UnresolvedAnnotationException._from(
     Element annotatedElement,
-    int annotationIndex,
-  ) {
+    int annotationIndex, [
+    ElementAnnotation? annotation,
+  ]) {
     final sourceSpan = _findSpan(annotatedElement, annotationIndex);
-    return UnresolvedAnnotationException._(annotatedElement, sourceSpan);
+    return UnresolvedAnnotationException._(
+      annotatedElement,
+      sourceSpan,
+      annotation?.constantEvaluationErrors,
+    );
   }
 
   const UnresolvedAnnotationException._(
     this.annotatedElement,
     this.annotationSource,
+    this._constantEvaluationErrors,
   );
 
   @override
   String toString() {
-    final message = 'Could not resolve annotation for `$annotatedElement`.';
+    var message = 'Could not resolve annotation for `$annotatedElement`.';
+    if (_constantEvaluationErrors != null &&
+        _constantEvaluationErrors.isNotEmpty) {
+      final errorPrefix = _constantEvaluationErrors.length > 1
+          ? 'Errors:\n'
+          : 'Error: ';
+      final errors = _constantEvaluationErrors
+          .map((e) => e.problemMessage.messageText(includeUrl: true))
+          .join('\n');
+      message = '$message\n$errorPrefix$errors';
+    }
     if (annotationSource != null) {
       return annotationSource!.message(message);
     }
