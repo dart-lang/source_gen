@@ -1,3 +1,9 @@
+## 4.2.1-wip
+
+- Require `build: '>=3.0.2 <5.0.0'`
+- Require `dart_style: ^3.1.2`
+- Require `sdk: ^3.9.0`
+
 ## 4.2.0
 
 - Add `header` configuration to `CombiningBuilder`.

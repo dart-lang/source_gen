@@ -149,26 +149,24 @@ class CombiningBuilder implements Builder {
     }
 
     final headerBit = (header ?? defaultFileHeader).trim();
-    final headerContent =
-        headerBit.isEmpty
-            ? languageOverrideForLibrary(inputLibrary)
-            : '$headerBit\n${languageOverrideForLibrary(inputLibrary)}';
+    final headerContent = headerBit.isEmpty
+        ? languageOverrideForLibrary(inputLibrary)
+        : '$headerBit\n${languageOverrideForLibrary(inputLibrary)}';
 
-    final ignoreForFile =
-        _ignoreForFile.isEmpty
-            ? ''
-            : '// ignore_for_file: ${_ignoreForFile.join(', ')}\n';
+    final ignoreForFile = _ignoreForFile.isEmpty
+        ? ''
+        : '// ignore_for_file: ${_ignoreForFile.join(', ')}\n';
 
     final preamble = _preamble.isEmpty ? '' : '$_preamble\n';
 
-    final optionalBits =
-        [headerContent, ignoreForFile, preamble]
-            .map((e) => e.trim())
-            .where((e) => e.isNotEmpty)
-            .map((e) => '$e\n\n')
-            .toList();
+    final optionalBits = [headerContent, ignoreForFile, preamble]
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .map((e) => '$e\n\n')
+        .toList();
 
-    final output = '''
+    final output =
+        '''
 ${optionalBits.join()}part of '$partOfUri';
 
 $assets

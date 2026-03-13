@@ -57,13 +57,12 @@ void main() {
           const Super() : super(aString: 'Super Hello');
         }
       ''', (resolver) async => (await resolver.findLibraryByName('test_lib'))!);
-      constants =
-          library
-              .getClass('Example')!
-              .metadata
-              .annotations
-              .map((e) => ConstantReader(e.computeConstantValue()!))
-              .toList();
+      constants = library
+          .getClass('Example')!
+          .metadata
+          .annotations
+          .map((e) => ConstantReader(e.computeConstantValue()!))
+          .toList();
     });
 
     test('should read a String', () {
@@ -300,13 +299,12 @@ void main() {
 
         void _privateFunction() {}
       ''', (resolver) async => (await resolver.findLibraryByName('test_lib'))!);
-      constants =
-          library
-              .getClass('Example')!
-              .metadata
-              .annotations
-              .map((e) => ConstantReader(e.computeConstantValue()))
-              .toList();
+      constants = library
+          .getClass('Example')!
+          .metadata
+          .annotations
+          .map((e) => ConstantReader(e.computeConstantValue()))
+          .toList();
     });
 
     test('should decode Int64Like.ZERO', () {

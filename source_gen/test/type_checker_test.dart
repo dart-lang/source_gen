@@ -104,32 +104,33 @@ void main() {
           nullabilitySuffix: NullabilitySuffix.none,
         );
     staticEnumChecker = TypeChecker.fromStatic(staticEnum);
-    staticEnumMixin = (testSource.exportNamespace.get2('MyEnumMixin')!
-            as InterfaceElement)
-        .instantiate(
-          typeArguments: [],
-          nullabilitySuffix: NullabilitySuffix.none,
-        );
+    staticEnumMixin =
+        (testSource.exportNamespace.get2('MyEnumMixin')! as InterfaceElement)
+            .instantiate(
+              typeArguments: [],
+              nullabilitySuffix: NullabilitySuffix.none,
+            );
     staticEnumMixinChecker = TypeChecker.fromStatic(staticEnumMixin);
-    staticMapMixin = (testSource.exportNamespace.get2('MyMapMixin')!
-            as InterfaceElement)
-        .instantiate(
-          typeArguments: [],
-          nullabilitySuffix: NullabilitySuffix.none,
-        );
+    staticMapMixin =
+        (testSource.exportNamespace.get2('MyMapMixin')! as InterfaceElement)
+            .instantiate(
+              typeArguments: [],
+              nullabilitySuffix: NullabilitySuffix.none,
+            );
     staticMapMixinChecker = TypeChecker.fromStatic(staticMapMixin);
-    staticMyEnum = (testSource.exportNamespace.get2('MyEnum')!
-            as InterfaceElement)
-        .instantiate(
-          typeArguments: [],
-          nullabilitySuffix: NullabilitySuffix.none,
-        );
-    staticMyEnumWithMixin = (testSource.exportNamespace.get2('MyEnumWithMixin')!
-            as InterfaceElement)
-        .instantiate(
-          typeArguments: [],
-          nullabilitySuffix: NullabilitySuffix.none,
-        );
+    staticMyEnum =
+        (testSource.exportNamespace.get2('MyEnum')! as InterfaceElement)
+            .instantiate(
+              typeArguments: [],
+              nullabilitySuffix: NullabilitySuffix.none,
+            );
+    staticMyEnumWithMixin =
+        (testSource.exportNamespace.get2('MyEnumWithMixin')!
+                as InterfaceElement)
+            .instantiate(
+              typeArguments: [],
+              nullabilitySuffix: NullabilitySuffix.none,
+            );
 
     staticHashMap = collection
         .getClass('HashMap')!
@@ -273,8 +274,9 @@ void main() {
       // Ensure we're consistent WRT generic types
       test('should be assignable from Map<String, String>', () {
         // Using Uri.queryParameters to get a Map<String, String>
-        final stringStringMapType =
-            staticUri.getGetter('queryParameters')!.returnType;
+        final stringStringMapType = staticUri
+            .getGetter('queryParameters')!
+            .returnType;
 
         expect(checkMap().isAssignableFromType(stringStringMapType), isTrue);
         expect(checkMap().isExactlyType(stringStringMapType), isTrue);
@@ -349,44 +351,34 @@ void main() {
       checkMapMixin: () => const TypeChecker.typeNamed(MyMapMixin),
       checkHashMap: () => const TypeChecker.typeNamed(HashMap),
       checkGenerator: () => const TypeChecker.typeNamed(Generator),
-      checkGeneratorForAnnotation:
-          () => const TypeChecker.typeNamed(GeneratorForAnnotation),
+      checkGeneratorForAnnotation: () =>
+          const TypeChecker.typeNamed(GeneratorForAnnotation),
     );
   });
 
   group('TypeChecker.typeNamed with package', () {
     commonTests(
-      checkIterable:
-          () => const TypeChecker.typeNamed(
-            Iterable,
-            inPackage: 'core',
-            inSdk: true,
-          ),
-      checkEnum:
-          () =>
-              const TypeChecker.typeNamed(Enum, inPackage: 'core', inSdk: true),
-      checkEnumMixin:
-          () =>
-              const TypeChecker.typeNamed(MyEnumMixin, inPackage: 'source_gen'),
-      checkMap:
-          () =>
-              const TypeChecker.typeNamed(Map, inPackage: 'core', inSdk: true),
-      checkMapMixin:
-          () =>
-              const TypeChecker.typeNamed(MyMapMixin, inPackage: 'source_gen'),
-      checkHashMap:
-          () => const TypeChecker.typeNamed(
-            HashMap,
-            inPackage: 'collection',
-            inSdk: true,
-          ),
-      checkGenerator:
-          () => const TypeChecker.typeNamed(Generator, inPackage: 'source_gen'),
-      checkGeneratorForAnnotation:
-          () => const TypeChecker.typeNamed(
-            GeneratorForAnnotation,
-            inPackage: 'source_gen',
-          ),
+      checkIterable: () =>
+          const TypeChecker.typeNamed(Iterable, inPackage: 'core', inSdk: true),
+      checkEnum: () =>
+          const TypeChecker.typeNamed(Enum, inPackage: 'core', inSdk: true),
+      checkEnumMixin: () =>
+          const TypeChecker.typeNamed(MyEnumMixin, inPackage: 'source_gen'),
+      checkMap: () =>
+          const TypeChecker.typeNamed(Map, inPackage: 'core', inSdk: true),
+      checkMapMixin: () =>
+          const TypeChecker.typeNamed(MyMapMixin, inPackage: 'source_gen'),
+      checkHashMap: () => const TypeChecker.typeNamed(
+        HashMap,
+        inPackage: 'collection',
+        inSdk: true,
+      ),
+      checkGenerator: () =>
+          const TypeChecker.typeNamed(Generator, inPackage: 'source_gen'),
+      checkGeneratorForAnnotation: () => const TypeChecker.typeNamed(
+        GeneratorForAnnotation,
+        inPackage: 'source_gen',
+      ),
     );
   });
 
@@ -399,57 +391,49 @@ void main() {
       checkMapMixin: () => const TypeChecker.typeNamedLiterally('MyMapMixin'),
       checkHashMap: () => const TypeChecker.typeNamedLiterally('HashMap'),
       checkGenerator: () => const TypeChecker.typeNamedLiterally('Generator'),
-      checkGeneratorForAnnotation:
-          () => const TypeChecker.typeNamedLiterally('GeneratorForAnnotation'),
+      checkGeneratorForAnnotation: () =>
+          const TypeChecker.typeNamedLiterally('GeneratorForAnnotation'),
     );
   });
 
   group('TypeChecker.typeNamedLiterally with package', () {
     commonTests(
-      checkIterable:
-          () => const TypeChecker.typeNamedLiterally(
-            'Iterable',
-            inPackage: 'core',
-            inSdk: true,
-          ),
-      checkEnum:
-          () => const TypeChecker.typeNamedLiterally(
-            'Enum',
-            inPackage: 'core',
-            inSdk: true,
-          ),
-      checkEnumMixin:
-          () => const TypeChecker.typeNamedLiterally(
-            'MyEnumMixin',
-            inPackage: 'source_gen',
-          ),
-      checkMap:
-          () => const TypeChecker.typeNamedLiterally(
-            'Map',
-            inPackage: 'core',
-            inSdk: true,
-          ),
-      checkMapMixin:
-          () => const TypeChecker.typeNamedLiterally(
-            'MyMapMixin',
-            inPackage: 'source_gen',
-          ),
-      checkHashMap:
-          () => const TypeChecker.typeNamedLiterally(
-            'HashMap',
-            inPackage: 'collection',
-            inSdk: true,
-          ),
-      checkGenerator:
-          () => const TypeChecker.typeNamedLiterally(
-            'Generator',
-            inPackage: 'source_gen',
-          ),
-      checkGeneratorForAnnotation:
-          () => const TypeChecker.typeNamedLiterally(
-            'GeneratorForAnnotation',
-            inPackage: 'source_gen',
-          ),
+      checkIterable: () => const TypeChecker.typeNamedLiterally(
+        'Iterable',
+        inPackage: 'core',
+        inSdk: true,
+      ),
+      checkEnum: () => const TypeChecker.typeNamedLiterally(
+        'Enum',
+        inPackage: 'core',
+        inSdk: true,
+      ),
+      checkEnumMixin: () => const TypeChecker.typeNamedLiterally(
+        'MyEnumMixin',
+        inPackage: 'source_gen',
+      ),
+      checkMap: () => const TypeChecker.typeNamedLiterally(
+        'Map',
+        inPackage: 'core',
+        inSdk: true,
+      ),
+      checkMapMixin: () => const TypeChecker.typeNamedLiterally(
+        'MyMapMixin',
+        inPackage: 'source_gen',
+      ),
+      checkHashMap: () => const TypeChecker.typeNamedLiterally(
+        'HashMap',
+        inPackage: 'collection',
+        inSdk: true,
+      ),
+      checkGenerator: () => const TypeChecker.typeNamedLiterally(
+        'Generator',
+        inPackage: 'source_gen',
+      ),
+      checkGeneratorForAnnotation: () => const TypeChecker.typeNamedLiterally(
+        'GeneratorForAnnotation',
+        inPackage: 'source_gen',
+      ),
     );
   });
 
@@ -470,24 +454,20 @@ void main() {
     commonTests(
       checkIterable: () => const TypeChecker.fromUrl('dart:core#Iterable'),
       checkEnum: () => const TypeChecker.fromUrl('dart:core#Enum'),
-      checkEnumMixin:
-          () => const TypeChecker.fromUrl(
-            'asset:source_gen/test/type_checker_test.dart#MyEnumMixin',
-          ),
+      checkEnumMixin: () => const TypeChecker.fromUrl(
+        'asset:source_gen/test/type_checker_test.dart#MyEnumMixin',
+      ),
       checkMap: () => const TypeChecker.fromUrl('dart:core#Map'),
-      checkMapMixin:
-          () => const TypeChecker.fromUrl(
-            'asset:source_gen/test/type_checker_test.dart#MyMapMixin',
-          ),
+      checkMapMixin: () => const TypeChecker.fromUrl(
+        'asset:source_gen/test/type_checker_test.dart#MyMapMixin',
+      ),
       checkHashMap: () => const TypeChecker.fromUrl('dart:collection#HashMap'),
-      checkGenerator:
-          () => const TypeChecker.fromUrl(
-            'package:source_gen/src/generator.dart#Generator',
-          ),
-      checkGeneratorForAnnotation:
-          () => const TypeChecker.fromUrl(
-            'package:source_gen/src/generator_for_annotation.dart#GeneratorForAnnotation',
-          ),
+      checkGenerator: () => const TypeChecker.fromUrl(
+        'package:source_gen/src/generator.dart#Generator',
+      ),
+      checkGeneratorForAnnotation: () => const TypeChecker.fromUrl(
+        'package:source_gen/src/generator_for_annotation.dart#GeneratorForAnnotation',
+      ),
     );
   });
 
@@ -663,11 +643,10 @@ void main() {
             ),
       );
       $ExampleOfA = library.getClass('ExampleOfA')!;
-      $annotatedParameter =
-          library.topLevelFunctions
-              .firstWhere((f) => f.name == 'annotatedParameter')
-              .formalParameters
-              .single;
+      $annotatedParameter = library.topLevelFunctions
+          .firstWhere((f) => f.name == 'annotatedParameter')
+          .formalParameters
+          .single;
     });
 
     test('should throw by default', () {
