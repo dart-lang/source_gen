@@ -1,3 +1,7 @@
+## 4.2.2
+
+- Require `analyzer: '>=8.1.1 <13.0.0'`
+
 ## 4.2.1
 
 - Fix `UnresolvedAnnotationException` to include the name of the annotation in 
