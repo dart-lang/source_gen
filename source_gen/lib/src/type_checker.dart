@@ -290,11 +290,8 @@ class _LiteralNameTypeChecker extends _NameTypeChecker {
   @override
   final String _typeName;
 
-  const _LiteralNameTypeChecker(
-    this._typeName, {
-    String? inPackage,
-    bool? inSdk,
-  }) : super(Object, inPackage: inPackage, inSdk: inSdk);
+  const _LiteralNameTypeChecker(this._typeName, {super.inPackage, super.inSdk})
+    : super(Object);
 
   @override
   String toString() => _inPackage == null ? '$_type' : '$_inPackage#$_typeName';
