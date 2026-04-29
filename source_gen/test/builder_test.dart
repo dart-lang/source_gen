@@ -893,22 +893,28 @@ foo generated content
       });
     });
 
-    test('supports the path with the glob quotes', () async {
-      await testBuilder(
-        const CombiningBuilder(),
-        {
-          '$_pkgName|lib/[a]/(b)/{c}/*d/-e/f.dart':
-              'library f; part "f.g.dart";',
-          '$_pkgName|lib/[a]/(b)/{c}/*d/-e/f.foo.g.part':
-              'some generated content',
-        },
-        outputs: {
-          '$_pkgName|lib/[a]/(b)/{c}/*d/-e/f.g.dart': decodedMatches(
-            startsWith('// GENERATED CODE - DO NOT MODIFY BY HAND'),
-          ),
-        },
-      );
-    });
+    test(
+      'supports the path with the glob quotes',
+      onPlatform: {
+        'windows': const Skip('Windows does not support * in paths'),
+      },
+      () async {
+        await testBuilder(
+          const CombiningBuilder(),
+          {
+            '$_pkgName|lib/[a]/(b)/{c}/*d/-e/f.dart':
+                'library f; part "f.g.dart";',
+            '$_pkgName|lib/[a]/(b)/{c}/*d/-e/f.foo.g.part':
+                'some generated content',
+          },
+          outputs: {
+            '$_pkgName|lib/[a]/(b)/{c}/*d/-e/f.g.dart': decodedMatches(
+              startsWith('// GENERATED CODE - DO NOT MODIFY BY HAND'),
+            ),
+          },
+        );
+      },
+    );
   });
 
   test('can skip formatting with a trivial lambda', () async {
