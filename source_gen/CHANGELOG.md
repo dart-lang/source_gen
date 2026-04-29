@@ -1,10 +1,14 @@
+## 4.2.3
+
+- Require `analyzer: '>=8.1.1 <14.0.0'`
+
 ## 4.2.2
 
 - Require `analyzer: '>=8.1.1 <13.0.0'`
 
 ## 4.2.1
 
-- Fix `UnresolvedAnnotationException` to include the name of the annotation in 
+- Fix `UnresolvedAnnotationException` to include the name of the annotation in
   the message.
 - Require `build: '>=3.0.2 <5.0.0'`
 - Require `dart_style: ^3.1.2`
