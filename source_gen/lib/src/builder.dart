@@ -255,8 +255,7 @@ class SharedPartBuilder extends _Builder {
       throw ArgumentError.value(
         partId,
         'partId',
-        '`partId` can only contain letters, numbers, `_` and `.`. '
-            'It cannot start or end with `.`.',
+        '`partId` can only contain letters, numbers, `_` and `-`.',
       );
     }
   }
