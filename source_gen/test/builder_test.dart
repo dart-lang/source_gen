@@ -547,6 +547,32 @@ part "a.foo.dart";''',
           );
         });
       }
+
+      test('accepts partId with hyphens', () {
+        expect(
+          () => SharedPartBuilder([
+            const UnformattedCodeGenerator(),
+          ], 'my-part'),
+          returnsNormally,
+        );
+      });
+
+      test('error message matches allowed characters', () {
+        try {
+          SharedPartBuilder([
+            const UnformattedCodeGenerator(),
+          ], 'invalid!id');
+          fail('Should have thrown');
+        } on ArgumentError catch (e) {
+          final message = e.message as String;
+          // The error message should mention hyphens since the regex
+          // allows them (issue #607).
+          expect(message, contains('-'));
+          // The error message should NOT mention `.` since the regex
+          // does not allow periods.
+          expect(message, isNot(contains('`.`')));
+        }
+      });
     });
   });
 
