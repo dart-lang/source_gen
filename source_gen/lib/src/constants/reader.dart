@@ -110,6 +110,9 @@ abstract class ConstantReader {
   /// This is appropriate for cases where the underlying object is not a literal
   /// and code generators will want to figure out how to "recreate" a constant
   /// at runtime.
+  ///
+  /// Throws an [UnsupportedError] when there is no reference to recreate: read
+  /// a literal with [literalValue] and a type with [typeValue] instead.
   Revivable revive();
 }
 
