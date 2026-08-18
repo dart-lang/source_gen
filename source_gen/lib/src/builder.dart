@@ -170,9 +170,8 @@ class _Builder extends Builder {
           ..writeln()
           ..writeln(_headerLine)
           ..writeAll(
-            LineSplitter.split(
-              item.generatorDescription,
-            ).map((line) => '// $line\n'),
+            LineSplitter.split(item.generatorDescription)
+                .map((line) => '// $line\n'),
           )
           ..writeln(_headerLine)
           ..writeln();

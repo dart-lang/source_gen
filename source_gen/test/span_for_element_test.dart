@@ -51,9 +51,8 @@ line 3, column 16 of package:test_lib/test_lib.dart: Here it is
 
   test('should correctly highlight getter', () async {
     expect(
-      spanForElement(
-        library.getClass('Example')!.getField('getter')!,
-      ).message('Here it is'),
+      spanForElement(library.getClass('Example')!.getField('getter')!)
+          .message('Here it is'),
       r"""
 line 4, column 15 of package:test_lib/test_lib.dart: Here it is
   ,
@@ -65,9 +64,8 @@ line 4, column 15 of package:test_lib/test_lib.dart: Here it is
 
   test('should correctly highlight setter', () async {
     expect(
-      spanForElement(
-        library.getClass('Example')!.getField('setter')!,
-      ).message('Here it is'),
+      spanForElement(library.getClass('Example')!.getField('setter')!)
+          .message('Here it is'),
       r"""
 line 5, column 7 of package:test_lib/test_lib.dart: Here it is
   ,
@@ -79,9 +77,8 @@ line 5, column 7 of package:test_lib/test_lib.dart: Here it is
 
   test('should correctly highlight field', () async {
     expect(
-      spanForElement(
-        library.getClass('Example')!.getField('field')!,
-      ).message('Here it is'),
+      spanForElement(library.getClass('Example')!.getField('field')!)
+          .message('Here it is'),
       r"""
 line 6, column 7 of package:test_lib/test_lib.dart: Here it is
   ,
@@ -93,9 +90,8 @@ line 6, column 7 of package:test_lib/test_lib.dart: Here it is
 
   test('highlight getter with getter/setter property', () async {
     expect(
-      spanForElement(
-        library.getClass('Example')!.getField('fieldProp')!,
-      ).message('Here it is'),
+      spanForElement(library.getClass('Example')!.getField('fieldProp')!)
+          .message('Here it is'),
       r"""
 line 7, column 11 of package:test_lib/test_lib.dart: Here it is
   ,

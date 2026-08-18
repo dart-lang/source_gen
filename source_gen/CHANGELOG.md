@@ -1,3 +1,10 @@
+## 4.3.0-wip
+
+- Support Dart 3.13 primary constructors and `new` constructor syntax in
+  `TypeChecker` and `ConstantReader`.
+- Require `sdk: ^3.13.0`.
+- Require `analyzer: '>=14.0.0 <15.0.0'`.
+
 ## 4.2.4
 
 - Require `analyzer: '>=8.1.1 <15.0.0'`

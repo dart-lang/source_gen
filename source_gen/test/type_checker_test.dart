@@ -754,6 +754,98 @@ void main() {
       );
     });
   });
+
+  group('Dart 3.13 constructor features', () {
+    test('annotations using const new() constructor syntax', () async {
+      final library = await resolveSource(r'''
+        library _test;
+
+        class NewAnnotation {
+          final String name;
+          const new({this.name = 'default'});
+        }
+
+        @NewAnnotation(name: 'custom')
+        class AnnotatedWithNew {}
+      ''', (resolver) async => (await resolver.findLibraryByName('_test'))!);
+
+      final annotatedClass = library.getClass('AnnotatedWithNew')!;
+      final newAnnotationType = library.getClass('NewAnnotation')!;
+      final checker = TypeChecker.fromStatic(newAnnotationType.thisType);
+
+      final annotation = checker.firstAnnotationOf(annotatedClass);
+      expect(annotation, isNotNull);
+      expect(annotation!.getField('name')!.toStringValue(), 'custom');
+
+      final reader = ConstantReader(annotation);
+      expect(reader.read('name').stringValue, 'custom');
+      final revived = reader.revive();
+      expect(revived.accessor, '');
+      expect(revived.namedArguments['name']!.toStringValue(), 'custom');
+    });
+
+    test(
+      'primary constructor annotation class and annotated elements',
+      () async {
+        final library = await resolveSource(r'''
+        library _test;
+
+        class PrimaryAnnotation {
+          final String tag;
+          const PrimaryAnnotation(this.tag);
+        }
+
+        @PrimaryAnnotation('test-tag')
+        class PrimaryAnnotatedClass(final int x, final int y);
+      ''', (resolver) async => (await resolver.findLibraryByName('_test'))!);
+
+        final annotatedClass = library.getClass('PrimaryAnnotatedClass')!;
+        final primaryAnnotationType = library.getClass('PrimaryAnnotation')!;
+        final checker = TypeChecker.fromStatic(primaryAnnotationType.thisType);
+
+        final annotation = checker.firstAnnotationOf(annotatedClass);
+        expect(annotation, isNotNull);
+        expect(annotation!.getField('tag')!.toStringValue(), 'test-tag');
+      },
+    );
+
+    test('unresolved annotation on primary constructor parameter', () async {
+      final library = await resolveSource(r'''
+        library _test;
+
+        class ParamAnnotation {
+          const ParamAnnotation();
+        }
+
+        class AnnotatedParamClass(
+          @UnresolvedAnnotation()
+          final int x,
+        );
+      ''', (resolver) async => (await resolver.findLibraryByName('_test'))!);
+
+      final classElement = library.getClass('AnnotatedParamClass')!;
+      final constructor = classElement.constructors.first;
+      final param = constructor.formalParameters.first;
+
+      const checker = TypeChecker.typeNamedLiterally(
+        'ParamAnnotation',
+        inPackage: '_test',
+      );
+      expect(
+        () => checker.firstAnnotationOf(param),
+        throwsA(
+          const TypeMatcher<UnresolvedAnnotationException>().having(
+            (e) => e.toString(),
+            'toString',
+            allOf(
+              contains('Could not resolve annotation for `int x`.'),
+              contains('@UnresolvedAnnotation()'),
+            ),
+          ),
+        ),
+      );
+    });
+  });
 }
 
 final throwsUnresolvedAnnotationException = throwsA(
