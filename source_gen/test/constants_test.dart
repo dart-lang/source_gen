@@ -229,6 +229,7 @@ void main() {
         @_privateField
         @Wrapper(_privateFunction)
         @ProcessStartMode.normal
+        @TypeWrapper(String)
         class Example {}
 
         class Int64Like implements Int64LikeBase{
@@ -298,6 +299,11 @@ void main() {
         }
 
         void _privateFunction() {}
+
+        class TypeWrapper {
+          final Type t;
+          const TypeWrapper(this.t);
+        }
       ''', (resolver) async => (await resolver.findLibraryByName('test_lib'))!);
       constants = library
           .getClass('Example')!
@@ -396,5 +402,18 @@ void main() {
         expect(staticFieldWithPrivateImpl.source.fragment, isEmpty);
       },
     );
+
+    test('should explain why a type literal cannot be revived', () {
+      expect(
+        () => constants[14].read('t').revive(),
+        throwsA(
+          isA<UnsupportedError>().having(
+            (e) => e.message,
+            'message',
+            contains('ConstantReader.typeValue'),
+          ),
+        ),
+      );
+    });
   });
 }
