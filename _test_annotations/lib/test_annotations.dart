@@ -6,3 +6,5 @@ class TestAnnotationWithNew {
   final String message;
   const new({this.message = 'default'});
 }
+
+class const TestAnnotationPrimary(final String value);

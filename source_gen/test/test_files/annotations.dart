@@ -62,6 +62,13 @@ class OtherPublicAnnotationClass {
   const OtherPublicAnnotationClass();
 }
 
+class PublicAnnotationWithNew {
+  final String message;
+  const new({this.message = 'default'});
+}
+
+class const PublicAnnotationPrimary(final int anInt);
+
 const objectAnnotation = {
   'int': 1,
   'bool': true,

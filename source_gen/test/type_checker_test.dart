@@ -790,10 +790,7 @@ void main() {
         final library = await resolveSource(r'''
         library _test;
 
-        class PrimaryAnnotation {
-          final String tag;
-          const PrimaryAnnotation(this.tag);
-        }
+        class const PrimaryAnnotation(final String tag);
 
         @PrimaryAnnotation('test-tag')
         class PrimaryAnnotatedClass(final int x, final int y);
@@ -845,6 +842,103 @@ void main() {
         ),
       );
     });
+
+    test(
+      'resolves annotations declared in package and local fixture files',
+      () async {
+        final library = await resolveSources(
+          {
+            'source_gen|test/test_files/annotated_classes.dart': useAssetReader,
+            'source_gen|test/test_files/annotated_classes_part.dart':
+                useAssetReader,
+            'source_gen|test/test_files/annotations.dart': useAssetReader,
+            'source_gen|test/test_files/annotation_part.dart': useAssetReader,
+            '_test_annotations|lib/test_annotations.dart': useAssetReader,
+          },
+          (resolver) => resolver.libraryFor(
+            AssetId('source_gen', 'test/test_files/annotated_classes.dart'),
+          ),
+        );
+
+        // 1. AnnotatedWithNewFromPackage
+        final newPkgClass = library.getClass('AnnotatedWithNewFromPackage')!;
+        const newPkgChecker = TypeChecker.typeNamedLiterally(
+          'TestAnnotationWithNew',
+          inPackage: '_test_annotations',
+        );
+        final newPkgAnnotation = newPkgChecker.firstAnnotationOf(newPkgClass);
+        expect(newPkgAnnotation, isNotNull);
+        expect(
+          newPkgAnnotation!.getField('message')!.toStringValue(),
+          'from package',
+        );
+
+        // 2. AnnotatedWithPrimaryFromPackage
+        final primaryPkgClass = library.getClass(
+          'AnnotatedWithPrimaryFromPackage',
+        )!;
+        const primaryPkgChecker = TypeChecker.typeNamedLiterally(
+          'TestAnnotationPrimary',
+          inPackage: '_test_annotations',
+        );
+        final primaryPkgAnnotation = primaryPkgChecker.firstAnnotationOf(
+          primaryPkgClass,
+        );
+        expect(primaryPkgAnnotation, isNotNull);
+        expect(
+          primaryPkgAnnotation!.getField('value')!.toStringValue(),
+          'from package primary',
+        );
+        final primaryPkgParam =
+            primaryPkgClass.constructors.first.formalParameters.first;
+        final primaryPkgParamAnnotation = primaryPkgChecker.firstAnnotationOf(
+          primaryPkgParam,
+        );
+        expect(primaryPkgParamAnnotation, isNotNull);
+        expect(
+          primaryPkgParamAnnotation!.getField('value')!.toStringValue(),
+          'param',
+        );
+
+        // 3. AnnotatedWithPublicNew
+        final publicNewClass = library.getClass('AnnotatedWithPublicNew')!;
+        const publicNewChecker = TypeChecker.typeNamedLiterally(
+          'PublicAnnotationWithNew',
+          inPackage: 'source_gen',
+        );
+        final publicNewAnnotation = publicNewChecker.firstAnnotationOf(
+          publicNewClass,
+        );
+        expect(publicNewAnnotation, isNotNull);
+        expect(
+          publicNewAnnotation!.getField('message')!.toStringValue(),
+          'local new',
+        );
+
+        // 4. AnnotatedWithPublicPrimary
+        final publicPrimaryClass = library.getClass(
+          'AnnotatedWithPublicPrimary',
+        )!;
+        const publicPrimaryChecker = TypeChecker.typeNamedLiterally(
+          'PublicAnnotationPrimary',
+          inPackage: 'source_gen',
+        );
+        final publicPrimaryAnnotation = publicPrimaryChecker.firstAnnotationOf(
+          publicPrimaryClass,
+        );
+        expect(publicPrimaryAnnotation, isNotNull);
+        expect(publicPrimaryAnnotation!.getField('anInt')!.toIntValue(), 42);
+        final publicPrimaryParam =
+            publicPrimaryClass.constructors.first.formalParameters.first;
+        final publicPrimaryParamAnnotation = publicPrimaryChecker
+            .firstAnnotationOf(publicPrimaryParam);
+        expect(publicPrimaryParamAnnotation, isNotNull);
+        expect(
+          publicPrimaryParamAnnotation!.getField('anInt')!.toIntValue(),
+          100,
+        );
+      },
+    );
   });
 }
 

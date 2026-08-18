@@ -433,11 +433,7 @@ void main() {
         final library = await resolveSource(r'''
         library test_lib;
 
-        class PrimaryPoint {
-          final double x;
-          final double y;
-          const PrimaryPoint(this.x, this.y);
-        }
+        class const PrimaryPoint(final double x, final double y);
 
         @PrimaryPoint(1.5, 2.5)
         class Target {}

@@ -58,3 +58,17 @@ class WithUntypedField {}
 
 @untypedAnnotationWithNonDefaultCtor
 class WithAFieldFromNonDefaultCtor {}
+
+@TestAnnotationWithNew(message: 'from package')
+class AnnotatedWithNewFromPackage {}
+
+@TestAnnotationPrimary('from package primary')
+class AnnotatedWithPrimaryFromPackage(
+  @TestAnnotationPrimary('param') final int count,
+);
+
+@PublicAnnotationWithNew(message: 'local new')
+class AnnotatedWithPublicNew {}
+
+@PublicAnnotationPrimary(42)
+class AnnotatedWithPublicPrimary(@PublicAnnotationPrimary(100) final int value);
