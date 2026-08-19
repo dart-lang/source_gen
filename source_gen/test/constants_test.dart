@@ -396,5 +396,61 @@ void main() {
         expect(staticFieldWithPrivateImpl.source.fragment, isEmpty);
       },
     );
+
+    test(
+      'should revive objects constructed with new constructor syntax',
+      () async {
+        final library = await resolveSource(r'''
+        library test_lib;
+
+        class NewConstructorClass {
+          final String title;
+          final int count;
+          const new({this.title = 'default', this.count = 0});
+        }
+
+        @NewConstructorClass(title: 'custom', count: 42)
+        class Target {}
+      ''', (resolver) async => (await resolver.findLibraryByName('test_lib'))!);
+
+        final targetClass = library.getClass('Target')!;
+        final annotation = targetClass.metadata.annotations.first;
+        final reader = ConstantReader(annotation.computeConstantValue());
+
+        expect(reader.read('title').stringValue, 'custom');
+        expect(reader.read('count').intValue, 42);
+
+        final revivable = reader.revive();
+        expect(revivable.accessor, '');
+        expect(revivable.namedArguments['title']!.toStringValue(), 'custom');
+        expect(revivable.namedArguments['count']!.toIntValue(), 42);
+      },
+    );
+
+    test(
+      'should revive objects constructed with primary constructors',
+      () async {
+        final library = await resolveSource(r'''
+        library test_lib;
+
+        class const PrimaryPoint(final double x, final double y);
+
+        @PrimaryPoint(1.5, 2.5)
+        class Target {}
+      ''', (resolver) async => (await resolver.findLibraryByName('test_lib'))!);
+
+        final targetClass = library.getClass('Target')!;
+        final annotation = targetClass.metadata.annotations.first;
+        final reader = ConstantReader(annotation.computeConstantValue());
+
+        expect(reader.read('x').doubleValue, 1.5);
+        expect(reader.read('y').doubleValue, 2.5);
+
+        final revivable = reader.revive();
+        expect(revivable.accessor, '');
+        expect(revivable.positionalArguments[0].toDoubleValue(), 1.5);
+        expect(revivable.positionalArguments[1].toDoubleValue(), 2.5);
+      },
+    );
   });
 }
