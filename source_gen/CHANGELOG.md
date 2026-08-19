@@ -1,4 +1,4 @@
-## 4.3.0-wip
+## 4.3.0
 
 - Support Dart 3.13 primary constructors and `new` constructor syntax in
   `TypeChecker` and `ConstantReader`.
