@@ -1,12 +1,3 @@
-// @dart=3.13
-
 class TestAnnotation {
   const TestAnnotation();
 }
-
-class TestAnnotationWithNew {
-  final String message;
-  const new({this.message = 'default'});
-}
-
-class const TestAnnotationPrimary(final String value);

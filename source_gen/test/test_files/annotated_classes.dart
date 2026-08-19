@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// @dart=3.13
-
 import 'package:_test_annotations/test_annotations.dart';
 
 import 'annotations.dart';
@@ -60,17 +58,3 @@ class WithUntypedField {}
 
 @untypedAnnotationWithNonDefaultCtor
 class WithAFieldFromNonDefaultCtor {}
-
-@TestAnnotationWithNew(message: 'from package')
-class AnnotatedWithNewFromPackage {}
-
-@TestAnnotationPrimary('from package primary')
-class AnnotatedWithPrimaryFromPackage(
-  @TestAnnotationPrimary('param') final int count,
-);
-
-@PublicAnnotationWithNew(message: 'local new')
-class AnnotatedWithPublicNew {}
-
-@PublicAnnotationPrimary(42)
-class AnnotatedWithPublicPrimary(@PublicAnnotationPrimary(100) final int value);

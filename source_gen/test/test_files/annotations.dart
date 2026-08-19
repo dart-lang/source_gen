@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// @dart=3.13
-
 // ignore_for_file: prefer_initializing_formals
 import 'dart:collection' as collection;
 
@@ -63,13 +61,6 @@ class PublicAnnotationClass {
 class OtherPublicAnnotationClass {
   const OtherPublicAnnotationClass();
 }
-
-class PublicAnnotationWithNew {
-  final String message;
-  const new({this.message = 'default'});
-}
-
-class const PublicAnnotationPrimary(final int anInt);
 
 const objectAnnotation = {
   'int': 1,
