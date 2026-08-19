@@ -258,8 +258,9 @@ class _NameTypeChecker extends TypeChecker {
   final String? _inPackage;
   final bool _inSdk;
 
-  const _NameTypeChecker(this._type, {this._inPackage, bool? inSdk})
-    : _inSdk = inSdk ?? false,
+  const _NameTypeChecker(this._type, {String? inPackage, bool? inSdk})
+    : _inPackage = inPackage,
+      _inSdk = inSdk ?? false,
       super._();
 
   String get _typeName {
@@ -355,9 +356,11 @@ class UnresolvedAnnotationException implements Exception {
 
   static SourceSpan? _findSpan(Element annotatedElement, int annotationIndex) {
     try {
-      final parsedLibrary = annotatedElement.session!.getParsedLibraryByElement(
-        annotatedElement.library!,
-      ) as ParsedLibraryResult;
+      final parsedLibrary =
+          annotatedElement.session!.getParsedLibraryByElement(
+                annotatedElement.library!,
+              )
+              as ParsedLibraryResult;
       final declaration = parsedLibrary.getFragmentDeclaration(
         annotatedElement.firstFragment,
       );

@@ -1,3 +1,5 @@
+// @dart=3.13
+
 class TestAnnotation {
   const TestAnnotation();
 }
