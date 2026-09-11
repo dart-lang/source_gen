@@ -1,3 +1,9 @@
+## 4.3.1-wip
+
+- Throw an `UnsupportedError` explaining the problem, instead of
+  `Bad state: No element`, when `ConstantReader.revive()` finds no candidate to
+  revive. This may be breaking if a builder catches the `StateError`.
+
 ## 4.3.0
 
 - Support Dart 3.13 primary constructors and `new` constructor syntax in

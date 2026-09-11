@@ -12,9 +12,9 @@ import '../utils.dart';
 
 /// Attempts to extract what source code could be used to represent [object].
 ///
-/// Returns `null` if it wasn't possible to parse [object], or [object] is a
-/// primitive value (such as a number, string, boolean) that does not need to be
-/// revived in order to represent it.
+/// Throws an [UnsupportedError] when the search for a reference to [object]
+/// comes up empty: a literal is read with `ConstantReader.literalValue` and a
+/// type with `ConstantReader.typeValue` instead.
 ///
 /// **NOTE**: Some returned [Revivable] instances are not representable as valid
 /// Dart source code (such as referencing private constructors). It is up to the
@@ -100,6 +100,14 @@ Revivable reviveInstance(DartObject object, [LibraryElement? origin]) {
     if (tryResult(result)) {
       return result;
     }
+  }
+  if (allResults.isEmpty) {
+    throw UnsupportedError(
+      'Cannot revive $object: it is not a const constructor invocation, and '
+      'no constant declaration for it was found in $origin. Read a literal '
+      'with `ConstantReader.literalValue` and a type with '
+      '`ConstantReader.typeValue`.',
+    );
   }
   // We could try and return the "best" result more intelligently.
   return allResults.first;
