@@ -1,3 +1,7 @@
+## 4.3.1
+
+- Allow `build` 5.0.0.
+
 ## 4.3.0
 
 - Support Dart 3.13 primary constructors and `new` constructor syntax in
