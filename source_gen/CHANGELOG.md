@@ -1,6 +1,7 @@
 ## 4.3.2-wip
 
-- Recommend placing `build_runner` builder factories in `lib/src/builder.dart`.
+- Document that `build_runner` builder factories may be placed in
+  `lib/src/builder.dart` to keep them out of the public API.
 
 ## 4.3.1
 
