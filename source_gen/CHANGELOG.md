@@ -1,3 +1,8 @@
+## 4.3.2-wip
+
+- Document that `build_runner` builder factories may be placed in
+  `lib/src/builder.dart` to keep them out of the public API.
+
 ## 4.3.1
 
 - Allow `build` 5.0.0.

@@ -91,6 +91,12 @@ builders:
     applies_builders: ["source_gen:combining_builder"]
 ```
 
+If your builder factories are only invoked by `build_runner`, you can also
+place them in `lib/src/builder.dart`
+(`import: "package:this_package/src/builder.dart"`) to keep them out of your
+package's public API and avoid the `dart pub publish` library-name warning on
+single-builder packages.
+
 ### Configuring `combining_builder` 
 
 #### `header`
