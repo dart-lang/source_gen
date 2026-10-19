@@ -81,7 +81,7 @@ directory. You should never use the `.g.dart` extension for any other Builder.
 ```yaml
 builders:
   some_cool_builder:
-    import: "package:this_package/builder.dart"
+    import: "package:this_package/src/builder.dart"
     builder_factories: ["someCoolBuilder"]
     # The `partId` argument to `SharedPartBuilder` is "some_cool_builder"
     build_extensions: {".dart": [".some_cool_builder.g.part"]}
@@ -90,6 +90,12 @@ builders:
     # To copy the `.g.part` content into `.g.dart` in the source tree
     applies_builders: ["source_gen:combining_builder"]
 ```
+
+Placing builder factories in `lib/src/builder.dart` is recommended so
+build-script-only factories stay out of your package's public API and
+single-builder packages avoid the `dart pub publish` library-name warning.
+Expose your `Generator` or `Builder` in `lib/<pkg>.dart` only if programmatic
+construction is part of the intended public API.
 
 ### Configuring `combining_builder` 
 
