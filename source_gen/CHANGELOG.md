@@ -1,5 +1,7 @@
 ## 4.3.2-wip
 
+- Recommend placing `build_runner` builder factories in `lib/src/builder.dart`.
+
 ## 4.3.1
 
 - Allow `build` 5.0.0.
