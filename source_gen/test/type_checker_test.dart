@@ -715,7 +715,14 @@ void main() {
               contains(
                 'Could not resolve annotation for `class ExampleWithInvalid`.',
               ),
-              contains('Error: Invalid constant value.'),
+              // The message text depends on the analyzer version.
+              anyOf(
+                contains('Error: Invalid constant value.'),
+                contains(
+                  'Error: Arguments of a constant creation must be constant '
+                  'expressions.',
+                ),
+              ),
               contains('@D(notAConstant)'),
             ]),
           ),
