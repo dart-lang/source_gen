@@ -1,15 +1,11 @@
-# A CI configuration to auto-publish pub packages.
-#
-# Pushing a tag source_gen-vVERSION publishes package:source_gen.
-# Publish checks on pull requests run in the Health workflow.
+# A CI configuration to publish package:source_gen to pub.dev.
 
-name: Publish
-permissions:
-  contents: read
+name: Publish package:source_gen
 
 on:
   push:
-    tags: [ 'source_gen-v[0-9]+.[0-9]+.[0-9]+*' ]
+    tags:
+      - 'source_gen-v[0-9]+.[0-9]+.[0-9]+*'
 
 jobs:
   publish:
