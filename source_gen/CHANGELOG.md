@@ -2,6 +2,9 @@
 
 - Document that `build_runner` builder factories may be placed in
   `lib/src/builder.dart` to keep them out of the public API.
+- Throw an `UnsupportedError` explaining the problem, instead of
+  `Bad state: No element`, when `ConstantReader.revive()` finds no candidate to
+  revive. This may be breaking if a builder catches the `StateError`.
 
 ## 4.3.1
 
